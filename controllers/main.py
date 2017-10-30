@@ -408,10 +408,20 @@ class Stem(http.Controller):
             for srch in search.split(" "):
                 domain_post_default += [('name', 'ilike', srch)]
 
+        domain_partner_default = []
+
+        if search:
+            post["search"] = search
+
+            for srch in search.split(" "):
+                domain_partner_default += [('name', 'ilike', srch)]
+
         posts = http.request.env['blog.post'].sudo().search(domain_post_default)
         courses = http.request.env['op.course'].sudo().search(course_domain)
+        partners = http.request.env['res.partner'].sudo().search(domain_partner_default)
         total_count_courses = len(courses)
         total_count_posts =  len(posts)
+        total_count_partners = len(partners)
 
         pager_courses = http.request.website.pager(
             url=url, total=total_count_courses, page=page, step=ppg, scope=7,
@@ -420,12 +430,18 @@ class Stem(http.Controller):
         pager_posts = http.request.website.pager(
             url=url, total=total_count_posts, page=page, step=ppg, scope=7,
             url_args=post)
+
+        pager_partners = http.request.website.pager(
+            url=url, total=total_count_partners, page=page, step=ppg, scope=7,
+            url_args=post)
         
 
         all_search_idc = [x.id for x in courses]
         all_search_idp = [x.id for x in posts]
+        all_search_idpn = [x.id for x in partners]
         all_search_courses = http.request.env['op.course'].sudo().search([('id', 'in', all_search_idc)], limit=ppg, offset=pager_courses['offset'])
         all_search_posts = http.request.env['blog.post'].sudo().search([('id', 'in', all_search_idp)], limit=ppg, offset=pager_posts['offset'])
+        all_search_partners = http.request.env['res.partner'].sudo().search([('id', 'in', all_search_idpn)], limit=ppg, offset=pager_partners['offset'])
 
         values = {
             'search': search,
@@ -435,6 +451,8 @@ class Stem(http.Controller):
             'all_search_courses': all_search_courses,
             'total_count_posts': total_count_posts,
             'all_search_posts': all_search_posts,
+            'total_count_partners': total_count_partners,
+            'all_search_partners': all_search_partners,
             'rows': 3
         }
         
@@ -515,6 +533,44 @@ class Stem(http.Controller):
 
         return http.request.render('stem_frontend_theme.stem_home', data)
 
+    @http.route('''/profile/<model("res.partner"):partner>''', type='http',
+                auth="public", website=True)
+    def profile(self, partner, **kw):
+        if partner.id == http.request.env.user.partner_id.id:
+            return http.request.redirect('/home')
+        else: 
+            return http.request.render('stem_frontend_theme.stem_user_profile', {
+                'partner': partner
+            })
+
+    @http.route('''/profile/<model("res.partner"):partner>/blogs''', type='http',
+                auth="public", website=True)
+    def profile_blogs(self, partner, **kw):
+        if partner.id == http.request.env.user.partner_id.id:
+            return http.request.redirect('/home/my-blogs')
+        else:
+            return http.request.render('stem_frontend_theme.stem_profile_blogs', {
+                'partner': partner
+            })
+
+    @http.route('''/profile/<model("res.partner"):partner>/courses''', type='http',
+                auth="public", website=True)
+    def profile_courses(self, partner, **kw):
+        if partner.id == http.request.env.user.partner_id.id:
+            return http.request.redirect('/home/my-courses')
+        else:
+            data = {
+                'partner': partner
+            }
+            student_user = http.request.env['res.users'].sudo().search([('partner_id', '=', partner.id)], limit=1)
+            student_user_id = student_user.id
+
+            enrollments = http.request.env['op.course.enrollment'].sudo().search(
+                [('user_id', '=', student_user_id),
+                ('state', 'in', ['in_progress', 'done'])])
+            if enrollments:
+                data.update(self.my_course_details(enrollments))
+            return http.request.render('stem_frontend_theme.stem_profile_courses', data)
 
 class Website(Website):
     @http.route(auth='public')

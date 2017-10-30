@@ -44,7 +44,11 @@
         'views/faculty_mail_template.xml',
         'views/material_detail_view.xml',
         'views/search_results.xml',
-        'views/my_courses_teach.xml'
+        'views/my_courses_teach.xml',
+        'views/web_forum.xml',
+        'views/profile.xml',
+        'views/profile_blogs.xml',
+        'views/profile_courses.xml'
     ],
 }
 

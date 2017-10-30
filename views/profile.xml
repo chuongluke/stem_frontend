@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_user_profile" name="STEM Home">
+			<t t-call="website.layout">
+				<section class="row">
+  	  				<aside class="col-md-2">
+  	  					<div class="list-group" id="menu">
+		  					<a t-attf-href="/profile/#{slug(partner)}" class="list-group-item list-group-item1 border-B1">
+		  						<img t-att-src="partner.image_small and ('data:image/png;base64,' + partner.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="partner.name" width="32"/>
+		  						<t t-esc="(len(partner.name)&gt;25) and (partner.name[:23]+'...') or partner.name"/>
+		  					</a>
+
+                <a t-attf-href="/profile/#{slug(partner)}/blogs" class="list-group-item list-group-item1">
+                  <i class="MR10 fa fa-file-text-o text-primary" aria-hidden="true"></i>
+                  Bảng tin
+                </a>
+
+                <a t-attf-href="/profile/#{slug(partner)}/courses" class="list-group-item list-group-item1">
+                  <i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+                  Khóa học
+                </a>
+							
+						</div>
+  	  				</aside>
+
+  	  				<aside class="col-md-7">
+  	  					<t t-raw="0">
+  	  					</t>
+      				</aside>
+
+      				<aside class="col-md-3">
+      	 				<div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="">Tin tức</a>
+      	 					</h3>
+
+      	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
+      	 				</div>
+      				</aside>
+    			</section>
+			</t>
+		</template>
+	</data>
+</odoo>

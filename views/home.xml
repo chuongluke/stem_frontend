@@ -121,7 +121,7 @@
 			  	    			</h3>
 
 			  	    			<t t-foreach="online_free_courses" t-as="online_free_course">
-			  	    				<div class="MB20">
+			  	    				<div t-attf-class="MB20 {{ '' if online_free_course_index == 0 else 'course-container' }}">
 			  	    					<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
 	                                	<img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
 
@@ -239,7 +239,7 @@
 		  	    					<a href="">Khóa học trực tuyến</a>
 		  	    				</h3>
 		  	    				<t t-foreach="online_paid_courses" t-as="online_paid_course">
-			  	    				<div class="MB20">
+			  	    				<div t-attf-class="MB20 {{ '' if online_paid_course_index == 0 else 'course-container' }}">
 			  	    					<img t-if="not online_paid_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
 	                                	<img t-if="online_paid_course.image" t-attf-src="/web/image/op.course/#{online_paid_course.id}/image" class="img-responsive" />
 
@@ -501,7 +501,7 @@
 					            </t>
 					            <t t-if="my_courses">
 					            	<t t-foreach="my_courses" t-as="course">
-					            		<div class="MB20">
+					            		<div t-attf-class="MB20 {{ '' if course_index == 0 else 'course-container' }}">
 				  	    					<img t-if="not course['course'].image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
 			                            	<img t-if="course['course'].image" t-attf-src="/web/image/op.course/#{course['course'].id}/image" class="img-responsive" />
 
@@ -541,7 +541,7 @@
 			  	    			</h3>
 
 			  	    			<t t-foreach="online_free_courses" t-as="online_free_course">
-			  	    				<div class="MB20">
+			  	    				<div t-attf-class="MB20 {{ '' if online_free_course_index == 0 else 'course-container' }}">
 			  	    					<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
 	                                	<img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
 
@@ -660,7 +660,7 @@
 		  	    					<a href="">Khóa học trực tuyến</a>
 		  	    				</h3>
 		  	    				<t t-foreach="online_paid_courses" t-as="online_paid_course">
-			  	    				<div class="MB20">
+			  	    				<div t-attf-class="MB20 {{ '' if online_paid_course_index == 0 else 'course-container' }}">
 			  	    					<img t-if="not online_paid_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
 	                                	<img t-if="online_paid_course.image" t-attf-src="/web/image/op.course/#{online_paid_course.id}/image" class="img-responsive" />
 

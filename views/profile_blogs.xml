@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_profile_blogs" name="STEM My Blogs">
+			<t t-call="stem_frontend_theme.stem_user_profile">
+				<div class="box-bor MB20">
+ 					<h3 class="text-xanh1">
+ 						<a href="">Tin tức</a>
+ 					</h3>
+
+ 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
+
+  	    		</div>
+			</t>
+		</template>
+	</data>
+</odoo>
