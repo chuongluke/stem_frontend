@@ -444,24 +444,9 @@
   	  								<div>
   	  									<div>
   	  										<div class="addQuestionPrompt">
-  	  											<div class="fake_reason">
-  	  												<span>
-  	  													<span>
-  	  														<span class="photo_tooltip">
-  	  															<a href="/home">
-  	  																<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
-  	  															</a>
-  	  														</span>
-  	  													</span>
-  	  													<span>
-  	  														<span>
-  	  															<a class="user-question" href="/home">
-  	  																<t t-esc="user_id.name"/>
-  	  															</a>
-  	  														</span>
-  	  													</span>
-  	  												</span>
-  	  											</div>
+  	  											<span>
+  	  												<h3>TRI THỨC STEM</h3>
+  	  											</span>
   	  											<div class="form-group">
   	  												<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
   	  												<span class="input-question-btn-search">
