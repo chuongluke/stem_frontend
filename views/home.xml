@@ -1,0 +1,979 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<!-- Latest posts's Template -->
+	    <template id="stem_home_posts">
+	        <t t-if="not posts">
+	            <div class="container readable">
+		            <div class="alert alert-warning alert-dismissible text-center" role="alert">
+		                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		                    <span aria-hidden="true">&#215;</span>
+		                </button>
+		                <h3>No posts here...</h3>
+		                <p>Please, be sure that your posts are not in draft state</p>
+		            </div>
+		        </div>
+	        </t>
+	        <t t-foreach="posts" t-as="p">
+	        	<t t-set="properties" t-value="json.loads(p.cover_properties)"/>
+	            <div class="MB20">
+	            	<img class="img-responsive MB5" t-attf-src="#{properties.get('background-image')[4:-1]}"/>
+
+	                <p>
+	      	 			<a class="text-justify text-link" t-att-href="'/blog/%s/post/%s' % (p.blog_id.id, p.id)">
+	      	 				<span t-field="p.name"/>
+	      	 			</a>
+	      	 		</p>
+	      	 		<p class="text-right">
+	      	 			<a t-att-href="'/blog/%s/post/%s' % (p.blog_id.id, p.id)">
+	      	 				Chi tiết &gt;&gt;
+	      	 			</a>
+	      	 		</p>
+	            </div>
+	        </t>
+	    </template>
+
+		<template id="stem_home" name="STEM Home">
+			<t t-call="website.layout">
+				<section class="row">
+  	  				<aside class="col-md-2">
+  	  					<div class="list-group">
+		  					<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
+		  						<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
+		  						<t t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
+		  					</a>
+		  					<!-- <a href="/home/my-blogs" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-file-text-o text-primary" aria-hidden="true"></i>
+		  						Bảng tin<span class="badge bg-pink">14</span>
+		  					</a>
+		  					<a href="/web" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-commenting-o text-danger" aria-hidden="true"></i>
+		  						Tin nhắn<span class="badge bg-pink">14</span>
+		  					</a> -->
+		  					<a href="/courses" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học<span class="badge bg-pink"><t t-esc="len(all_courses)"/></span>
+		  					</a>
+		  					<a href="/event" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
+		  						Sự kiện<span class="badge bg-pink"><t t-esc="len(events)"/></span>
+		  					</a>
+		  					<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+		  						Hỏi Đáp<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+		  					</a>
+		  					<!-- <a class="list-group-item list-group-item1" href="/home/my-courses">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học của tôi
+		  					</a> -->
+		  					<!-- <a href="#" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-users text-info" aria-hidden="true"></i>
+		  						Nhóm
+		  					</a>
+		  					<a href="#" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-address-book-o text-warning" aria-hidden="true"></i>
+		  						Dánh sách bạn bè
+		  					</a> -->
+						</div>
+  	  				</aside>
+
+  	  				<aside class="col-md-7">
+  	  					<t t-raw="0">
+  	  						<div class="box-bor MB20">
+  	  							<div>
+  	  								<div>
+  	  									<div>
+  	  										<div class="addQuestionPrompt">
+  	  											<div class="fake_reason">
+  	  												<span>
+  	  													<span>
+  	  														<span class="photo_tooltip">
+  	  															<a href="/home">
+  	  																<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
+  	  															</a>
+  	  														</span>
+  	  													</span>
+  	  													<span>
+  	  														<span>
+  	  															<a class="user-question" href="/home">
+  	  																<t t-esc="user_id.name"/>
+  	  															</a>
+  	  														</span>
+  	  													</span>
+  	  												</span>
+  	  											</div>
+  	  											<div class="form-group">
+  	  												<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+  	  												<span class="input-question-btn-search">
+								                        <button type="button" class="btn btn-search-question" disabled="disabled">
+								                            <i class="fa fa-search"></i>
+								                        </button>
+								                    </span>
+  	  											</div>
+  	  										</div>
+  	  									</div>
+  	  								</div>
+  	  							</div>
+  	  						</div>
+			  				<div class="box-bor MB20">
+			  	    			<h3 class="text-xanh1">
+			  	    				<a href="#">Khóa học trực tuyến Miễn phí</a>
+			  	    			</h3>
+
+			  	    			<t t-foreach="online_free_courses" t-as="online_free_course">
+			  	    				<div class="MB20">
+			  	    					<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+	                                	<img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
+
+										<h4 class="MB5">
+											<a t-attf-href="/course-detail/#{slug(online_free_course)}"
+												t-esc="online_free_course.name"/>
+										</h4>
+										<p class="text-a">
+											Giáo viên:
+											<t t-foreach="online_free_course.faculty_ids"
+	                                               t-as="faculty">
+	                                        	<span t-raw="faculty.name"/>
+	                                        </t>
+	                                    </p>
+										<p class="text-a" t-raw="online_free_course.short_description"></p>
+										<p class="text-muted MB0">
+											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
+											<span class="MR10 text-danger">FREE</span>
+											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
+											<span class="MR10 text-primary">
+												<t t-esc="len(online_free_course.course_enrollment_ids)"/>
+											</span>
+											<i class="MR5 fa fa-star-half-o" aria-hidden="true"></i>
+											<span class="text-vang">
+												<t t-esc="online_free_course.rating_last_value"/>
+											</span>
+										</p>
+			  	    				</div>
+			  	    			</t>
+	          				</div>
+
+	        				<div class="box-bor MB20">
+		  	    				<h3 class="text-xanh1">
+		  	    					<a href="#">Khóa học được quan tâm nhiều nhất</a>
+		  	    				</h3>
+			  					<div id="carousel1" class="carousel slide" data-ride="carousel">
+				  					<div class="carousel-inner" role="listbox">
+				  						<div class="item active">
+				      	  					<div class="row">
+				      	  						<t t-set="i" t-value="0"/>
+				      	  						<t t-foreach="course_porpular" t-as="cp">
+				      	  							<t t-set="i" t-value="i+1"/>
+						  							<t t-if="i &lt;= 3">
+						  								<div class="col-md-4 text-center">
+									  						<a class="box3" t-attf-href="/course-detail/#{slug(cp)}">
+									  							<img t-if="not cp.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive MB5" />
+			                                					<img t-if="cp.image" t-attf-src="/web/image/op.course/#{cp.id}/image" class="img-responsive MB5" />
+																<span class="text-den">
+																	<t t-esc="cp.name"/>
+																</span>
+																<span class="bt-chitiet">Chi tiết &gt;&gt;</span>
+									  						</a>
+								  						</div>
+						  							</t>
+						  						</t>
+				      	  					</div>
+				      	  				</div>
+				      	  				
+				    					<div class="item">
+		        							<div class="row">
+						  						<t t-set="k" t-value="0"/>
+				      	  						<t t-foreach="course_porpular" t-as="cp">
+				      	  							<t t-set="i" t-value="k+1"/>
+						  							<t t-if="k &lt;= 6 and k &gt;= 3">
+						  								<div class="col-md-4 text-center">
+									  						<a class="box3" t-attf-href="/course-detail/#{slug(cp)}">
+									  							<img t-if="not cp.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive MB5" />
+			                                					<img t-if="cp.image" t-attf-src="/web/image/op.course/#{cp.id}/image" class="img-responsive MB5" />
+																<span class="text-den">
+																	<t t-esc="cp.name"/>
+																</span>
+																<span class="bt-chitiet">Chi tiết &gt;&gt;</span>
+									  						</a>
+								  						</div>
+						  							</t>
+						  						</t>
+			      	  						</div>
+			        					</div>
+
+				    					<div class="item">
+					  						<div class="row">
+						  						<t t-set="l" t-value="0"/>
+				      	  						<t t-foreach="course_porpular" t-as="cp">
+				      	  							<t t-set="i" t-value="l+1"/>
+						  							<t t-if="l &lt;= 9 and k &gt;= 6">
+						  								<div class="col-md-4 text-center">
+									  						<a class="box3" t-attf-href="/course-detail/#{slug(cp)}">
+									  							<img t-if="not cp.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive MB5" />
+			                                					<img t-if="cp.image" t-attf-src="/web/image/op.course/#{cp.id}/image" class="img-responsive MB5" />
+																<span class="text-den">
+																	<t t-esc="cp.name"/>
+																</span>
+																<span class="bt-chitiet">Chi tiết &gt;&gt;</span>
+									  						</a>
+								  						</div>
+						  							</t>
+						  						</t>
+			      	  						</div>
+			        					</div>
+			    					</div>
+
+				  					<a class="left carousel-control" href="#carousel1" role="button" data-slide="prev">
+				  						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				  						<span class="sr-only">Previous</span>
+				  					</a>
+				  					<a class="right carousel-control" href="#carousel1" role="button" data-slide="next">
+				  						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				  						<span class="sr-only">Next</span>
+				  					</a>
+				  				</div>
+	          				</div>
+
+	          				<div class="box-bor">
+		  	    				<h3 class="text-xanh1">
+		  	    					<a href="">Khóa học trực tuyến</a>
+		  	    				</h3>
+		  	    				<t t-foreach="online_paid_courses" t-as="online_paid_course">
+			  	    				<div class="MB20">
+			  	    					<img t-if="not online_paid_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+	                                	<img t-if="online_paid_course.image" t-attf-src="/web/image/op.course/#{online_paid_course.id}/image" class="img-responsive" />
+
+										<h4 class="MB5">
+											<a t-attf-href="/course-detail/#{slug(online_paid_course)}"
+												t-esc="online_paid_course.name"/>
+										</h4>
+										<p class="text-a">
+											Giáo viên:
+											<t t-foreach="online_paid_course.faculty_ids"
+	                                               t-as="faculty">
+	                                        	<span t-raw="faculty.name"/>
+	                                        </t>
+	                                    </p>
+										<p class="text-a" t-raw="online_paid_course.short_description"></p>
+										<p class="text-muted MB0">
+											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
+											<span class="MR10 text-danger">
+												<!-- <t t-esc="online_paid_course.price"/> -->
+											</span>
+											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
+											<span class="MR10 text-primary">
+												<t t-esc="len(online_paid_course.course_enrollment_ids)"/>
+											</span>
+											<i class="MR5 fa fa-star-half-o" aria-hidden="true"></i>
+											<span class="text-vang">
+												<t t-esc="online_paid_course.rating_last_value"/>
+											</span>
+										</p>
+			  	    				</div>
+			  	    			</t>
+	          				</div>
+	          			</t>
+      				</aside>
+
+      				<aside class="col-md-3">
+      	 				<div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="">Tin tức</a>
+      	 					</h3>
+
+      	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
+      	 				</div>
+      				</aside>
+    			</section>
+    			<div class="forum-post-list" style="display: none;">
+    				<t t-foreach="forum_posts" t-as="post">
+    					<div class="post-name">
+    						<t t-esc="post.id"/> - <t t-esc="post.name"/>
+    					</div>
+    				</t>
+    			</div>
+    			<div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog modal-lg" role="document">
+				  		<form id="questionForm" method="POST" action="/ask">
+					    	<div class="modal-content">
+						      	<div class="modal-header" style="height: 57px;">
+						        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+						        	<h4 class="modal-title">
+						        		<div class="fake_reason">
+											<span>
+												<span>
+													<span class="photo_tooltip">
+														<a href="#">
+															<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
+														</a>
+													</span>
+												</span>
+												<span>
+													<span>
+														<a class="user-question" href="#">
+															<t t-esc="user_id.name"/>
+														</a>
+													</span>
+												</span>
+											</span>
+										</div>
+						        	</h4>
+						      	</div>
+					      		<div class="modal-body">
+				      				<div class="row">
+				      					<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+				      					<div class="col-md-12">
+							      			<div class="form-group cspan">
+												<label class="control-label">Tiêu đề</label><br/>
+												<input type="name" class="form-control" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
+											</div>
+											<div class="form-group">
+											    <label for="exampleFormControlTextareal">Nội dung</label>
+											    <textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+											  </div>
+					      				</div>
+						      		</div>
+						      	</div>
+						      	<div class="modal-footer">
+						        	<button type="submit" class="btn btn-primary" form="questionForm">Đặt câu hỏi</button>
+						        	<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+						      	</div>
+					    	</div>
+					    </form>
+				  	</div>
+				</div>
+				<script>
+					$(document).ready(function(){
+						
+						var datapost = [];
+
+						$('.forum-post-list .post-name').each(function(){
+                            datapost.push(this.innerText.trim());
+                        });
+				      	
+				      	var questions = new Bloodhound({
+				      		datumTokenizer: Bloodhound.tokenizers.whitespace,
+    						queryTokenizer: Bloodhound.tokenizers.whitespace,
+    						local: datapost
+    					});
+
+    					questions.initialize();
+
+				      	$('.name-question').typeahead({
+				        	hint: false,
+				        	highlight: true,
+				        	minLength: 1
+				      	},
+				      	{
+				        	source: questions,
+				        	templates: {
+				        		empty: '<a href="#" class="jsabutton" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
+					            suggestion: function(el){
+					            	var id = el.split("-")[0]
+					            	var html = '<div class="tt-suggestion tt-selectable">'
+					            	html += '<a href="/forum/2/question/'+ id +'">' + el +'</a>'
+					            	html += '</div>'
+					            	return html
+					            }
+					        }
+				      	});
+				    });
+    			</script>
+			</t>
+		</template>
+
+		<template id="stem_profile" name="STEM Home">
+			<t t-call="website.layout">
+				<section class="row">
+  	  				<aside class="col-md-2">
+  	  					<div class="list-group" id="menu">
+		  					<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
+		  						<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
+		  						<t t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
+		  					</a>
+		  					<a href="/home/my-blogs" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-file-text-o text-primary" aria-hidden="true"></i>
+		  						Bảng tin<span class="badge bg-pink"><t t-esc="len(posts)"/></span>
+		  					</a>
+		  					<a href="/home/my-mes" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-commenting-o text-danger" aria-hidden="true"></i>
+		  						Tin nhắn<span class="badge bg-pink"><t t-esc="len(my_channels)"/></span>
+		  					</a>
+		  					<a href="/courses" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học<span class="badge bg-pink"><t t-esc="len(online_free_courses)"/></span>
+		  					</a>
+		  					<!-- <a href="/event" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
+		  						Sự kiện<span class="badge bg-pink">14</span>
+		  					</a> -->
+		  					<a class="list-group-item list-group-item1" href="/home/my-courses">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học của tôi<span class="badge bg-pink"><t t-esc="len(my_courses)"/></span>
+		  					</a>
+
+		  					<t t-if="parent">
+		  						<a href="#children-list" data-toggle="collapse" class="list-group-item list-group-item1">
+			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						Phụ huynh quản lý
+			  					</a>
+
+			  					<div class="list-group list-group-child collapse" id="children-list">
+			  						<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#parentModal">
+				  						<i class="MR5 fa fa-user-plus text-info" aria-hidden="true"></i>
+				  						Thêm
+				  					</a>
+
+			  						<t t-foreach="parent.student_ids" t-as="child">
+							    		<a t-att-href="'/home/my-child/' + str(child.id)" class="list-group-item list-group-item1" t-esc="child.name" />
+							    	</t>
+							    </div>
+		  					</t>
+		  					<t t-if="not parent">
+			  					<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#parentModal">
+			  						<i class="MR10 fa fa-user-plus text-info" aria-hidden="true"></i>
+			  						Đăng ký phụ huynh
+			  					</a>
+		  					</t>
+		  					<t t-if="user_id.partner_id.employee == True">
+								<a class="list-group-item list-group-item1" href="/home/my-courses-teach">
+									<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+									Danh sách lớp đào tạo<span class="badge bg-pink"></span>
+								</a>
+							</t>
+							<t t-if="user_id.partner_id.employee == False">
+			  					<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#teacherModal">
+			  						<i class="MR10 fa fa-user-plus text-warning" aria-hidden="true"></i>
+			  						Đăng ký giáo viên
+			  					</a>
+			  				</t>
+						</div>
+  	  				</aside>
+
+  	  				<aside class="col-md-7">
+  	  					<t t-raw="0">
+  	  						<div class="box-bor MB20">
+  	  							<div>
+  	  								<div>
+  	  									<div>
+  	  										<div class="addQuestionPrompt">
+  	  											<div class="fake_reason">
+  	  												<span>
+  	  													<span>
+  	  														<span class="photo_tooltip">
+  	  															<a href="/home">
+  	  																<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
+  	  															</a>
+  	  														</span>
+  	  													</span>
+  	  													<span>
+  	  														<span>
+  	  															<a class="user-question" href="/home">
+  	  																<t t-esc="user_id.name"/>
+  	  															</a>
+  	  														</span>
+  	  													</span>
+  	  												</span>
+  	  											</div>
+  	  											<div class="form-group">
+  	  												<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+  	  												<span class="input-question-btn-search">
+								                        <button type="button" class="btn btn-search-question" disabled="disabled">
+								                            <i class="fa fa-search"></i>
+								                        </button>
+								                    </span>
+  	  											</div>
+  	  										</div>
+  	  									</div>
+  	  								</div>
+  	  							</div>
+  	  						</div>
+  	  						<!-- my courses -->
+  	  						<div class="box-bor MB20">
+			  	    			<h3 class="text-xanh1">
+			  	    				<a href="#">Khóa học của tôi</a>
+			  	    			</h3>
+
+			    				<t t-if="not my_courses">
+			    					<div class="MB20">
+				                		<p>Bạn chưa đăng ký khóa học.</p>
+					            	</div>
+					            </t>
+					            <t t-if="my_courses">
+					            	<t t-foreach="my_courses" t-as="course">
+					            		<div class="MB20">
+				  	    					<img t-if="not course['course'].image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+			                            	<img t-if="course['course'].image" t-attf-src="/web/image/op.course/#{course['course'].id}/image" class="img-responsive" />
+
+											<h4 class="MB5">
+												<a t-attf-href="/course-detail/#{slug(course['course'])}"
+													t-esc="course['course'].name"/>
+											</h4>
+											<p class="text-a">
+												Giáo viên:
+												<t t-foreach="course['course'].faculty_ids"
+			                                           t-as="faculty">
+			                                    	<span t-raw="faculty.name"/>
+			                                    </t>
+			                                </p>
+											<p class="text-a" t-raw="course['course'].short_description"></p>
+											<p class="text-muted MB0">
+												<i class="MR5 fa fa-tasks" aria-hidden="true"></i>
+												<span class="MR10 text-danger">
+													Tiến độ: 
+													<t t-raw="course['completed_percentage']"/>
+					                            	%
+												</span>
+												<a t-attf-href="/course/#{slug(course['course'])}" class="btn btn-primary btn-sm">
+													<i class="fa fa-long-arrow-right"></i>
+													Bắt đầu học
+												</a>
+											</p>
+				  	    				</div>
+				  	    			</t>
+					            </t>
+			  	    		</div>
+				            <!-- my courses -->
+
+			  				<div class="box-bor MB20">
+			  	    			<h3 class="text-xanh1">
+			  	    				<a href="#">Khóa học trực tuyến Miễn phí</a>
+			  	    			</h3>
+
+			  	    			<t t-foreach="online_free_courses" t-as="online_free_course">
+			  	    				<div class="MB20">
+			  	    					<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+	                                	<img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
+
+										<h4 class="MB5">
+											<a t-attf-href="/course-detail/#{slug(online_free_course)}"
+												t-esc="online_free_course.name"/>
+										</h4>
+										<p class="text-a">
+											Giáo viên:
+											<t t-foreach="online_free_course.faculty_ids"
+	                                               t-as="faculty">
+	                                        	<span t-raw="faculty.name"/>
+	                                        </t>
+	                                    </p>
+										<p class="text-a" t-raw="online_free_course.short_description"></p>
+										<p class="text-muted MB0">
+											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
+											<span class="MR10 text-danger">FREE</span>
+											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
+											<span class="MR10 text-primary">
+												<t t-esc="len(online_free_course.course_enrollment_ids)"/>
+											</span>
+											<i class="MR5 fa fa-star-half-o" aria-hidden="true"></i>
+											<span class="text-vang">
+												<t t-esc="online_free_course.rating_last_value"/>
+											</span>
+										</p>
+			  	    				</div>
+			  	    			</t>
+	          				</div>
+
+	        				<div class="box-bor MB20">
+		  	    				<h3 class="text-xanh1">
+		  	    					<a href="#">Khóa học được quan tâm nhiều nhất</a>
+		  	    				</h3>
+			  					<div id="carousel1" class="carousel slide" data-ride="carousel">
+				  					<div class="carousel-inner" role="listbox">
+				  						<div class="item active">
+				      	  					<div class="row">
+				      	  						<t t-set="i" t-value="0"/>
+				      	  						<t t-foreach="course_porpular" t-as="cp">
+				      	  							<t t-set="i" t-value="i+1"/>
+						  							<t t-if="i &lt;= 3">
+						  								<div class="col-md-4 text-center">
+									  						<a class="box3" t-attf-href="/course-detail/#{slug(cp)}">
+									  							<img t-if="not cp.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive MB5" />
+			                                					<img t-if="cp.image" t-attf-src="/web/image/op.course/#{cp.id}/image" class="img-responsive MB5" />
+																<span class="text-den">
+																	<t t-esc="cp.name"/>
+																</span>
+																<span class="bt-chitiet">Chi tiết &gt;&gt;</span>
+									  						</a>
+								  						</div>
+						  							</t>
+						  						</t>
+				      	  					</div>
+				      	  				</div>
+				      	  				
+				    					<div class="item">
+		        							<div class="row">
+						  						<t t-set="k" t-value="0"/>
+				      	  						<t t-foreach="course_porpular" t-as="cp">
+				      	  							<t t-set="i" t-value="k+1"/>
+						  							<t t-if="k &lt;= 6 and k &gt;= 3">
+						  								<div class="col-md-4 text-center">
+									  						<a class="box3" t-attf-href="/course-detail/#{slug(cp)}">
+									  							<img t-if="not cp.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive MB5" />
+			                                					<img t-if="cp.image" t-attf-src="/web/image/op.course/#{cp.id}/image" class="img-responsive MB5" />
+																<span class="text-den">
+																	<t t-esc="cp.name"/>
+																</span>
+																<span class="bt-chitiet">Chi tiết &gt;&gt;</span>
+									  						</a>
+								  						</div>
+						  							</t>
+						  						</t>
+			      	  						</div>
+			        					</div>
+
+				    					<div class="item">
+					  						<div class="row">
+						  						<t t-set="l" t-value="0"/>
+				      	  						<t t-foreach="course_porpular" t-as="cp">
+				      	  							<t t-set="i" t-value="l+1"/>
+						  							<t t-if="l &lt;= 9 and k &gt;= 6">
+						  								<div class="col-md-4 text-center">
+									  						<a class="box3" t-attf-href="/course-detail/#{slug(cp)}">
+									  							<img t-if="not cp.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive MB5" />
+			                                					<img t-if="cp.image" t-attf-src="/web/image/op.course/#{cp.id}/image" class="img-responsive MB5" />
+																<span class="text-den">
+																	<t t-esc="cp.name"/>
+																</span>
+																<span class="bt-chitiet">Chi tiết &gt;&gt;</span>
+									  						</a>
+								  						</div>
+						  							</t>
+						  						</t>
+			      	  						</div>
+			        					</div>
+			    					</div>
+
+				  					<a class="left carousel-control" href="#carousel1" role="button" data-slide="prev">
+				  						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				  						<span class="sr-only">Previous</span>
+				  					</a>
+				  					<a class="right carousel-control" href="#carousel1" role="button" data-slide="next">
+				  						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				  						<span class="sr-only">Next</span>
+				  					</a>
+				  				</div>
+	          				</div>
+
+
+	          				<div class="box-bor">
+		  	    				<h3 class="text-xanh1">
+		  	    					<a href="">Khóa học trực tuyến</a>
+		  	    				</h3>
+		  	    				<t t-foreach="online_paid_courses" t-as="online_paid_course">
+			  	    				<div class="MB20">
+			  	    					<img t-if="not online_paid_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+	                                	<img t-if="online_paid_course.image" t-attf-src="/web/image/op.course/#{online_paid_course.id}/image" class="img-responsive" />
+
+										<h4 class="MB5">
+											<a t-attf-href="/course-detail/#{slug(online_paid_course)}"
+												t-esc="online_paid_course.name"/>
+										</h4>
+										<p class="text-a">
+											Giáo viên:
+											<t t-foreach="online_paid_course.faculty_ids"
+	                                               t-as="faculty">
+	                                        	<span t-raw="faculty.name"/>
+	                                        </t>
+	                                    </p>
+										<p class="text-a" t-raw="online_paid_course.short_description"></p>
+										<p class="text-muted MB0">
+											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
+											<span class="MR10 text-danger">
+												<!-- <t t-esc="online_paid_course.price"/> -->
+											</span>
+											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
+											<span class="MR10 text-primary">
+												<t t-esc="len(online_paid_course.course_enrollment_ids)"/>
+											</span>
+											<i class="MR5 fa fa-star-half-o" aria-hidden="true"></i>
+											<span class="text-vang">
+												<t t-esc="online_paid_course.rating_last_value"/>
+											</span>
+										</p>
+			  	    				</div>
+			  	    			</t>
+	          				</div>
+	          			</t>
+      				</aside>
+
+      				<aside class="col-md-3">
+      	 				<div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="">Tin tức</a>
+      	 					</h3>
+
+      	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
+      	 				</div>
+      				</aside>
+    			</section>
+    			<div class="forum-post-list" style="display: none;">
+    				<t t-foreach="forum_posts" t-as="post">
+    					<div class="post-name">
+    						<t t-esc="post.id"/> - <t t-esc="post.name"/>
+    					</div>
+    				</t>
+    			</div>
+    			<div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog modal-lg" role="document">
+				  		<form id="questionForm" method="POST" action="/ask">
+					    	<div class="modal-content">
+						      	<div class="modal-header" style="height: 57px;">
+						        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+						        	<h4 class="modal-title">
+						        		<div class="fake_reason">
+											<span>
+												<span>
+													<span class="photo_tooltip">
+														<a href="#">
+															<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
+														</a>
+													</span>
+												</span>
+												<span>
+													<span>
+														<a class="user-question" href="#">
+															<t t-esc="user_id.name"/>
+														</a>
+													</span>
+												</span>
+											</span>
+										</div>
+						        	</h4>
+						      	</div>
+					      		<div class="modal-body">
+				      				<div class="row">
+				      					<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+				      					<div class="col-md-12">
+							      			<div class="form-group cspan">
+												<label class="control-label">Tiêu đề</label><br/>
+												<input type="name" class="form-control" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
+											</div>
+											<div class="form-group">
+											    <label for="exampleFormControlTextareal">Nội dung</label>
+											    <textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+											  </div>
+					      				</div>
+						      		</div>
+						      	</div>
+						      	<div class="modal-footer">
+						        	<button type="submit" class="btn btn-primary" form="questionForm">Đặt câu hỏi</button>
+						        	<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+						      	</div>
+					    	</div>
+					    </form>
+				  	</div>
+				</div>
+				<script>
+					$(document).ready(function(){
+						
+						var datapost = [];
+
+						$('.forum-post-list .post-name').each(function(){
+                            datapost.push(this.innerText.trim());
+                        });
+				      	
+				      	var questions = new Bloodhound({
+				      		datumTokenizer: Bloodhound.tokenizers.whitespace,
+    						queryTokenizer: Bloodhound.tokenizers.whitespace,
+    						local: datapost
+    					});
+
+    					questions.initialize();
+
+				      	$('.name-question').typeahead({
+				        	hint: false,
+				        	highlight: true,
+				        	minLength: 1
+				      	},
+				      	{
+				        	source: questions,
+				        	templates: {
+				        		empty: '<a href="#" class="jsabutton" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
+					            suggestion: function(el){
+					            	var id = el.split("-")[0]
+					            	var html = '<div class="tt-suggestion tt-selectable">'
+					            	html += '<a href="/forum/2/question/'+ id +'">' + el +'</a>'
+					            	html += '</div>'
+					            	return html
+					            }
+					        }
+				      	});
+				    });
+    			</script>
+
+    			<div class="modal fade" id="parentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog modal-lg" role="document">
+				    	<div class="modal-content">
+					      	<div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+					        	<h4 class="modal-title">Con của bạn</h4>
+					      	</div>
+				      		<div class="modal-body">
+				      			<form id="parentForm" method="POST" action="/register/parent">
+				      				<div class="row">
+				      					<input type="hidden" name="student_ids"/>
+				      					<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+				      					<div class="col-md-12">
+							      			<table class="table table-hover table-stripped">
+							      				<thead>
+							      					<tr>
+														<th>Email</th>
+														<th>Tên</th>
+														<th class="action"></th>
+							      					</tr>
+							      				</thead>
+							      				<tbody>
+							      					<tr>
+							      						<td colspan="3">
+							      							<a href="#" data-toggle="modal" data-target="#studentModal">Thêm...</a>
+							      						</td>
+							      					</tr>
+							      				</tbody>
+							      			</table>
+					      				</div>
+						      		</div>
+				      			</form>
+					      	</div>
+					      	<div class="modal-footer">
+					        	<button type="submit" class="btn btn-primary" form="parentForm" onclick="submitParent()">Submit</button>
+					        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					      	</div>
+				    	</div>
+				  	</div>
+				</div>
+
+				<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog" role="document">
+				    	<div class="modal-content">
+					      	<div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+					        	<h4 class="modal-title">Học sinh</h4>
+					      	</div>
+				      		<div class="modal-body">
+				      			<div class="row">
+				      				<div class="col-md-12">
+						      			<table class="table table-hover table-stripped" style="width: 100%">
+						      				<thead>
+						      					<tr>
+						      						<th class="action"></th>
+						      						<th>Email</th>
+													<th>Tên</th>				      						
+						      					</tr>
+						      				</thead>
+						      			</table>
+						      		</div>
+						      	</div>
+					      	</div>
+					      	<div class="modal-footer">
+					        	<button type="button" class="btn btn-primary" onclick="selectChildren()">Select</button>
+					        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					      	</div>
+				    	</div>
+				  	</div>
+				</div>
+				<form action="/home/register_teacher" method="POST">
+					<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+					<div class="modal fade" id="teacherModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+						<div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						    	<div class="modal-header">
+						        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+						        	<h4 class="modal-title" id="exampleModalLabel">Đăng ký giáo viên</h4>
+						      	</div>
+
+						      	<div class="modal-body" t-if="website.user_id != user_id">
+						          	<div class="form-group">
+						            	<div class="oe_title">
+											<table>
+												<tbody>
+													<tr>
+														<td style="padding-right:10px">
+															<input name="name" required="required" class="form-control" placeholder="Tên" type="text" t-att-value="user_id.name"/>
+														</td>
+														<td  style="padding-right:10px">
+															<input name="middle_name" class="form-control" maxlength="128" placeholder="Tên đệm" type="text"/>
+														</td>
+														<td style="padding-right:10px">
+															<input name="last_name"  required="required" class="form-control" maxlength="128" placeholder="Họ" type="text"/>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+						          	</div>
+						          	<table class="o_group o_inner_group">
+										<tbody>
+											<tr>
+												<td colspan="1" class="o_td_label">
+													<label for="o_field_input_2" class="o_form_label o_form_invalid">Giới tính</label>
+												</td>
+												<td colspan="1" style="width: 33.3333%;">
+													<select class="form-control" required="required" id="o_field_input_2" name="gender">
+														<option value=""></option>
+														<option t-att-selected="user_id.gender == 'male'" value="male">Nam</option>
+														<option t-att-selected="user_id.gender == 'female'" value="female">Nữ</option>
+													</select>
+												</td>
+												<td colspan="1" class="o_td_label">
+													<label for="o_field_input_4" class="o_form_label">Số điện thoại</label>
+												</td>
+												<td colspan="1" style="width: 33.3333%;">
+													<input name="phone" class="form-control" id="o_field_input_4" type="text"/>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="1" class="o_td_label">
+													<label for="o_field_input_5" class="o_form_label">Email</label>
+												</td>
+												<td colspan="1" style="width: 20%;">
+													<input name="email"  class="form-control" id="o_field_input_5" type="text" t-att-value="user_id.login"/>
+												</td>
+												<td colspan="1" class="o_td_label">
+													<label for="o_field_input_10" class="o_form_label">Ngày sinh</label>
+												</td>
+												<td colspan="1" style="width: 50%;">
+													<input data-toggle="datepicker" class="form-control" type="text" required="required" name="birth_date"/>
+    											</td>
+											</tr>
+										</tbody>
+									</table>
+						      	</div>
+						      	<div class="modal-footer">
+				        			<button type="button" class="btn-register-teacher btn btn-default" data-dismiss="modal">Đóng</button>
+				        			<button type="submit" class="btn btn-primary">Đăng ký</button>
+				      			</div>
+						    </div>
+						</div>
+						<script type="text/javascript">
+							$('[data-toggle="datepicker"]').datepicker({
+							  	format: 'dd/mm/yyyy',
+							  	autoPick: true,
+							  	months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+							  	days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+							});
+
+							$('.btn-register-teacher').on('click', function(){
+
+								if($("input[name='name']").val() == ''){
+									$("input[name='name']").css('border', '1px solid red')
+								}
+								if($("input[name='last_name']").val() == ''){
+									$("input[name='last_name']").css('border', '1px solid red')
+								}
+								if($("select[name='gender']").val() == ''){
+									$("select[name='gender']").css('border', '1px solid red')
+								}
+								if($("input[name='email']").val() == ''){
+									$("input[name='email']").css('border', '1px solid red')
+								}	
+								if($("input[name='birth_date']").val() == ''){
+									$("input[name='birth_date']").css('border', '1px solid red')
+								}
+							});
+						</script>
+					</div>
+				</form>
+			</t>
+		</template>
+	</data>
+</odoo>

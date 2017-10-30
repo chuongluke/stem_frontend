@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_my_mes" name="STEM My Mes">
+			<t t-call="stem_frontend_theme.stem_profile">
+				<div class="box-bor MB20">
+ 					<h3 class="text-xanh1">
+ 						<a href="">Tin nhắn</a>
+ 					</h3>
+ 					<t t-foreach="my_channels" t-as="c">
+						<div class="MB20">
+							<div class="row channel-row" t-att-data-channel-id="c.id">
+								
+								<div class="col-md-1 col-xs-1">
+                                    <t t-if="'private' in c['public'] and len(c['channel_partner_ids']) == 2"> 
+                                    	<!-- direct message -->
+                                    	<t t-set="pid" t-value="0"/>
+                                    	
+										<t t-foreach="c.channel_partner_ids" t-as="cp">
+											<t t-if="cp != partner_id">
+                                        		<t t-set="pid" t-value="cp.id"/>
+                                        		
+                                			</t>
+                                    	</t>
+                                    	<img t-att-src="'/web/image/res.partner/%s/image_small' % (pid)" class="img-circle MR5"  width="50"/>
+                                    </t>
+                                    <t t-else="">
+                                    	<!-- channel -->
+                                    	<img t-att-src="'/web/image?model=mail.channel&amp;field=image_medium&amp;id=%s' % (c.message_channel_ids[0].id)" class="img-circle MR5"  width="50"/>
+                                    </t>
+								</div>
+								<div class="col-md-11 col-xs-11">
+									<div class="col-md-12 col-xs-12">
+										<a t-attf-href="/home/get_messages_by_channel?channel_id=#{c.id}">
+											<t t-if="'private' in c['public'] and len(c['channel_partner_ids']) == 2"> 
+	                                    	<!-- direct message -->
+	                                    		<t t-set="pid" t-value="0"/>
+	                                    		<t t-set="pname" t-value="0"/>
+												<t t-foreach="c.channel_partner_ids" t-as="cp">
+													<t t-if="cp != partner_id">
+		                                        		<t t-set="pid" t-value="cp.id"/>
+		                                        		<t t-set="pname" t-value="cp.name"/>
+		                                			</t>
+		                                    	</t>
+	                                    		PM : <t t-esc="pname"/>
+		                                    </t>
+		                                    <t t-else="">
+		                                    	<!-- channel -->
+		                                    	Channel : <t t-esc="c.name"/>
+		                                    </t>
+		                                </a>
+									</div>
+									<div class="col-md-12 col-xs-12">
+										<t t-if="len(c['message_ids']) > 0"> 
+                                    		 <t t-esc="c.message_ids[0].author_id.name"/>: <t t-raw="c.message_ids[0].body"/> 
+	                                    </t>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+ 					</t>
+  	    		</div>
+			</t>
+		</template>
+	</data>
+</odoo>

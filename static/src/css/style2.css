@@ -1,0 +1,168 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	font-family: 'Roboto Condensed', sans-serif !important;
+	font-size: 15px;
+	background: #fff !important;
+}
+.navbar-stem{
+	background: #1fa67a;
+	border-radius: 0;
+}
+.bt-dangnhap{
+	background: #198a66;
+	color: #fff;
+	border-radius: 4px;
+	padding: 10px 24px !important;
+	margin-top: 5px;
+	text-transform: uppercase;
+}
+.MR10{margin-right: 10px;}
+.bt-menu{
+	border-radius: 4px;
+	padding: 10px !important;
+	margin-top: 5px;
+	text-transform: uppercase;
+	background: #198a66;
+	color: #fff;
+}
+.text-slogan{
+	text-align: center;
+	color: #1fa67a;
+	margin-top: 0;
+}
+.box1{
+	position: relative;
+	width: 100%;
+	height: 315px;
+}
+.img-mh{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	z-index: 2;
+}
+.box-timkiem{
+	position: absolute;
+	left: 255px;
+	right: 0;
+	top: 0;
+	
+}
+.box2{
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+	padding: 10px;
+	float: left;
+	border: solid 1px #1fa67a;
+	height: 300px;
+	max-width: 402px;
+	background: #fff;
+}
+.border-RT{border-top-right-radius: 6px;}
+.border-RB{border-bottom-right-radius: 6px;}
+.border-B{border-bottom: solid 3px #fff;}
+.boxTK{padding: 10px;margin-left: 405px;height: 100px;}
+.form-TK{border: solid 1px #1fa67a;box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.075);}
+.addon-TK{border: solid 1px #1fa67a;background: #1fa67a;color: #fff;}
+.MB20{margin-bottom: 20px;}
+.MB40{margin-bottom: 40px;}
+.text-trang{color: #fff;}
+.bt-google, .bt-FB{
+	border-radius: 4px;
+	padding: 8px;
+	color: #fff;
+	font-size: 14px;
+	display: inline-block;
+}
+.bt-google:hover, .bt-FB:hover{color: #fff;text-decoration: none;}
+.bt-google{background: #c53720;}
+.bt-FB{background: #034ea2;}
+.fa-G, .fa-F{border-radius: 20px;background: #fff;width: 26px;height: 26px;padding: 6px;margin-right: 7px;text-align: center;}
+.fa-G{color: #c53720;}
+.fa-F{color: #034ea2;}
+.text-tle{color: #1fa67a;}
+.boR{border-right: solid 1px #ccc;}
+.text-small{font-size: 12px;margin-top: 30px;text-align: justify;color: #6f6f6f;margin-bottom: 20px;}
+.text-ngay{font-size: 12px;color: #6f6f6f;}
+.bt-taoTK{border-radius: 4px;color: #fff;background: #1fa67a;font-size: 22px;padding: 6px 12px;}
+.bt-taoTK:hover{background: #198a66;color: #fff;text-decoration: none;}
+.text-tle1{font-weight: 300;margin-bottom: 0;}
+.font-B{font-weight: 700;font-size: 22px;}
+.MB5{margin-bottom: 5px;}
+.box-tin{
+	border: solid 1px #ccc;
+	padding: 15px;
+	min-height: 260px;
+}
+.ul-tin{
+	list-style: none;
+	padding-left: 0;
+	margin-bottom: 0;
+}
+.ul-tin li{
+	padding: 5px 0;
+	background: url(../images/li.png) no-repeat left 13px;
+	padding-left: 15px;
+}
+.ul-tin li a{color: #292929;}
+.ul-tin li a:hover{text-decoration: none;}
+.text-xanh{border-bottom: solid 1px #ccc;padding-bottom: 5px;font-weight: 700;margin-top: 0;}
+.text-xanh a{color: #1fa67a;}
+.ML10{margin-left: 10px;}
+.bg-xanh{background: #1fa67a;}
+.padTB15{padding-top: 15px;}
+.link-F{
+	border-radius: 20px;
+	background: #b0ddce;
+	width: 30px;
+	height: 30px;
+	padding: 6px;
+	text-align: center;
+	color: #1fa67a;
+	line-height: 22px;
+}
+.text-xanhnhat{color: #b0ddce;}
+.MR5{margin-right: 5px;}
+.text-xanhnhat li{padding-left: 20px;padding-right: 20px;}
+.ul-footer li{border-right: solid 1px #b0ddce;padding-left: 20px;padding-right: 20px;}
+.ul-footer li a{color: #fff;text-transform: uppercase;}
+.boL1{border-left: solid 1px #b0ddce;}
+.MT20{margin-top: 20px;}
+.navbar-brand1{padding:0;padding-top: 3px}
+.navbar-toggle{border: solid 1px #198a66;}
+.navbar-toggle .icon-bar{background: #198a66;}
+.navbar-nav li a{margin-left: 5px;margin-right: 5px;}
+@media screen and (max-width: 1200px) {
+	.box-timkiem{left: 0;}
+	.box2{width: 75%;}
+	.boxTK{margin-left: 4px;}
+	
+	
+}
+@media screen and (max-width: 767px) {
+	.text-center767{text-align: center;}
+	.boL1{border-left: none;}
+	.dropdown-menu1 li a{background: #fff !important;}
+	
+	
+}
+.dropdown-menu1 li a{
+	padding: 8px;
+}
+.fa-2x1{font-size: 22px;}
+.text-primary{color: #337ab7;}
+.text-success{color: #00B926;}
+.text-danger{color: #E00003;}
+.text-warning{color: #FF7E00;}
+.text-info{color: #00B2DF;}
+.bg-vang{background: #ffb400;}
+#wrapwrap > * {
+    display: block;
+}
+#wrapwrap > main {
+    height: initial;
+}
+.addon-TK:hover {
+	background-color: #1fa67a;
+};

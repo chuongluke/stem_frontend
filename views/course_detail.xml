@@ -1,0 +1,410 @@
+<?xml version="1.0" ?>
+<odoo>
+    <template id="openeducat_lms.course_detail">
+        <t t-call="website.layout">
+            <ol class="breadcrumb bg-trang MB0 MT-20">
+                <li><a href="/">Trang chủ</a></li>
+                <li class="active"><a href="/courses">Khóa học</a></li>
+            </ol>
+
+            <section class="row">
+                <aside class="col-md-9">
+                    <p class="alert alert-success" t-if="message">
+                        <t t-esc="message"/>
+                    </p>
+                    <div class="box-bor">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <img t-if="not course.image" 
+                                    t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" 
+                                    class="img-responsive"/>
+                                <img t-if="course.image" 
+                                    t-attf-src="/web/image/op.course/#{course.id}/image" 
+                                    class="img-responsive"/>
+                            </div>
+
+                            <div class="col-md-7">
+                                <h3 class="MB5 MT0" t-esc="course.name"></h3>
+                                <p class="text-a">
+                                    Giáo viên:
+                                    <t t-foreach="course.faculty_ids" t-as="faculty">
+                                        <span t-raw="faculty.name"/>,
+                                    </t>
+                                </p>
+
+                                <!-- <div class="row">
+                                    <p class="col-md-3">Giá</p>
+
+                                    <p class="col-md-9">
+                                        <t t-if="course.type == 'free'">
+                                            <b class="text-danger">FREE</b>
+                                        </t>
+
+                                        <t t-if="course.type == 'paid'">
+                                            <span class="giacu" t-esc="course.product_id.website_price * 2" 
+                                                t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+
+                                            <b class="text-danger" t-esc="course.product_id.website_price * 2" 
+                                                t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                        </t>
+                                    </p>
+                                </div> -->
+
+                                <div class="row">
+                                    <p class="col-md-3">Bao gồm</p>
+
+                                    <p class="col-md-9">
+                                        100h video<br/>
+                                        35 bộ tài liệu<br/>
+                                        50 bài giảng<br/>
+                                        Giảm 50% học cụ
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p class="col-md-3">Mã giảm giá</p>
+                                    <p class="col-md-9"><b>robot2017</b></p>
+                                </div>
+
+                                <div class="row">
+                                    <p class="col-md-9 col-md-offset-3">
+                                        <a class="btn btn-danger" 
+                                            t-attf-href="/course/enroll/#{slug(course)}" 
+                                            t-if="not enrolled">
+                                            <i class="MR5 fa fa-calendar-check-o" aria-hidden="true"></i>
+                                            Đăng ký
+                                        </a>
+
+                                        <a class="btn btn-danger" 
+                                            t-attf-href="/course/#{slug(course)}"
+                                            t-if="completed_percentage == 0 and enrolled">
+                                            <i class="MR5 fa fa-calendar-check-o" aria-hidden="true"></i>
+                                            Bắt đầu học
+                                        </a>
+
+                                        <a class="btn btn-danger" 
+                                            t-attf-href="/course/#{slug(course)}"
+                                            t-if="completed_percentage">
+                                            <i class="MR5 fa fa-calendar-check-o" aria-hidden="true"></i>
+                                            Tiếp tục học
+                                        </a>
+                                        <a class="btn btn-primary" 
+                                            t-attf-href="/course/register-course/#{slug(course)}"
+                                            t-if="user_id.partner_id.employee == True">
+                                            <i class="MR5 fa fa-user-plus" aria-hidden="true"></i>
+                                            Đăng ký giáo viên khóa học
+                                        </a>
+
+                                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#teacherModal" t-if="user_id.partner_id.employee == False">
+                                            <i class="MR5 fa fa-user-plus" aria-hidden="true"></i>
+                                            Đăng ký giáo viên
+                                        </a>
+                                    </p>
+                                </div>
+                    
+                            </div>
+                        </div>
+            
+                        <h3>Tổng quan</h3>
+                        <p t-raw="course.full_description"/>
+                        <hr/>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a class="btn btn-primary" href="/page/lich-khai-giang">
+                                    <i class="MR5 fa fa-calendar" aria-hidden="true"></i>
+                                    Lịch khai giảng
+                                </a>
+                                <a class="btn btn-danger" href="/page/contactus">
+                                    <i class="MR5 fa fa-calendar-check-o" aria-hidden="true"></i>
+                                    Đăng ký tư vấn
+                                </a>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="pull-right">
+                                    <a class="box-mang share_stem" data-share="facebook" t-attf-data-title="#{course.name}"><i class="fa fa-facebook text-muted" aria-hidden="true"></i></a>
+                                    <a class="box-mang share_stem" data-share="google" t-attf-data-title="#{course.name}"><i class="fa fa-google-plus text-muted" aria-hidden="true"></i></a>
+                                    <a class="box-mang share_stem" data-share="twitter" t-attf-data-title="#{course.name}"><i class="fa fa-twitter text-muted" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+
+                        <div role="tabpanel">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a href="#home1" data-toggle="tab" role="tab" aria-controls="tab1">Chương trình</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#paneTwo1" data-toggle="tab" role="tab" aria-controls="tab2">Giảng viên</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#course-comments" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Nhận xét</a>
+                                </li>
+                            </ul>
+
+                            <div id="tabContent1" class="tab-content padT15">
+                                <div role="tabpanel" class="tab-pane fade in active" id="home1">
+                                    <div class="panel-group"
+                                         id="accordion"
+                                         role="tablist"
+                                         aria-multiselectable="true">
+                                        <t t-foreach="sections"
+                                           t-as="section">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading"
+                                                     role="tab"
+                                                     id="headingOne">
+                                                    <h4 class="panel-title">
+                                                        <a role="button"
+                                                           data-toggle="collapse"
+                                                           data-parent="#accordion"
+                                                           t-attf-href="##{section.id}"
+                                                           aria-expanded="true"
+                                                           aria-controls="collapseOne"
+                                                           t-raw="section.name"
+                                                           class="collapsed"
+                                                           style="padding-left: 20px;"/>
+                                                        <span class="hidden-xs hidden-sm"
+                                                              style="float: right;"
+                                                              t-raw="section.display_time"/>
+                                                    </h4>
+                                                </div>
+                                                <div t-attf-id="#{section.id}"
+                                                     class="panel-collapse collapse"
+                                                     role="tabpanel"
+                                                     aria-labelledby="headingOne">
+                                                    <div class="panel-body">
+                                                        <table width="100%">
+                                                            <tbody>
+                                                                <t t-foreach="section.section_material_ids"
+                                                                   t-as="m"
+                                                                   t-if="m.material_id.website_published">
+                                                                    <tr class="mt8 mb8">
+                                                                        <td width="70%">
+                                                                            <i t-if="m.material_id.material_type == 'audio'"
+                                                                               class="fa fa-headphones"
+                                                                               aria-hidden="true"></i>
+                                                                            <i t-if="m.material_id.material_type == 'video'"
+                                                                               class="fa fa-play-circle-o "
+                                                                               aria-hidden="true"></i>
+                                                                            <i t-if="m.material_id.material_type == 'document'"
+                                                                               class="fa fa-file-pdf-o"
+                                                                               aria-hidden="true"></i>
+                                                                            <i t-if="m.material_id.material_type == 'infographic'"
+                                                                               class="fa fa-file-image-o"
+                                                                               aria-hidden="true"></i>
+                                                                            <i t-if="m.material_id.material_type == 'quiz'"
+                                                                               class="fa fa-question-circle"
+                                                                               aria-hidden="true"></i>
+                                                                            <span t-raw="m.material_id.name"/>
+                                                                        </td>
+                                                                        <td width="15%">
+                                                                            <a t-attf-href="##{slug(m.material_id)}"
+                                                                               data-toggle="modal"
+                                                                               t-if="m.preview and m.material_id.material_type != 'quiz'">
+                                                                                <i class="fa fa-eye"
+                                                                                   aria-hidden="true"></i>
+                                                                                <span class="hidden-xs hidden-sm">
+                                                                                    Preview
+                                                                                </span>
+                                                                            </a>
+                                                                        </td>
+                                                                        <td class="hidden-xs hidden-sm"
+                                                                            width="15%"
+                                                                            style="text-align: right; padding-right: 15px;">
+                                                                            <span t-raw="m.display_time"/>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <!-- Modal HTML -->
+                                                                    <div t-attf-if="#{m.preview}"
+                                                                         t-attf-id="#{slug(m.material_id)}"
+                                                                         class="modal fade in videoToggleOff"
+                                                                         role="dialog"
+                                                                         tabindex="-1">
+                                                                        <div class="modal-dialog modal-lg">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button type="button"
+                                                                                            class="close"
+                                                                                            data-dismiss="modal"
+                                                                                            aria-hidden="true">
+                                                                                        ×
+                                                                                    </button>
+                                                                                    <h4 class="modal-title">
+                                                                                        <h4 class="modal-title">
+                                                                                            <t t-raw="m.material_id.name"/>
+                                                                                        </h4>
+                                                                                    </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <span class="ifram-width"
+                                                                                          t-raw="m.material_id.embed_code"/>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </t>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="paneTwo1">
+                                    <div class="row">
+                                        <t t-foreach="course.faculty_ids"
+                                           t-as="faculty">
+                                            <div class="col-md-12 course_faculty_ids">
+                                                <div class="col-md-2">
+                                                    <img t-att-src="'data:image/png;base64,%s' % (faculty.image)"
+                                                         class="img img-responsive img-circle"/>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h3>
+                                                        <span t-raw="faculty.name"/>
+                                                    </h3>
+                                                    Email :
+                                                    <span t-raw="faculty.email"/>
+                                                    <br/>
+                                                    <br/>
+                                                    <span t-raw="faculty.bio_data"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="course-comments">
+                                   <t t-call="website_mail.message_thread">
+                                        <t t-set="object"
+                                           t-value="course"/>
+                                        <t t-set="chatter_mode"
+                                           t-value="'json'"/>
+                                        <t t-set="rating_enable"
+                                           t-value="True"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <aside class="col-md-3">
+                    <div class="box-bor">
+                        <h3 class="text-xanh1">
+                            <a href="">Tin tức</a>
+                        </h3>
+
+                        <div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
+                    </div>
+                </aside>
+            </section>
+            <form action="/home/register_teacher" method="POST">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="modal fade" id="teacherModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                <h4 class="modal-title" id="exampleModalLabel">Đăng ký giáo viên</h4>
+                            </div>
+
+                            <div class="modal-body" t-if="website.user_id != user_id">
+                                <div class="form-group">
+                                    <div class="oe_title">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding-right:10px">
+                                                        <input name="name" required="required" class="form-control" placeholder="Tên" type="text" t-att-value="user_id.name"/>
+                                                    </td>
+                                                    <td  style="padding-right:10px">
+                                                        <input name="middle_name" class="form-control" maxlength="128" placeholder="Tên đệm" type="text"/>
+                                                    </td>
+                                                    <td style="padding-right:10px">
+                                                        <input name="last_name"  required="required" class="form-control" maxlength="128" placeholder="Họ" type="text"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <table class="o_group o_inner_group">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="1" class="o_td_label">
+                                                <label for="o_field_input_2" class="o_form_label o_form_invalid">Giới tính</label>
+                                            </td>
+                                            <td colspan="1" style="width: 33.3333%;">
+                                                <select class="form-control" required="required" id="o_field_input_2" name="gender">
+                                                    <option value=""></option>
+                                                    <option t-att-selected="user_id.gender == 'male'" value="male">Nam</option>
+                                                    <option t-att-selected="user_id.gender == 'female'" value="female">Nữ</option>
+                                                </select>
+                                            </td>
+                                            <td colspan="1" class="o_td_label">
+                                                <label for="o_field_input_4" class="o_form_label">Số điện thoại</label>
+                                            </td>
+                                            <td colspan="1" style="width: 33.3333%;">
+                                                <input name="phone" class="form-control" id="o_field_input_4" type="text"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="1" class="o_td_label">
+                                                <label for="o_field_input_5" class="o_form_label">Email</label>
+                                            </td>
+                                            <td colspan="1" style="width: 20%;">
+                                                <input name="email"  class="form-control" id="o_field_input_5" type="text" t-att-value="user_id.login"/>
+                                            </td>
+                                            <td colspan="1" class="o_td_label">
+                                                <label for="o_field_input_10" class="o_form_label">Ngày sinh</label>
+                                            </td>
+                                            <td colspan="1" style="width: 50%;">
+                                                <input data-toggle="datepicker" class="form-control" type="text" required="required" name="birth_date"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-register-teacher btn btn-default" data-dismiss="modal">Đóng</button>
+                                <button type="submit" class="btn btn-primary">Đăng ký</button>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $('[data-toggle="datepicker"]').datepicker({
+                            format: 'dd/mm/yyyy',
+                            autoPick: true,
+                            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                            days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                        });
+
+
+                        $('.btn-register-teacher').on('click', function(){
+
+                            if($("input[name='name']").val() == ''){
+                                $("input[name='name']").css('border', '1px solid red')
+                            }
+                            if($("input[name='last_name']").val() == ''){
+                                $("input[name='last_name']").css('border', '1px solid red')
+                            }
+                            if($("select[name='gender']").val() == ''){
+                                $("select[name='gender']").css('border', '1px solid red')
+                            }
+                            if($("input[name='email']").val() == ''){
+                                $("input[name='email']").css('border', '1px solid red')
+                            }   
+                            if($("input[name='birth_date']").val() == ''){
+                                $("input[name='birth_date']").css('border', '1px solid red')
+                            }
+                        });
+                    </script>
+                </div>
+            </form>
+        </t>
+    </template>
+</odoo>

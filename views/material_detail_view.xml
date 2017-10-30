@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_header_custom" inherit_id="openeducat_lms.material_detail_view">
+            <xpath expr="//div[@class='col-lg-4 col-md-4 col-sm-12 col-xs-12 mt16']" position="inside">
+                <a t-attf-href="/course-detail/#{slug(course)}"
+                   class="btn btn-block btn-primary" style="border-radius: 0px;">
+                    Go to dashboard
+                </a>
+            </xpath>
+        </template>
+    </data>
+</odoo>

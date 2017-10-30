@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    	    <record id="kanban_view_faculty_inherit" model="ir.ui.view">
+		        <field name="name">Faculty Kanban Inherit</field>
+            	<field name="model">op.faculty</field>
+		        <field name="inherit_id" ref="openeducat_core.kanban_view_faculty"/>
+		        <field name="arch" type="xml">
+		        	<xpath expr="//div[@class='oe_kanban_details']/h4/a[@type='open']" position="replace">
+		        		<a type="open">
+                            <field name="name" />
+                            <t t-if="record.last_name.raw_value">
+                                <field name="last_name" />
+                            </t>
+                        </a>
+	        			<span class="oe_faculty_status" style="color: #fff;background-color: #1f6fd7;padding: 4px 4px;border-radius: 3px;">
+	        				<field name="status"/>
+	        			</span>
+	        			<script>
+	        				$('.oe_faculty_status').each(function() {
+                                if(this.innerText == 'Unapprove') {
+                                	$(this).css('background', '#d71f1f');
+                                }
+                                if(this.innerText == ''){
+                                	$(this).css('display', 'none');
+                                }
+                            });
+	        			</script>
+		        	</xpath>
+		        </field>
+		    </record>
+
+		    <record id="view_op_faculty_tree_inherit" model="ir.ui.view">
+	            <field name="name">op.faculty.tree.inherit</field>
+	            <field name="model">op.faculty</field>
+	            <field name="inherit_id" ref="openeducat_core.view_op_faculty_tree"/>
+	            <field name="arch" type="xml">
+	            	<field name="emergency_contact" position="after">
+	            		<field name="status"/>
+	            	</field>
+	            </field>
+		    </record>
+
+		    <record id="view_op_faculty_form_inferit" model="ir.ui.view">
+	            <field name="name">op.faculty.form.inherit</field>
+	            <field name="model">op.faculty</field>
+	            <field name="inherit_id" ref="openeducat_core.view_op_faculty_form"/>
+	            <field name="arch" type="xml">
+	            	<xpath expr="//header[@groups='openeducat_core.group_op_back_office_admin']" position="before">
+	            		<field name="status" invisible="1"/>
+	            	</xpath>
+	            	<xpath expr="//header[@groups='openeducat_core.group_op_back_office_admin']/button" position="after">
+                        <button name="action_approve" type="object"
+                                string="Approve"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('status', '!=', 'unapprove')]}"/>
+	            	</xpath>
+	         	</field>
+		    </record>
+	    </data>
+</odoo>

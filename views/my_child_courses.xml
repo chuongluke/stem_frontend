@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_my_child_courses" name="STEM My child's courses">
+			<t t-call="stem_frontend_theme.stem_profile">
+				<div class="box-bor MB20">
+  	    			<h3 class="text-xanh1">
+  	    				<a href="#">Khóa học của <t t-esc="child.name" /></a>
+  	    			</h3>
+
+    				<t t-if="not my_courses">
+    					<div class="MB20">
+	                		<p><t t-esc="child.name" /> chưa đăng ký khóa học.</p>
+		            	</div>
+		            </t>
+		            <t t-if="my_courses">
+		            	<t t-foreach="my_courses" t-as="course">
+		            		<div class="MB20">
+	  	    					<img t-if="not course['course'].image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+                            	<img t-if="course['course'].image" t-attf-src="/web/image/op.course/#{course['course'].id}/image" class="img-responsive" />
+
+								<h4 class="MB5">
+									<a t-attf-href="/course-detail/#{slug(course['course'])}"
+										t-esc="course['course'].name"/>
+								</h4>
+								<p class="text-a">
+									Giáo viên:
+									<t t-foreach="course['course'].faculty_ids"
+                                           t-as="faculty">
+                                    	<span t-raw="faculty.name"/>
+                                    </t>
+                                </p>
+								<p class="text-a" t-raw="course['course'].short_description"></p>
+								<p class="text-muted MB0">
+									<i class="MR5 fa fa-tasks" aria-hidden="true"></i>
+									<span class="MR10 text-danger">
+										Tiến độ: 
+										<t t-raw="course['completed_percentage']"/>
+		                            	%
+									</span>
+								</p>
+	  	    				</div>
+	  	    			</t>
+		            </t>
+  	    		</div>
+			</t>
+		</template>
+	</data>
+</odoo>

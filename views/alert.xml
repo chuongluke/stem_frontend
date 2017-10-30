@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_alert" name="STEM">
+			<t t-call="website.layout">
+				<div class="row">
+					<div class="col-md-12">
+						<div t-att-class="'alert alert-' + type">
+		 					<h4 t-raw="message"/>
+		  	    		</div>
+					</div>
+				</div>
+			</t>
+		</template>
+	</data>
+</odoo>

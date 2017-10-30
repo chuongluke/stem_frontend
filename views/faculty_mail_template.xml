@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="stem_frontend_theme.faculty_mail_template" model="mail.template">
+            <field name="name">Register faculty mail template</field>
+            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="subject">Xác nhận đăng ký giáo viên</field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="model_id" ref="stem_frontend_theme.model_op_faculty"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html">
+                <![CDATA[
+                    <div>
+                        <img src="/logo.png" alt="${user.company_id.name}">
+                    </div>
+
+                    <div>
+                        <p>Gửi <b>${object.partner_id.name}</b>,</p>
+                        <p>Tài khoản <b>${object.partner_id.name}</b> vừa được xác nhận đăng ký làm giáo viên. Vui lòng truy cập hệ thống để bắt đầu sử dụng.
+                    </div>
+
+                    <p>Trân trọng,<br/>${(user.company_id.name)}</p>
+                ]]>
+            </field>
+       </record>
+    </data>
+</odoo>

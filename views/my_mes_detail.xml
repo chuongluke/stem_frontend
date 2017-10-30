@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_my_mes_detail" name="STEM My Mes Detail">
+			<t t-call="stem_frontend_theme.stem_profile">
+
+				<div class="box-bor MB20">
+					<a href="/home/my-mes"> Back </a>
+ 					<div class="MB20">
+	 					<t t-foreach="messages" t-as="m">
+	 						<div class="row">
+		 						<div class="col-md-1 col-xs-1">
+		 							<img t-att-src="'/web/image/res.partner/%s/image_small' % (m.author_id.id)" class="img-circle MR5"  width="50" t-att-alt="m.author_id.name"/>
+		 						</div>
+		 						
+		 						<div class="col-md-11 col-xs-11">
+		 							<t t-esc="m.author_id.name"/>: 
+		 						<t t-esc="m.body"/>
+		 						</div>
+	 						</div>
+	 					</t>
+ 					</div>
+
+  	    		</div>
+			</t>
+		</template>
+	</data>
+</odoo>

@@ -1,0 +1,162 @@
+<?xml version="1.0" ?>
+<odoo>
+    <template id="stem_homepage" name="STEM Homepage">
+        <t t-call="website.layout">
+            <section class="row">
+                <aside class="col-md-8 boR">
+                    <h3 class="text-slogan">Hãy trở thành thành viên để nhận tin tức về giáo dục STEM <br/>và tham gia vào hàng ngàn khóa học STEM miễn phí dành cho mọi lứa tuổi.</h3>
+                    <div class="box1">
+                        <img class="img-mh visible-lg-block" src="/stem_frontend_theme/static/src/images/img1.png" alt=""/>
+                        <div class="box-timkiem">
+                            <div class="box2">
+                                <h2 class="text-tle1">Tìm kiếm khóa học</h2>
+                                <p class="MB40 hidden-xs">Các khóa học trực tuyến miễn phí từ các chuyên gia hàng đầu thế giới</p>
+                                <form action="/courses">
+                                <div class="input-group input-group-lg MB20">
+                                              <input name="search" type="search" class="form-control form-TK" placeholder="Tìm kiếm khóa học"/>
+                                              <span class="input-group-btn">
+                                                      <button type="submit" class="btn btn-link addon-TK"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                          </span>
+                                    </div>
+                                </form>     
+                                                                                                                                                                                                                                                                                                                                        
+                                <div>
+                                    <t t-foreach="providers" t-as="p">
+                                        <a t-if="'google' in p['css_class']"
+                                            class="bt-google MB5" t-att-href="p['auth_link']">
+                                            <i class="fa-G fa fa-google-plus" aria-hidden="true"></i>
+                                            <t t-esc="p['body']"/>
+                                        </a>
+
+                                        <a t-if="'facebook' in p['css_class']"
+                                            class="bt-FB MB5" t-att-href="p['auth_link']">
+                                            <i class="fa-F fa fa-facebook" aria-hidden="true"></i>
+                                            <t t-esc="p['body']"/>
+                                        </a>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="box3">
+                                <div class="boxTK border-B border-RT label-primary text-trang">
+                                    <p class="text-center"><span class="font-B"><t t-esc="count_all_users" /> +</span><br/>triệu<br/>người dùng</p>
+                                </div>
+                                <div class="boxTK border-B text-trang bg-vang">
+                                    <p class="text-center"><span class="font-B"><t t-esc="count_all_courses"/> +</span><br/>khóa học</p>
+                                </div>
+                                <div class="boxTK border-RB text-trang label-danger">
+                                    <p class="text-center"><span class="font-B"><t t-esc="count_all_blog_posts"/> +</span><br/>triệu<br/>tin STEM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <article class="row">
+                        <div class="col-md-6">
+                            <div class="box-tin">
+                                <h4 class="text-xanh"><a href="">Khóa học</a></h4>
+                                <ul  t-foreach="online_free_courses" t-as="course" class="ul-tin">
+                                    <li><a t-attf-href="/course-detail/#{slug(course)}" t-esc="course.name"/></li>
+                                </ul>
+                                <div class="view-more">
+                                    <a class="view-more-link" href="/courses">Xem thêm</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box-tin">
+                                <h4 class="text-xanh"><a href="">Tin tức mới</a></h4>
+                                <ul class="ul-tin">
+                                <div class="js_get_posts" data-loading="true" data-posts_limit="5" data-template="stem_frontend_theme.list_template"/>
+                                </ul>
+                                <div class="view-more">
+                                    <a class="view-more-link" href="/blog">Xem thêm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </aside>
+                <aside class="col-md-4">
+                    <h1 class="text-tle MB40">Đăng ký</h1>
+                    
+                    <form class="oe_signup_form" role="form" method="post" t-if="not message" style="margin: 0; max-width: auto" action="/web/signup">
+      <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+      <input type="hidden" name="redirect" t-att-value="'/'"/>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="text" name="name" t-att-value="name" id="name" class="form-control" placeholder="Họ tên" required="required"/>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="text" name="login" t-att-value="login" id="login" class="form-control" placeholder="Số di động hoặc Email" required="required"/>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Mật khẩu mới" required="required"/>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Nhập lại mật khẩu" required="required"/>
+                </div>
+            </div>
+        </div>
+        <h3>Ngày sinh</h3>
+        <div class="row">
+            <div class="col-md-4">
+                 <div class="form-group">
+                  <select class="form-control" id="sel1" name="bd_date">
+                    <option t-foreach="range(1, 32)" t-as="date">
+                        <t t-raw="date"/>
+                    </option>
+                  </select>
+                </div> 
+            </div>
+            <div class="col-md-4">
+                 <div class="form-group">
+                  <select class="form-control" id="sel1" name="bd_month">
+                    <option t-foreach="range(1, 13)" t-as="month">
+                        <t t-raw="month"/>
+                    </option>
+                  </select>
+                </div> 
+            </div>
+            <div class="col-md-4">
+                 <div class="form-group">
+                  <select class="form-control" id="sel1" name="bd_year">
+                    <option t-foreach="range(1905, datetime.datetime.today().year + 1)" t-as="year">
+                        <t t-raw="year"/>
+                    </option>
+                  </select>
+                </div> 
+            </div>
+        </div>
+        <label class="radio-inline"><input type="radio" name="gender" value="male"/>Nam</label>
+        <label class="radio-inline"><input type="radio" name="gender" value="female"/>Nữ</label>
+            
+        <p class="text-small">Bằng cách nhấp vào Tạo tài khoản, bạn đồng ý với Điều khoản của chúng tôi và rằng bạn đã đọc Chính sách dữ liệu của chúng tôi, bao gồm Sử dụng cookie. Bạn có thể nhận được thông báo qua SMS từ STEM.vn và có thể bỏ chọn bất kỳ lúc nào.</p>
+        <p class="alert alert-danger" t-if="error">
+            <t t-esc="error"/>
+        </p>
+        <p class="alert alert-success" t-if="message">
+            <t t-esc="message"/>
+        </p>
+        <input type="hidden" name="redirect" t-att-value="redirect or '/courses'"/>
+        <input type="hidden" name="token" t-att-value="token"/>
+        <button type="submit" class="btn btn-link bt-taoTK">Tạo tài khoản</button>
+    </form>
+                </aside>
+            </section>
+        </t>
+    </template>
+</odoo>

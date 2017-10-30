@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="my_courses_teach" name="STEM Search Results">
+			<t t-call="stem_frontend_theme.stem_profile">
+				<div class="box-bor MB20">
+					<t t-if="all_courses_teach">
+		    			<h3 class="text-xanh1">
+			    			<a href="#">Danh sách lớp đào tạo</a>
+			    		</h3>
+			    	</t>
+					<t t-if="not all_courses_teach">
+						<div class="MB20">
+	                		<p>Bạn không dạy lớp nào.</p>
+		            	</div>
+		            </t>
+		            <t t-foreach="all_courses_teach" t-as="course">
+						<div class="MB20">
+							<img t-if="not course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" style="width: 100%;"/>
+							<img t-if="course.image" t-attf-src="/web/image/op.course/#{course.id}/image" class="img-responsive" style="width: 100%;"/>
+
+							<h4 class="MB5">
+								<a t-attf-href="/course-detail/#{slug(course)}"
+									t-esc="course.name"/>
+							</h4>
+						</div>	
+					</t>
+		        </div>
+		        <div style="text-align:center;">
+                    <t t-call="website.pager" />
+                </div>
+			</t>
+		</template>
+	</data>
+</odoo>

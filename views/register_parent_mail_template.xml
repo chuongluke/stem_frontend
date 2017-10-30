@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="stem_frontend_theme.register_parent_template" model="mail.template">
+            <field name="name">Register parent mail template</field>
+            <field name="email_from">${object.parent_id.company_id and object.parent_id.company_id.email or ''}</field>
+            <field name="subject">Xác nhận đăng ký phụ huynh</field>
+            <field name="email_to">${object.student_child_id.partner_id.email|safe}</field>
+            <field name="lang">${object.student_child_id.partner_id.lang}</field>
+            <field name="model_id" ref="stem_frontend_theme.model_stem_register_parent"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html">
+                <![CDATA[
+                    <div>
+                        <img src="/logo.png" alt="${user.company_id.name}">
+                    </div>
+
+                    <div>
+                        <p>Gửi <b>${object.student_child_id.name}</b>,</p>
+                        <p>Tài khoản <b>${object.parent_id.name}</b> vừa đăng ký làm phụ huynh của bạn. Vui lòng click vào nút dưới để xác nhận.
+                    </div>
+
+                    <div margin: 10px 0;">
+                        <a href="/confirm/parent?token=${object.token}" style="padding: 5px 10px; font-size: 12px; line-height: 18px; color: #FFFFFF; border-color:#875A7B; text-decoration: none; display: inline-block; margin-bottom: 0px; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; white-space: nowrap; background-image: none; background-color: #875A7B; border: 1px solid #875A7B; border-radius:3px">Xác nhận</a>
+                    </div>
+
+                    <p>Trân trọng,<br/>${(object.parent_id.company_id.name)}</p>
+                ]]>
+            </field>
+       </record>
+    </data>
+</odoo>
