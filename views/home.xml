@@ -84,22 +84,9 @@
   	  								<div>
   	  									<div>
   	  										<div class="addQuestionPrompt">
-  	  											<div class="fake_reason">
+  	  											<div >
   	  												<span>
-  	  													<span>
-  	  														<span class="photo_tooltip">
-  	  															<a href="/home">
-  	  																<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
-  	  															</a>
-  	  														</span>
-  	  													</span>
-  	  													<span>
-  	  														<span>
-  	  															<a class="user-question" href="/home">
-  	  																<t t-esc="user_id.name"/>
-  	  															</a>
-  	  														</span>
-  	  													</span>
+  	  													<h3>TRI THỨC STEM</h3>
   	  												</span>
   	  											</div>
   	  											<div class="form-group">
@@ -278,7 +265,7 @@
       				<aside class="col-md-3">
       	 				<div class="box-bor">
       	 					<h3 class="text-xanh1">
-      	 						<a href="">Tin tức</a>
+      	 						<a href="https://beta.stem.vn/blog/cong-ong-stem-vn-1">Tin tức</a>
       	 					</h3>
 
       	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
@@ -699,7 +686,7 @@
       				<aside class="col-md-3">
       	 				<div class="box-bor">
       	 					<h3 class="text-xanh1">
-      	 						<a href="">Tin tức</a>
+      	 						<a href="https://beta.stem.vn/blog/cong-ong-stem-vn-1">Tin tức</a>
       	 					</h3>
 
       	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
+		<!-- Editor custom -->
 	    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Forum Assets">
 			<xpath expr="." position="inside">
 			
@@ -22,6 +23,8 @@
 				
 			</xpath>
 		</template>
+		
+		<!-- Main template -->
         <template id="stem_forum_header" inherit_id="website_forum.header">
 			<xpath expr="//div[@class='container']" position="replace">
                 <div class ="container">
@@ -30,6 +33,7 @@
             </xpath>
 			
             <xpath expr="//div[@class='container mt16 website_forum']" position="replace">
+			    
                 <div class ="container mt16 website_forum">
 					<section class="row">
 						<div class="col-md-2">
@@ -42,7 +46,8 @@
 								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										Hỏi đáp<span class="badge bg-pink"></span>
-								</a>
+								</a>							
+								
 								<a href="#sortlist" data-toggle="collapse" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										Sắp xếp
@@ -52,6 +57,9 @@
 										<li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
 											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='relevancy desc') }}">Trending</a>
 										</li>
+										<li t-att-class="sorting == 'name asc' and 'active' or None ">
+											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='name asc') }}">Name</a>
+										</li>
 										<li t-att-class="sorting == 'create_date desc' and 'active' or None ">
 											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='create_date desc') }}">Newest</a>
 										</li>
@@ -60,6 +68,9 @@
 										</li>
 										<li t-att-class="sorting == 'child_count desc' and 'active' or None ">
 											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='child_count desc') }}">Most answered</a>
+										</li>
+										<li t-att-class="sorting == 'views desc' and 'active' or None ">
+											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='views desc') }}">Most viewed</a>
 										</li>
 										<li t-att-class="sorting == 'vote_count desc' and 'active' or None ">
 											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='vote_count desc') }}">Most voted</a>
@@ -113,7 +124,119 @@
 						<div  class="col-md-10">
 								<div id="wrap" class="container">
 									<div class="row mb16">
-										<div class="col-sm-9" type="background-color">											
+										<div class="col-sm-9 box-bor-2">
+										    <t t-if="question_ids">
+												<div class="box-bor MB20">
+													<div>
+														<div>
+															<div>
+																<div class="addQuestionPrompt">
+																	<div class="form-group">
+																		<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="forum-post-list" style="display: none;">
+													<t t-foreach="question_ids" t-as="post">
+														<div class="post-name">
+															<t t-esc="post.id"/> - <t t-esc="post.name"/>
+														</div>
+													</t>
+												</div>
+												<div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+													<div class="modal-dialog modal-lg" role="document">
+														<form id="questionForm" method="POST" action="/ask">
+															<div class="modal-content">
+																<div class="modal-header" style="height: 57px;">
+																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+																	<h4 class="modal-title">
+																		<div class="fake_reason">
+																			<span>
+																				<span>
+																					<span class="photo_tooltip">
+																						<a href="#">
+																							<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
+																						</a>
+																					</span>
+																				</span>
+																				<span>
+																					<span>
+																						<a class="user-question" href="#">
+																							<t t-esc="user_id.name"/>
+																						</a>
+																					</span>
+																				</span>
+																			</span>
+																		</div>
+																	</h4>
+																</div>
+																<div class="modal-body">
+																	<div class="row">
+																		<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+																		<div class="col-md-12">
+																			<div class="form-group cspan">
+																				<label class="control-label">Tiêu đề</label><br/>
+																				<input type="name" class="form-control" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
+																			</div>
+																			<div class="form-group">
+																				<label for="exampleFormControlTextareal">Nội dung</label>
+																				<textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+																			  </div>
+																		</div>
+																	</div>
+																</div>
+																<div class="modal-footer">
+																	<button type="submit" class="btn btn-primary" form="questionForm">Đặt câu hỏi</button>
+																	<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												
+												<script>
+													$(document).ready(function(){
+														
+														var datapost = [];
+
+														$('.forum-post-list .post-name').each(function(){
+															datapost.push(this.innerText.trim());
+														});
+														
+														var questions = new Bloodhound({
+															datumTokenizer: Bloodhound.tokenizers.whitespace,
+															queryTokenizer: Bloodhound.tokenizers.whitespace,
+															local: datapost
+														});
+
+														questions.initialize();
+
+														$('.name-question').typeahead({
+															hint: false,
+															highlight: true,
+															minLength: 1
+														},
+														{
+															source: questions,
+															templates: {
+																empty: '<a href="#" class="jsabutton" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
+																suggestion: function(el){
+																	var id = el.split("-")[0]
+																	var html = '<div class="tt-suggestion tt-selectable">'
+																	html += '<a href="/forum/2/question/'+ id +'">' + el +'</a>'
+																	html += '</div>'
+																	return html
+																}
+															}
+														});
+													});
+												</script>
+											
+											</t>
+											
 											<div t-foreach="notifications or []" t-as="notification" class="alert alert-success alert-dismissable">
 												<button type="button" class="close notification_close" t-att-id="notification.id" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
 												<div t-field="notification.body"/>
@@ -150,12 +273,14 @@
 													<t t-if="forum.default_post_type == 'question'">Ask a Question</t>
 													<t t-if="forum.default_post_type == 'link'">Submit a Link</t>
 													<t t-if="forum.default_post_type == 'discussion'">New Discussion</t>
+													
 												</a>
 												<t t-if="multi_type">
 													<button type="button" class="btn btn-primary btn-lg col-sm-2 dropdown-toggle" data-toggle="dropdown">
 														<span class="caret"></span>
 														<span class="sr-only">Select Post</span>
 													</button>
+													
 													<ul class="dropdown-menu" role="menu">
 														<li t-if="forum.allow_question"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=question">Ask a Question</a></li>
 														<li t-if="forum.allow_link"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=link">Submit a Link</a></li>
@@ -163,17 +288,7 @@
 													</ul>
 												</t>
 											</div>
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h3 class="panel-title">Keep Informed</h3>
-												</div>
-												<div class="panel-body">
-													<t t-call="website_mail.follow">
-														<t t-set="email" t-value="user.email"/>
-														<t t-set="object" t-value="forum"/>
-													</t>
-												</div>
-											</div>
+											
 											<div class="panel panel-default" id="about_forum">
 												<div class="panel-heading">
 													<h3 class="panel-title">About This Community</h3>
@@ -228,11 +343,180 @@
 						</div>
 					</section>
                 </div>
+				
             </xpath>
 			
 			
         </template>
+		
+		<template id="stem_forum_index" inherit_id="website_forum.forum_index">
+			<xpath expr="//h2[@class='page-header mt0']" position="replace">
+				<h2 class="page-header mt0" style="margin-left:20px;">
+				    
+					<t t-esc="question_count" />
+					<span t-if="post_type not in ('link','question','discussion')" style="display: initial;"> Posts </span>
+					<span t-if="post_type == 'question'" style="display: initial;"> Questions</span>
+					<span t-if="post_type == 'link'" style="display: initial;"> Links</span>
+					<span t-if="post_type == 'discussion'" style="display: initial;"> Threads</span>
+					
+					<small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')">
+						 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<t t-if="filters == 'unanswered'"> Unanswered</t>
+							<t t-if="filters == 'followed'"> Followed</t>
+							<t t-if="tag"> <b t-field="tag.name" style="display: initial;"/></t>
+							
+							<b class="caret"/>
+						 </a>
+						 <ul class="dropdown-menu">
+							<li class="dropdown-header">Filter on</li>
+							<li t-att-class="filters == 'all' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">All</a>
+							</li>
+							<li t-att-class="filters == 'unanswered' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Unanswered</a>
+							</li>
+							<li t-if="uid" t-att-class="filters == 'followed' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Followed</a>
+							</li>
+							<li t-if="tag" class="dropdown-header">Tags</li>
+							<li t-if="tag" t-att-class="tag and 'active' or None ">
+								<a href=""><t t-esc="tag.name"/></a>
+							</li>
+							
+						</ul>
+					</small>
+					<small class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<t t-if="sorting == 'relevancy desc'"> by relevance</t>
+							<t t-if="sorting == 'name asc'"> by name</t>
+							<t t-if="sorting == 'write_date desc'"> by activity date</t>
+							<t t-if="sorting == 'create_date desc'"> by newest</t>
+							<t t-if="sorting == 'child_count desc'"> by most answered</t>
+							<t t-if="sorting == 'views desc'"> by most view</t>
+							<t t-if="sorting == 'vote_count desc'"> by most voted</t>
+							<b class="caret"/>
+						</a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Sort by</li>
+							<li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='relevancy desc')">Relevance</a>
+							</li>
+							<li t-att-class="sorting == 'name desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='name asc')">Name</a>
+							</li>
+							<li t-att-class="sorting == 'write_date desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='write_date desc')">Last activity date</a>
+							</li>
+							<li t-att-class="sorting == 'create_date desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='create_date desc')">Newest</a>
+							</li>
+							<li t-att-class="sorting == 'child_count desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='child_count desc')">Most answered</a>
+							</li>
+							<li t-att-class="sorting == 'views desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='views desc')">Most viewed</a>
+							</li>
+							<li t-att-class="sorting == 'vote_count desc' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='vote_count desc')">Most voted</a>
+							</li>
+						</ul>
+							
+					</small>
+				</h2>
+			</xpath>
+		</template>
+				
+		<!-- Show a post in list -->
+		<template id="stem_display_post" inherit_id="website_forum.display_post">
+			<xpath expr="//div[@class='question']" position="replace">
+				<div class="question box-bor MB20">
+					<div class="pull-left">
+						<t t-call="website_forum.vote">
+							<t t-set="post" t-value="question"/>
+						</t>
+					</div>
+					<t t-call="website_forum.display_post_question_block"/>
+				</div>
+			</xpath>	
+		</template>
+		
+		
+
+		<!---Question-->
+		<template id="stem_post_description_full" inherit_id="website_forum.post_description_full">
+			<xpath expr="//div[@t-att-data-id='question.id']" position="after">
+			    <div>
+				    <div class="box-bor-4 mb16 mt8"> </div>
+					<h3> <t t-esc="len(question.child_ids)"/> 
+						<t t-if="question.post_type == 'question'">
+							Answer<t t-if="question.child_count&gt;1">s</t>
+						</t>
+						<t t-if="question.post_type != 'question'">
+							Comment<t t-if="question.child_count&gt;1">s</t>
+						</t>
+						
+					</h3>
+				</div>
+			    
+			</xpath>	
+		</template>
+		
+		<!-- Post answer-->
+		<template id="stem_post_answers" inherit_id="website_forum.post_answers">
+			<xpath expr="//div[@t-attf-class='forum_answer']" position="before">
+			    <div class="box-bor-1">
+				</div>
+			    
+			</xpath>	
+		</template>
+		
+		<!-- Users-->
+		<template id="stem_users" inherit_id="website_forum.users">
+			<xpath expr="//div[@class='col-sm-4']" position="replace">
+			    
+				<div t-foreach="row_users" t-as="user" class="col-sm-3 box-bor-3">
+					<img class="pull-left img img-circle o_forum_avatar" t-attf-src="/forum/user/#{user.id}/avatar"/>
+					<div>
+						<a t-attf-href="/forum/#{slug(forum)}/user/#{user.id}" t-field="user.name"/>
+						<t t-if="user.country_id">
+							<span t-field="user.country_id.image" t-options='{"widget": "image", "class": "country_flag"}' class='ml4'/>
+						</t>
+						<br/>
+						<b>karma: <t t-esc="user.karma"/></b>
+						<t t-raw="separator"/>
+						<div>
+							<b style="padding-left:50px"> badges:</b>
+							<span>
+								<span class="fa fa-circle badge-gold"/>
+								<span t-esc="user.gold_badge" class="ml4"/>
+								<span class="fa fa-circle badge-silver ml8" />
+								<span t-esc="user.silver_badge" class="ml4" />
+								<span class="fa fa-circle badge-bronze ml8" />
+								<span t-esc="user.bronze_badge" class="ml4" />
+							</span>
+						</div>
+						<t t-raw="0"/>
+					</div>
+				</div>
+			    
+			</xpath>	
+		</template>
+		
+		<!-- Users Detail-->
+		<template id="stem_user_detail_full" inherit_id="website_forum.user_detail_full">
+			<xpath expr="//a[@href='#favourite_question']" position="replace">
+			    <a href="#favourite_question" data-toggle="tab"><t t-esc="len(favourite)"/> Favourite Ques.</a>
+			</xpath>
+			<xpath expr="//a[@href='#followed_question']" position="replace">
+			    <a href="#followed_question" data-toggle="tab"><t t-esc="len(followed)"/> Followed Ques.</a>
+			</xpath>
+		</template>
+		
+		<!-- Edit Profile-->
 		<template id="stem_edit_profile" inherit_id="website_forum.edit_profile">
+		    <xpath expr="//h3" position="replace">
+				<h2 class="ml250 mb16 c-xanh-1 "> Edit Your Profile </h2>		
+			</xpath>
 			<xpath expr="//div[@class='row']" position="replace">
 				<form t-attf-action="/forum/#{slug(forum)}/user/#{slug(user)}/saved" method="post" role="form" class="form-horizontal js_website_submit_form" enctype="multipart/form-data">
 					<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -249,21 +533,21 @@
 					<div class="col-md-10">
 						<input name="user_id" t-att-value="user.id" type="hidden"/>
 						<div class="form-group">
-							<label class="col-md-2 control-label mb16" for="user_name">Real name</label>
-							<div class="col-md-8 mb16">
+							<label class="col-md-3 control-label" for="user_name">Real name</label>
+							<div class="col-md-8">
 								<input type="text" class="form-control" name="name" id="user_name" required="True" t-attf-value="#{user.name}"/>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-2 control-label mb16" for="user_website_published" t-if="user.id == uid">Public profile</label>
-							<div class="col-md-8 mb16" t-if="user.id == uid">
+							<label class="col-md-3 control-label" for="user_website_published" t-if="user.id == uid">Public profile</label>
+							<div class="col-md-8" t-if="user.id == uid">
 								<input type="checkbox" class="mt8" name="website_published" id="user_website_published" value="True" t-if="not user.website_published"/>
 								<input type="checkbox" class="mt8" name="website_published" id="user_website_published" value="True" checked="checked" t-if="user.website_published"/>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-2 control-label mb16" for="user_website">Website</label>
-							<div class="col-md-8 mb16">
+							<label class="col-md-3 control-label" for="user_website">Website</label>
+							<div class="col-md-8">
 								<input type="text" class="form-control" name="website" id="user_website" t-attf-value="#{user.partner_id.website or ''}"/>
 							</div>
 						</div>
@@ -272,20 +556,20 @@
 								<button type="button" class="close" data-dismiss="alert">x</button>
 								<p>Please enter a valid email address in order to receive notifications from answers or comments.</p>
 							</div>
-							<label class="col-md-2 control-label mb16" for="user_email">Email</label>
-							<div class="col-md-8 mb16">
+							<label class="col-md-3 control-label " for="user_email">Email</label>
+							<div class="col-md-8">
 								<input type="text" class="form-control" name="email" id="user_email" required="True" t-attf-value="#{user.partner_id.email}"/>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-2 control-label mb16" for="user_city">City</label>
-							<div class="col-md-8 mb16">
+							<label class="col-md-3 control-label" for="user_city">City</label>
+							<div class="col-md-8">
 								<input type="text" class="form-control" name="city" id="user_city" t-attf-value="#{user.partner_id.city or ''}"/>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-2 control-label mb16">Country</label>
-							<div class="col-md-8 mb16">
+							<label class="col-md-3 control-label">Country</label>
+							<div class="col-md-8">
 								<select class="form-control" name="country">
 									<option value="">Country...</option>
 									<t t-foreach="countries or []" t-as="country">
@@ -296,13 +580,13 @@
 						</div>
 						<!--Note: using website_description fiels instead of using commnt firld of partner-->
 						<div class="form-group">
-							<label class="col-md-2 control-label mb16" for="description">Biography</label>
-							<div class="col-md-8 mb16">
-								<textarea name="description" id="description" style="min-height: 120px" required="True"
+							<label class="col-md-3 control-label" for="description">Biography</label>
+							<div class="col-md-8">
+								<textarea name="description" id="description" style="min-height: 100px" required="True"
 									class="form-control load_editor"><t t-esc="user.partner_id.website_description"/></textarea>
 							</div>
 						</div>
-						<div class="col-sm-offset-2 col-md-2 mb16">
+						<div class="col-sm-offset-2 col-md-2 ml180 mb20" >
 							<button type="submit" class="btn btn-primary btn-lg">Update</button>
 						</div>
 					</div>
