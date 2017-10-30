@@ -32,7 +32,7 @@
                                     </t>
                                 </p>
 
-                                <!-- <div class="row">
+                                <div class="row">
                                     <p class="col-md-3">Giá</p>
 
                                     <p class="col-md-9">
@@ -48,7 +48,7 @@
                                                 t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                         </t>
                                     </p>
-                                </div> -->
+                                </div>
 
                                 <div class="row">
                                     <p class="col-md-3">Bao gồm</p>
