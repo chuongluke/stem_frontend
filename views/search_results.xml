@@ -47,7 +47,7 @@
 				            	<img t-attf-src="data:image/*;base64,{{ p.image }}" class="img-responsive"/>
 
 				                <h4 class="MB5">
-				      	 			<a t-attf-href="/profile/#{slug(p)}">
+				      	 			<a t-attf-href="/profile/{{p.id}}">
 				      	 				<span t-field="p.name"/>
 				      	 			</a>
 				      	 		</h4>

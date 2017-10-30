@@ -533,30 +533,34 @@ class Stem(http.Controller):
 
         return http.request.render('stem_frontend_theme.stem_home', data)
 
-    @http.route('''/profile/<model("res.partner"):partner>''', type='http',
+    @http.route('''/profile/<int:id>''', type='http',
                 auth="public", website=True)
-    def profile(self, partner, **kw):
-        if partner.id == http.request.env.user.partner_id.id:
+    def profile(self, id, **kw):
+        partner = http.request.env['res.partner'].sudo().browse(id);
+        if partner and partner.id == http.request.env.user.partner_id.id:
             return http.request.redirect('/home')
-        else: 
-            return http.request.render('stem_frontend_theme.stem_user_profile', {
-                'partner': partner
-            })
+        else:
+            return http.request.redirect('/profile/' + str(id) + '/blogs')
+            # return http.request.render('stem_frontend_theme.stem_user_profile', {
+            #     'partner': partner
+            # })
 
-    @http.route('''/profile/<model("res.partner"):partner>/blogs''', type='http',
+    @http.route('''/profile/<int:id>/blogs''', type='http',
                 auth="public", website=True)
-    def profile_blogs(self, partner, **kw):
-        if partner.id == http.request.env.user.partner_id.id:
+    def profile_blogs(self, id, **kw):
+        partner = http.request.env['res.partner'].sudo().browse(id);
+        if partner and partner.id == http.request.env.user.partner_id.id:
             return http.request.redirect('/home/my-blogs')
         else:
             return http.request.render('stem_frontend_theme.stem_profile_blogs', {
                 'partner': partner
             })
 
-    @http.route('''/profile/<model("res.partner"):partner>/courses''', type='http',
+    @http.route('''/profile/<int:id>/courses''', type='http',
                 auth="public", website=True)
-    def profile_courses(self, partner, **kw):
-        if partner.id == http.request.env.user.partner_id.id:
+    def profile_courses(self, id, **kw):
+        partner = http.request.env['res.partner'].sudo().browse(id);
+        if partner and partner.id == http.request.env.user.partner_id.id:
             return http.request.redirect('/home/my-courses')
         else:
             data = {
