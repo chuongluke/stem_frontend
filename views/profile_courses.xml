@@ -15,7 +15,7 @@
 		            </t>
 		            <t t-if="my_courses">
 		            	<t t-foreach="my_courses" t-as="course">
-		            		<div class="MB20">
+		            		<div t-attf-class="MB20 {{ '' if course_index == 0 else 'course-container' }}">
 	  	    					<img t-if="not course['course'].image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
                             	<img t-if="course['course'].image" t-attf-src="/web/image/op.course/#{course['course'].id}/image" class="img-responsive" />
 
