@@ -65,7 +65,33 @@
                                     <p class="col-md-3">Mã giảm giá</p>
                                     <p class="col-md-9"><b>robot2017</b></p>
                                 </div>
-
+								<div class="row">
+									<p class="col-md-3"> Đánh giá</p>
+									<p class="col-md-9">
+									 
+										<span>
+											<b>
+												<t t-esc="'%.2f'%(course.rating_get_stats()['avg'])"/>
+												/ 5 
+										   </b>
+										</span>
+										
+									
+									</p>
+									
+								</div>
+								<div style = "margin-left: -140px; margin-bottom: 30px;">
+									<t t-call="rating.rating_card">
+												<t t-set="rating_stat"
+												   t-value="course.rating_get_stats()"/>
+												<t t-set="max_rate"
+												   t-value="5"/>
+												<t t-set="min_rate"
+												   t-value="1"/>
+									</t>
+								</div>
+								<div>
+								</div>
                                 <div class="row">
                                     <p class="col-md-9 col-md-offset-3">
                                         <a class="btn btn-danger" 
