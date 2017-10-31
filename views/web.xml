@@ -97,6 +97,12 @@
 							        <li>
 							        	<a class="text-trang hover" href="/">Trang chủ</a>
 							        </li>
+									<li>
+							        	<a class="text-trang hover" href="/home/my-mes">
+											Thông báo
+											
+										</a>
+							        </li>
 
 							        <!-- <li class="dropdown">
  	          							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

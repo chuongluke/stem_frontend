@@ -4,13 +4,19 @@ import werkzeug.utils
 import base64
 import logging
 import random
+import requests
+import werkzeug.exceptions
+import werkzeug.urls
+import werkzeug.wrappers
 from datetime import datetime, timedelta
 
-from odoo import _, http, fields
+from odoo import _, http, fields,modules, SUPERUSER_ID, tools
 from odoo.addons.website.controllers.main import Website
 from odoo.addons.web.controllers.main import Home
 from odoo.addons.website.models.website import slug
 from odoo.addons.auth_signup.controllers.main import AuthSignupHome
+from odoo.addons.web.controllers.main import binary_content
+from odoo.http import request
 PPG = 2
 PPR = 4
 _logger = logging.getLogger(__name__)
@@ -47,7 +53,7 @@ class Stem(http.Controller):
 
         events = http.request.env['event.event'].sudo().search([])
 
-        course_porpular = http.request.env['rec.cu.by.predef'].sudo().search([])
+        course_porpular = []
 
         course_porpular_ids = [x.course_id.id for x in course_porpular]
 
@@ -320,9 +326,11 @@ class Stem(http.Controller):
 
     @http.route('/home/get_messages_by_channel', auth='public', type='http', csrf=False, website=True)
     def get_messages_by_channel(self, **kw):
+        data = self.get_menu_data()
         channel_id = int(kw.get('channel_id'))
 
         messages = http.request.env['mail.message'].sudo().search([('res_id', '=', channel_id), ('model', '=', 'mail.channel')], order='create_date desc')
+        data['messages']=messages
         #result = []
         # for m in messages:
         #     result.append({
@@ -331,9 +339,7 @@ class Stem(http.Controller):
         #         'author_name': m.author_id.name
         #     })
 
-        return http.request.render('stem_frontend_theme.stem_my_mes_detail',  {
-            'messages': messages
-        })
+        return http.request.render('stem_frontend_theme.stem_my_mes_detail',  data)
 
 
     @http.route(['''/course/register-course/<model("op.course"):course>'''],
@@ -762,3 +768,26 @@ class SignupVerifyEmail(AuthSignupHome):
 
         qcontext["message"] = _("Kiểm tra email của bạn để kích hoạt tài khoản của bạn!")
         return http.request.render("auth_signup.reset_password", qcontext)
+		
+class WebsiteForums(http.Controller):
+    @http.route('/forum/<model("forum.forum"):forum>/user/<model("res.users"):user>/saved', type='http', auth="user", methods=['POST'], website=True)
+    def save_edited_profiles(self, forum, user, **kwargs):
+        values = {
+            'name': kwargs.get('name'),
+            'website': kwargs.get('website'),
+            'email': kwargs.get('email'),
+            'city': kwargs.get('city'),
+            'country_id': int(kwargs.get('country')) if kwargs.get('country') else False,
+            'website_description': kwargs.get('description'),
+        }
+
+        if 'clear_image' in kwargs:
+            values['image'] = False
+        elif kwargs.get('ufile'):
+            image = kwargs.get('ufile').read()
+            values['image'] = base64.b64encode(image)
+
+        if request.uid == user.id:  # the controller allows to edit only its own privacy settings; use partner management for other cases
+            values['website_published'] = kwargs.get('website_published') == 'True'
+        user.write(values)
+        return werkzeug.utils.redirect("/forum/%s/user/%d" % (slug(forum), user.id))

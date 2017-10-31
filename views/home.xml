@@ -382,10 +382,12 @@
 		  						<i class="MR10 fa fa-file-text-o text-primary" aria-hidden="true"></i>
 		  						Bảng tin<span class="badge bg-pink"><t t-esc="len(posts)"/></span>
 		  					</a>
+							<!--
 		  					<a href="/home/my-mes" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-commenting-o text-danger" aria-hidden="true"></i>
 		  						Tin nhắn<span class="badge bg-pink"><t t-esc="len(my_channels)"/></span>
 		  					</a>
+							-->
 		  					<a href="/courses" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
 		  						Khóa học<span class="badge bg-pink"><t t-esc="len(online_free_courses)"/></span>

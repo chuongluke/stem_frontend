@@ -5,7 +5,7 @@
 			<t t-call="stem_frontend_theme.stem_profile">
 				<div class="box-bor MB20">
  					<h3 class="text-xanh1">
- 						<a href="">Tin nhắn</a>
+ 						<a href="">Thông báo</a>
  					</h3>
  					<t t-foreach="my_channels" t-as="c">
 						<div class="MB20">
