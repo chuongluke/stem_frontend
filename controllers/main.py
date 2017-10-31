@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import uuid
 import json
 import werkzeug.utils
 import base64
@@ -581,6 +582,56 @@ class Stem(http.Controller):
             if enrollments:
                 data.update(self.my_course_details(enrollments))
             return http.request.render('stem_frontend_theme.stem_profile_courses', data)
+
+
+    def new_access_token(self):
+        return uuid.uuid4().hex
+
+
+    @http.route('/rating/post', type='http', auth="public", website=True)
+    def rating(self, **kw):
+        res_name = kw.get('res_name')
+        res_model = kw.get('res_model')
+        res_id  = kw.get('res_id')
+        rating = kw.get('rating')
+        feedback = kw.get('message')
+        access_token = self.new_access_token()
+        course_id = kw.get('course_id')
+        
+
+
+        rate = http.request.env['rating.rating'].sudo().create({
+            'res_name': res_name,
+            'res_model': res_model,
+            'res_id': res_id,
+            'rating': rating,
+            'feedback': feedback,
+            'access_token': access_token,
+            'consumed': True,
+            'website_published': True
+            })
+
+        if rate:
+            message_id = tools.generate_tracking_message_id(''+ res_id + '-' + res_model + '')
+            email_from = http.request.env.user.name + " " + http.request.env.user.login
+            msg = http.request.env['mail.message'].sudo().create({
+                'subject': 'Re: ' + res_name,
+                'subtype_id': 1,
+                'res_id': res_id,
+                'message_id': message_id,
+                'body': feedback,
+                'record_name': res_name,
+                'no_auto_thread': False,
+                'reply_to': 'OpenEduCat <catchall@gmail.com>',
+                'author_id': http.request.env.user.partner_id.id,
+                'model': res_model,
+                'message_type': 'comment',
+                'email_from': email_from
+                })
+            rate.write({'message_id': msg.id})
+
+        return http.request.redirect('/course-detail/' + course_id)
+
 
 class Website(Website):
     @http.route(auth='public')

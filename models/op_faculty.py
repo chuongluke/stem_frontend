@@ -6,7 +6,8 @@ from odoo.http import request
 _logger = logging.getLogger(__name__)
 
 class OpFaculty(models.Model):
-	_inherit = 'op.faculty'
+	_name = 'op.faculty'
+	_inherit = ['op.faculty', 'mail.thread', 'rating.mixin']
 
 	status = fields.Selection([('unapprove', 'Unapprove'), ('approve', 'Approve')], string='Status', default='unapprove')
 

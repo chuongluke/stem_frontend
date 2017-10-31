@@ -93,7 +93,12 @@
 								<div>
 								</div>
                                 <div class="row">
-                                    <p class="col-md-9 col-md-offset-3">
+                                    <p class="">
+                                        <a class="btn btn-info" data-toggle="modal" data-target="#ratnigModal">
+                                            <i class="MR5 fa fa-star" aria-hidden="true"></i>
+                                            Đánh giá
+                                        </a>
+
                                         <a class="btn btn-danger" 
                                             t-attf-href="/course/enroll/#{slug(course)}" 
                                             t-if="not enrolled">
@@ -296,8 +301,65 @@
                                                     Email :
                                                     <span t-raw="faculty.email"/>
                                                     <br/>
-                                                    <br/>
                                                     <span t-raw="faculty.bio_data"/>
+                                                    <div style = "font-size: 25px;float: left;">
+                                                        <a data-toggle="modal" t-att-data-target="'#ratnigModal' + str(faculty.id)">
+                                                            <t t-call="rating.rating_card">
+                                                                <t t-set="rating_stat"
+                                                                   t-value="faculty.rating_get_stats()"/>
+                                                                <t t-set="max_rate"
+                                                                   t-value="5"/>
+                                                                <t t-set="min_rate"
+                                                                   t-value="1"/>
+                                                            </t>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" t-att-id="'ratnigModal' + str(faculty.id)" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <form class="o_website_chatter_form" method="POST" action="/rating/post">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+                                                                <h4 class="modal-title" id="exampleModalLabel">Đánh giá giáo viên <span t-raw="faculty.name"/></h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <section id="discussion" class="hidden-print oe_website_portal o_website_mail_thread" data-rating-enabled="1">         
+                                                                    <section class="mb32 hidden-print">
+                                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                                        <div class=" mb32">
+                                                                            <div class="o_rating_star_card" style="font-size: 41px;text-align: center;">
+                                                                                <div class="stars enabled">
+                                                                                    <i class="fa fa-star-o"></i>
+                                                                                    <i class="fa fa-star-o"></i>
+                                                                                    <i class="fa fa-star-o"></i>
+                                                                                    <i class="fa fa-star-o"></i>
+                                                                                    <i class="fa fa-star-o"></i>
+                                                                                </div>
+                                                                                
+                                                                                <input readonly="readonly" name="rating" value="0" type="hidden"/>
+                                                                            </div>
+                                                                    
+                                                                        
+                                                                            <textarea rows="4" name="message" class="form-control" placeholder="Nội dung đánh giá..."></textarea>
+                                                                            <input name="res_model" value="op.faculty" type="hidden"/>
+                                                                            <input name="res_id" t-att-value="faculty.id" type="hidden"/>
+                                                                            <input name="res_name" t-att-value="faculty.name" type="hidden"/>
+                                                                            <input name="course_id" t-att-value="course.id" type="hidden"/>
+                                                                            <div class="alert alert-danger mt8 mb0 o_website_chatter_error" style="display:none;">
+                                                                                Oops! Something went wrong. Try to reload the page and to log in.
+                                                                            </div>
+                                                                        </div>
+                                                                    </section>
+                                                                </section>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn-register-teacher btn btn-default" data-dismiss="modal">Đóng</button>
+                                                                <button type="submit" class="o_website_chatter_json btn btn-primary o_website_message_post_helper">Đánh giá</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </t>
@@ -328,6 +390,54 @@
                     </div>
                 </aside>
             </section>
+
+            <div class="modal fade" id="ratnigModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form class="o_website_chatter_form" method="POST" action="/rating/post">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+                                <h4 class="modal-title" id="exampleModalLabel">Đánh giá khóa học</h4>
+                            </div>
+                            <div class="modal-body">
+                                <section id="discussion" class="hidden-print oe_website_portal o_website_mail_thread" data-rating-enabled="1">         
+                                    <section class="mb32 hidden-print">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <div class=" mb32">
+                                            <div class="o_rating_star_card" style="font-size: 41px;text-align: center;">
+                                                <div class="stars enabled">
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                
+                                                <input readonly="readonly" name="rating" value="0" type="hidden"/>
+                                            </div>
+                                    
+                                        
+                                            <textarea rows="4" name="message" class="form-control" placeholder="Nội dung đánh giá..."></textarea>
+                                            <input name="res_model" value="op.course" type="hidden"/>
+                                            <input name="res_id" t-att-value="course.id" type="hidden"/>
+                                            <input name="res_name" t-att-value="course.name" type="hidden"/>
+                                            <input name="course_id" t-att-value="course.id" type="hidden"/>
+                                            <div class="alert alert-danger mt8 mb0 o_website_chatter_error" style="display:none;">
+                                                Oops! Something went wrong. Try to reload the page and to log in.
+                                            </div>
+                                        </div>
+                                    </section>
+                                </section>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-register-teacher btn btn-default" data-dismiss="modal">Đóng</button>
+                                <button type="submit" class="o_website_chatter_json btn btn-primary o_website_message_post_helper">Đánh giá</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <form action="/home/register_teacher" method="POST">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <div class="modal fade" id="teacherModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">

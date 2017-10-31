@@ -24,7 +24,9 @@
         'mail',
         'contacts',
         'stem_tables',
-        'website_forum'
+        'website_forum',
+        'website_mail',
+        'rating'
     ],
     "data": [
         'views/assets.xml',
