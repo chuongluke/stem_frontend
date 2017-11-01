@@ -33,10 +33,10 @@ class Stem(http.Controller):
         
         student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
         student_id = [x.id for x in student]
-        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', '=' ,student_id)])
+        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', 'in' ,student_id)])
         parent_child_sm_id=[x.name for x in parent_child_sm]
         parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
-        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', '=' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
         parent_child = [x.parent_id for x in parent_child_rg]
     
                                                              
@@ -64,6 +64,7 @@ class Stem(http.Controller):
 
         events = http.request.env['event.event'].sudo().search([])
 
+        #course_porpular = http.request.env['rec.cu.by.predef'].sudo().search([])
         course_porpular = []
 
         course_porpular_ids = [x.course_id.id for x in course_porpular]
@@ -71,12 +72,17 @@ class Stem(http.Controller):
         porpular_courses = http.request.env['op.course'].sudo().search([('id', 'in', course_porpular_ids)], limit=9, order='create_date desc')
         
         forum_posts = http.request.env['forum.post'].sudo().search([('parent_id', '=', False),('forum_id', '=', 2)], order='create_date desc')
+        
+        my_question = request.env['forum.post'].search([
+                ('parent_id', '=', False),
+                ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)])
 
         return {
             'parent': parent,
             'online_free_courses': online_free_courses,
             'my_channels': my_channels,
             'my_courses': my_courses,
+            'my_question':my_question,
             'forums': forums,
             'posts': posts,
             'online_paid_courses': online_paid_courses, 
@@ -112,7 +118,14 @@ class Stem(http.Controller):
     def google_html(self):
         return 'google-site-verification: googleb90fcbde0047b306.html'
 
+    @http.route('/blog', auth='public',website=True)
+    def view_blog(self):
+        return http.request.redirect('/blog/cong-ong-stem-1')
 
+    @http.route('/forum', auth='public',website=True)
+    def view_blog(self):
+        return http.request.redirect('/forum/stem-forum-2')
+    
     @http.route('/home/my-courses', auth='user', website=True)
     def my_courses(self, **kw):
         data = self.get_menu_data()
@@ -261,19 +274,20 @@ class Stem(http.Controller):
     def confirm_parentz(self, **kw):
         student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
         student_id = [x.id for x in student]
-        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', '=' ,student_id)])
+        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', 'in' ,student_id)])
         parent_child_sm_id=[x.name for x in parent_child_sm]
         parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
-        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', '=' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
         message='Bạn không chấp nhận phụ huynh nào cả!'
-        for x in range(0, len(parent_child_rg)-1):
+        for x in range(1, len(parent_child_rg)):
             val = kw.get(str(x))
             if val:       
                 http.request.env['op.parent'].sudo().create({
-                        'name': parent_child_rg[x].parent_id.id,
+                        'name': parent_child_rg[x-1].parent_id.id,
                         'student_ids': [(6, 0,student_id)]
                     })
-                message = 'Xác nhận thành công'  
+                
+                message = 'Xác nhận thành công'
         alert_type = 'success'
         
         return http.request.render('stem_frontend_theme.stem_alert', {
@@ -667,6 +681,37 @@ class Stem(http.Controller):
             rate.write({'message_id': msg.id})
 
         return http.request.redirect('/course-detail/' + course_id)
+
+    @http.route(['/home/my-question',
+                 '/home/my-question/page/<int:page>'
+    ], type='http', auth="public", website=True)
+    def my_questions(self, search='', page=1, ppg=False, **post):
+        data = self.get_menu_data()
+        if ppg:
+            try:
+                ppg = int(ppg)
+            except ValueError:
+                ppg = 10
+            post["ppg"] = ppg
+        else:
+            ppg = 10
+
+            
+        forum = request.env['forum.forum'].search([('id', '=', 2)])       
+        url = '/home/my-question'
+        pager = request.website.pager(url=url, total=len(data['my_questions']), page=page,
+                                      step=ppg, scope=7,
+                                      url_args=post)
+        
+        my_question_ids = request.env['forum.post'].search([
+                ('parent_id', '=', False),
+                ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)],
+                limit=ppg, offset=pager['offset'],order='relevancy desc')
+           
+        data['forum']=forum
+        data['pager']=pager
+        return http.request.render('stem_frontend_theme.stem_my_question', data);
+    
 class Website(Website):
     @http.route(auth='public')
     def index(self, data={}, **kw):

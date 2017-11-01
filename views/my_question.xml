@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_my_question" name="STEM My question">
+			<t t-call="stem_frontend_theme.stem_profile">
+			    <div>
+					<h2><t t-esc="len(my_questions)"/> Câu hỏi</h2>
+				</div>
+				<div class="mb16" t-foreach="my_question_ids" t-as="question">
+                    <t t-call="stem_frontend_theme.stem_display_post"/>
+                </div>
+				<t t-call="website.pager"/>
+			</t>
+		</template>
+	</data>
+</odoo>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-		
 		<!-- Main template -->
         <template id="stem_forum_header" inherit_id="website_forum.header">
 			<xpath expr="//div[@class='container']" position="replace">
@@ -23,9 +22,9 @@
 								
 								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Hỏi đáp<span class="badge bg-pink"></span>
+										Tri thức STEM<span class="badge bg-pink"></span>
 								</a>							
-								
+								<!--
 								<a href="#sortlist" data-toggle="collapse" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										Sắp xếp
@@ -77,7 +76,7 @@
 									</ul>
 								
 								</div>	
-								
+								-->
 								<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										People
@@ -97,21 +96,26 @@
 								
 							</div>
 							
-							
 						</div>
 						<div  class="col-md-10">
 								<div id="wrap" class="container">
 									<div class="row mb16">
-										<div class="col-sm-9 box-bor-2">
+										<div class="col-sm-9">
 										    <t t-if="question_ids">
 												<div class="box-bor MB20">
+												    <div>
+														<h3>Tri thức STEM</h3>
+													</div>
 													<div>
 														<div>
 															<div>
-																<div class="addQuestionPrompt">
-																	<div class="form-group">
-																		<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
-																	</div>
+																<div class="form-group">
+																	<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+																	<span class="input-question-btn-search">
+																		<button type="button" class="btn btn-search-question" disabled="disabled">
+																			<i class="fa fa-search"></i>
+																		</button>
+																	</span>
 																</div>
 															</div>
 														</div>
@@ -424,7 +428,7 @@
 		<template id="stem_post_description_full" inherit_id="website_forum.post_description_full">
 			<xpath expr="//div[@t-att-data-id='question.id']" position="after">
 			    <div>
-				    <div class="box-bor-4 mb16 mt8"> </div>
+				    <div class="mb16 mt8"> </div>
 					<h3> <t t-esc="len(question.child_ids)"/> 
 						<t t-if="question.post_type == 'question'">
 							Answer<t t-if="question.child_count&gt;1">s</t>
@@ -452,7 +456,7 @@
 		<template id="stem_users" inherit_id="website_forum.users">
 			<xpath expr="//div[@class='col-sm-4']" position="replace">
 			    
-				<div t-foreach="row_users" t-as="user" class="col-sm-3 box-bor-3">
+				<div t-foreach="row_users" t-as="user" class="col-sm-4 box-bor">
 					<img class="pull-left img img-circle o_forum_avatar" t-attf-src="/forum/user/#{user.id}/avatar"/>
 					<div>
 						<a t-attf-href="/forum/#{slug(forum)}/user/#{user.id}" t-field="user.name"/>
