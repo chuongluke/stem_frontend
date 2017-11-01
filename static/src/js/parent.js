@@ -37,7 +37,7 @@ $(document).ready(function() {
 		{
 		source: questions,
 		templates: {
-			empty: '<a href="#" class="jsabutton" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
+			empty: '<a href="#" class="jsabutton" onclick="addQuestionClick()" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
 		    suggestion: function(el){
 		    	var id = el.split("-")[0];
 		    	var html = '<div class="tt-suggestion tt-selectable">';
@@ -48,10 +48,6 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.jsabutton').on('click', function(){
-		$('#questionname').val($('.name-question').val());
-	});
-
 	//------------------------------------------
 
 	if ($('[name=bd_year] option').length) {
@@ -60,6 +56,12 @@ $(document).ready(function() {
 	}
 
 });
+
+function addQuestionClick(){
+	$('.jsabutton').click(function(){
+		$('#questionname').val($('.name-question').val());
+	});
+}
 
 function selectChildren() {
 	$('#studentModal table tbody tr').each(function() {
