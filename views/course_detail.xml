@@ -301,7 +301,6 @@
                                                     Email :
                                                     <span t-raw="faculty.email"/>
                                                     <br/>
-                                                    <span t-raw="faculty.bio_data"/>
                                                     <div style = "font-size: 25px;float: left;">
                                                         <a data-toggle="modal" t-att-data-target="'#ratnigModal' + str(faculty.id)">
                                                             <t t-call="rating.rating_card">
