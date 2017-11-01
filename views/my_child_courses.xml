@@ -49,14 +49,42 @@
   	    				<a href="#">Bài tập</a>
   	    			</h3>
 
-  	    			<table class="table table-hover table-bordered">
+  	    			<table class="table table-hover">
   	    				<thead>
   	    					<tr>
   	    						<th>Tên</th>
   	    						<th>Khóa học</th>
-  	    						<th>Khóa học</th>
+  	    						<th>Lớp</th>
+  	    						<th>Môn học</th>
+  	    						<th>Giáo viên</th>
+  	    						<th>Trạng thái</th>
   	    					</tr>
   	    				</thead>
+
+  	    				<tbody>
+  	    					<t t-foreach="assignments" t-as="a">
+  	    						<tr>
+  	    							<td>
+  	    								<t t-esc="a.name"/>
+  	    							</td>
+  	    							<td>
+  	    								<t t-esc="a.course_id.name"/>
+  	    							</td>
+  	    							<td>
+  	    								<t t-esc="a.batch_id.name"/>
+  	    							</td>
+  	    							<td>
+  	    								<t t-esc="a.subject_id.name"/>
+  	    							</td>
+  	    							<td>
+  	    								<t t-esc="a.faculty_id.name"/>
+  	    							</td>
+  	    							<td>
+  	    								<t t-esc="a.state"/>
+  	    							</td>
+  	    						</tr>
+  	    					</t>
+  	    				</tbody>
   	    			</table>
   	    		</div>
 			</t>

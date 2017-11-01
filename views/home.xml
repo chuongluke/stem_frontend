@@ -381,8 +381,8 @@
 			  						Phụ huynh của bạn
 			  					</a>	
 								<div class="list-group list-group-child collapse" id="parent-list">
-									<t t-foreach="parent_child_sm" t-as="parent">
-										<a t-att-href="'/profile/%s/blogs' % (parent.id)" class="list-group-item list-group-item1" t-esc="parent.name" />
+									<t t-foreach="parent_child_sm" t-as="p">
+										<a t-att-href="'/profile/%s/blogs' % (p.id)" class="list-group-item list-group-item1" t-esc="p.name" />
 									</t>
 								</div>
 							</t>

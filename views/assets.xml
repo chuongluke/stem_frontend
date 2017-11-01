@@ -23,7 +23,7 @@
                 <link rel="stylesheet" 
                     type="text/css"
                     href="/stem_frontend_theme/static/src/css/typeahead.css"/>
-                <!-- <script type="text/javascript" src="/stem_frontend_theme/static/src/js/jquery-3.0.0.min.js"></script> -->
+                
                 <script type="text/javascript" src="/stem_frontend_theme/static/src/js/datatables.min.js"></script>
                 <script type="text/javascript" src="/stem_frontend_theme/static/src/js/typeahead.bundle.js"></script>
                 <script type="text/javascript" src="/stem_frontend_theme/static/src/js/datepicker.js"></script>
