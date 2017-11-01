@@ -312,6 +312,10 @@
                                                                    t-value="1"/>
                                                             </t>
                                                         </a>
+                                                        <a class="btn btn-primary" data-toggle="modal" t-att-data-target="'#ratnigModal' + str(faculty.id)">
+                                                            <i aria-hidden="true" class="MR5 fa fa-star"></i>
+                                                            Đánh giá
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
