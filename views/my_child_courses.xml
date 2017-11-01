@@ -43,6 +43,22 @@
 	  	    			</t>
 		            </t>
   	    		</div>
+
+  	    		<div class="box-bor MB20">
+  	    			<h3 class="text-xanh1">
+  	    				<a href="#">Bài tập</a>
+  	    			</h3>
+
+  	    			<table class="table table-hover table-bordered">
+  	    				<thead>
+  	    					<tr>
+  	    						<th>Tên</th>
+  	    						<th>Khóa học</th>
+  	    						<th>Khóa học</th>
+  	    					</tr>
+  	    				</thead>
+  	    			</table>
+  	    		</div>
 			</t>
 		</template>
 	</data>

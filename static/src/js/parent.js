@@ -14,9 +14,52 @@ $(document).ready(function() {
         ]
 	});
 
-	var indexSelected = Math.round($('[name=bd_year] option').length - 10);
-	$('[name=bd_year] option')[indexSelected].selected = true;
-})
+	//----------------------------------------
+	var datapost = [];
+
+	$('.forum-post-list .post-name').each(function(){
+	    datapost.push(this.innerText.trim());
+	});
+		
+	var questions = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.whitespace,
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		local: datapost
+	});
+
+	questions.initialize();
+
+	$('.name-question').typeahead({
+		hint: false,
+		highlight: true,
+		minLength: 1
+		},
+		{
+		source: questions,
+		templates: {
+			empty: '<a href="#" class="jsabutton" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
+		    suggestion: function(el){
+		    	var id = el.split("-")[0];
+		    	var html = '<div class="tt-suggestion tt-selectable">';
+		    	html += '<a href="/forum/2/question/'+ id +'">' + el +'</a>';
+		    	html += '</div>';
+		    	return html;
+		    }
+		}
+	});
+
+	$('.jsabutton').on('click', function(){
+		$('#questionname').val($('.name-question').val());
+	});
+
+	//------------------------------------------
+
+	if ($('[name=bd_year] option').length) {
+		var indexSelected = Math.round($('[name=bd_year] option').length - 10);
+		$('[name=bd_year] option')[indexSelected].selected = true;
+	}
+
+});
 
 function selectChildren() {
 	$('#studentModal table tbody tr').each(function() {

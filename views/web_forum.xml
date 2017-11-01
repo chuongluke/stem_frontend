@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-		<!-- Editor custom -->
-	    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Forum Assets">
-			<xpath expr="." position="inside">
-			
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/css/datatables.min.css'/>
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/css/datepicker.css'/>
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/css/font-face.css'/>
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/css/main.css'/>
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/css/style.css'/>
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/css/typeahead.css'/>
-				<link rel='stylesheet' href='/stem_frontend_theme/static/src/fonts/font.css'/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/js/typeahead.bundle.js"/>
-			    <script type="text/javascript" src="/stem_frontend_theme/static/src/js/datatables.min.js"/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/js/datepicker.js"/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/js/main.js"/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/js/menu.js"/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/jsparent.js"/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/setting_menu.js"/>
-				<script type="text/javascript" src="/stem_frontend_theme/static/src/jquery-3.0.0.min.js"/>
-				
-			</xpath>
-		</template>
 		
 		<!-- Main template -->
         <template id="stem_forum_header" inherit_id="website_forum.header">
