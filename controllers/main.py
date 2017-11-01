@@ -82,7 +82,7 @@ class Stem(http.Controller):
             'online_free_courses': online_free_courses,
             'my_channels': my_channels,
             'my_courses': my_courses,
-            'my_question':my_question,
+            'my_questions':my_question,
             'forums': forums,
             'posts': posts,
             'online_paid_courses': online_paid_courses, 
@@ -361,7 +361,6 @@ class Stem(http.Controller):
                 student_user = http.request.env['res.users'].sudo().search([('partner_id', '=', child.partner_id.id)], limit=1)
                 student_user_id = student_user.id
 
-                #courses
                 enrollments = http.request.env['op.course.enrollment'].sudo().search(
                     [('user_id', '=', student_user_id),
                     ('state', 'in', ['in_progress', 'done'])])
@@ -369,9 +368,6 @@ class Stem(http.Controller):
                     data.update(self.my_course_details(enrollments))
 
                 data['child'] = child
-
-                #assignments
-                data['assignments'] = child.allocation_ids
 
                 return http.request.render('stem_frontend_theme.stem_my_child_courses', data)
             else:
@@ -711,7 +707,7 @@ class Stem(http.Controller):
                 ('parent_id', '=', False),
                 ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)],
                 limit=ppg, offset=pager['offset'],order='relevancy desc')
-           
+        data['my_question_ids']= my_question_ids 
         data['forum']=forum
         data['pager']=pager
         return http.request.render('stem_frontend_theme.stem_my_question', data);
