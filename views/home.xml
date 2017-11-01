@@ -381,8 +381,8 @@
 			  						Phụ huynh của bạn
 			  					</a>	
 								<div class="list-group list-group-child collapse" id="parent-list">
-									<t t-foreach="parent_child_sm" t-as="p">
-										<a t-att-href="'/profile/%s/blogs' % (p.id)" class="list-group-item list-group-item1" t-esc="p.name" />
+									<t t-foreach="parent_child_sm" t-as="parent">
+										<a t-att-href="'/profile/%s/blogs' % (parent.id)" class="list-group-item list-group-item1" t-esc="parent.name" />
 									</t>
 								</div>
 							</t>
@@ -425,7 +425,7 @@
 							
 							<a href="/home/my-question" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
-		  						Câu hỏi của tôi<span class="badge bg-pink"><t t-esc="len(my_question)"/></span>
+		  						Câu hỏi của tôi<span class="badge bg-pink"><t t-esc="len(my_questions)"/></span>
 		  					</a>
 						</div>
   	  				</aside>
