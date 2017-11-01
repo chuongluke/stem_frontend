@@ -780,7 +780,7 @@
 				      			<form id="childForm" method="POST" action="/confirm/parentz">
 									<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 									<table>
-										<t t-set="number" t-value="0"/>
+										<t t-set="number" t-value="1"/>
 										<t t-foreach="parent_child" t-as="parent">
 											<tr>     
 												<th>

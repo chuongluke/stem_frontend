@@ -279,11 +279,11 @@ class Stem(http.Controller):
         parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
         parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
         message='Bạn không chấp nhận phụ huynh nào cả!'
-        for x in range(0, len(parent_child_rg)):
+        for x in range(1, len(parent_child_rg)+1):
             val = kw.get(str(x))
             if val:       
                 http.request.env['op.parent'].sudo().create({
-                        'name': parent_child_rg[x].parent_id.id,
+                        'name': parent_child_rg[x-1].parent_id.id,
                         'student_ids': [(6, 0,student_id)]
                     })
                 
