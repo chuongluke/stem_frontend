@@ -58,9 +58,7 @@ $(document).ready(function() {
 });
 
 function addQuestionClick(){
-	$('.jsabutton').click(function(){
-		$('#questionname').val($('.name-question').val());
-	});
+	$('#questionname').val($('.name-question').val());
 }
 
 function selectChildren() {

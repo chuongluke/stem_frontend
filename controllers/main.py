@@ -78,6 +78,7 @@ class Stem(http.Controller):
                 ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)])
 
         return {
+            'needaction_inbox_counterz': http.request.env['res.partner'].get_needaction_count(),
             'parent': parent,
             'online_free_courses': online_free_courses,
             'my_channels': my_channels,
