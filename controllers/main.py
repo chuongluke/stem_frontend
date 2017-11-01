@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import uuid
 import json
+import uuid
 import werkzeug.utils
 import base64
 import logging
@@ -30,7 +30,17 @@ except ImportError:
 class Stem(http.Controller):
     def get_menu_data(self):
         parent = http.request.env['op.parent'].sudo().search([('name', '=', http.request.env.user.partner_id.id)], limit=1)
-
+        
+        student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
+        student_id = [x.id for x in student]
+        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', '=' ,student_id)])
+        parent_child_sm_id=[x.name for x in parent_child_sm]
+        parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
+        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', '=' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+        parent_child = [x.parent_id for x in parent_child_rg]
+    
+                                                             
+                           
         online_free_courses = http.request.env['op.course'].sudo().search([('online_course', '=', True), ('type', '=', 'free')], limit=3, order='create_date desc')
 
         online_paid_courses = http.request.env['op.course'].sudo().search(                
@@ -73,7 +83,9 @@ class Stem(http.Controller):
             'course_porpular': porpular_courses,
             'events': events, 
             'all_courses': all_courses,
-            'forum_posts': forum_posts
+            'forum_posts': forum_posts,
+            'parent_child': parent_child,
+            'parent_child_sm':parent_child_sm_id
         }
 
     @http.route('/home', auth='user', website=True)
@@ -240,6 +252,30 @@ class Stem(http.Controller):
                 message = 'Xác nhận thành công'
                 alert_type = 'success'
 
+        return http.request.render('stem_frontend_theme.stem_alert', {
+            'message': message,
+            'type': alert_type
+        })
+
+    @http.route('/confirm/parentz', type='http', auth='user', method=['POST'],website=True)
+    def confirm_parentz(self, **kw):
+        student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
+        student_id = [x.id for x in student]
+        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', '=' ,student_id)])
+        parent_child_sm_id=[x.name for x in parent_child_sm]
+        parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
+        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', '=' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+        message='Bạn không chấp nhận phụ huynh nào cả!'
+        for x in range(0, len(parent_child_rg)-1):
+            val = kw.get(str(x))
+            if val:       
+                http.request.env['op.parent'].sudo().create({
+                        'name': parent_child_rg[x].parent_id.id,
+                        'student_ids': [(6, 0,student_id)]
+                    })
+                message = 'Xác nhận thành công'  
+        alert_type = 'success'
+        
         return http.request.render('stem_frontend_theme.stem_alert', {
             'message': message,
             'type': alert_type
@@ -514,7 +550,7 @@ class Stem(http.Controller):
 
     @http.route('/ask', type='http', auth="public", website=True)
     def add_post(self, **kw):
-        data = self.get_menu_data()
+        # data = self.get_menu_data()
         name = kw.get('questionname')
         content = kw.get('questioncontent')
         
@@ -538,7 +574,8 @@ class Stem(http.Controller):
 
         # data.update(values)
 
-        return http.request.render('stem_frontend_theme.stem_home', data)
+        return http.request.redirect('/forum/stem-forum-2')
+
 
     @http.route('''/profile/<int:id>''', type='http',
                 auth="public", website=True)
@@ -582,7 +619,6 @@ class Stem(http.Controller):
             if enrollments:
                 data.update(self.my_course_details(enrollments))
             return http.request.render('stem_frontend_theme.stem_profile_courses', data)
-
 
     def new_access_token(self):
         return uuid.uuid4().hex
@@ -631,8 +667,6 @@ class Stem(http.Controller):
             rate.write({'message_id': msg.id})
 
         return http.request.redirect('/course-detail/' + course_id)
-
-
 class Website(Website):
     @http.route(auth='public')
     def index(self, data={}, **kw):

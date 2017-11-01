@@ -35,6 +35,7 @@
 
 		<template id="stem_home" name="STEM Home">
 			<t t-call="website.layout">
+			     
 				<section class="row">
   	  				<aside class="col-md-2">
   	  					<div class="list-group">
@@ -400,7 +401,26 @@
 		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
 		  						Khóa học của tôi<span class="badge bg-pink"><t t-esc="len(my_courses)"/></span>
 		  					</a>
-
+							
+                            <t t-if="parent_child"> 
+								<a class="list-group-item list-group-item1" data-toggle="modal" data-target="#childModal">
+			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						Xác nhận phụ huynh
+			  					</a>
+							</t>
+							<t t-if="parent_child_sm">
+								<a href="#parent-list" data-toggle="collapse" class="list-group-item list-group-item1">
+			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						Phụ huynh của bạn
+			  					</a>	
+								<div class="list-group list-group-child collapse" id="parent-list">
+									<t t-foreach="parent_child_sm" t-as="parent">
+										<a t-att-href="'/profile/%s/blogs' % (parent.id)" class="list-group-item list-group-item1" t-esc="parent.name" />
+									</t>
+								</div>
+							</t>
+							
+							
 		  					<t t-if="parent">
 		  						<a href="#children-list" data-toggle="collapse" class="list-group-item list-group-item1">
 			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
@@ -815,7 +835,41 @@
 				    	</div>
 				  	</div>
 				</div>
-
+                <div class="modal fade" id="childModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog modal-lg" role="document">
+				    	<div class="modal-content">
+					      	<div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+					        	<h4 class="modal-title">Xác nhận phụ huynh</h4>
+					      	</div>
+				      		<div class="modal-body">
+				      			<form id="childForm" method="POST" action="/confirm/parentz">
+									<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+									<table>
+										<t t-set="number" t-value="0"/>
+										<t t-foreach="parent_child" t-as="parent">
+											<tr>     
+												<th>
+													<input type="checkbox" t-att-name="number" />
+													 <t t-set="number" t-value="number+1"/>
+												</th>
+												<th style="padding-left:10px">
+													<a t-att-href="'/profile/%s/blogs' % (parent.id)" class="list-group-item list-group-item1" t-esc="parent.name" /> 
+												</th>
+											</tr>	
+										</t>
+										
+									</table>	
+				      			</form>
+					      	</div>
+					      	<div class="modal-footer">
+					        	<button type="submit" class="btn btn-primary" form="childForm" >Submit</button>
+					        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					      	</div>
+				    	</div>
+				  	</div>
+				</div>
+				 
 				<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 				  	<div class="modal-dialog" role="document">
 				    	<div class="modal-content">
