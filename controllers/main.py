@@ -717,7 +717,44 @@ class Stem(http.Controller):
         data['forum']=forum
         data['pager']=pager
         return http.request.render('stem_frontend_theme.stem_my_question', data);
-    
+
+    @http.route('/home/session/change_password', type="http", method="POST", auth="user", website=True, csrf=False)
+    def change_password(self, **kw):
+        old_password = kw.get('old_password')
+        new_password = kw.get('new_password')
+        confirm_password = kw.get('confirm_password')
+        result = {}
+        if not (old_password.strip() and new_password.strip() and confirm_password.strip()):
+            result = {
+                'error':'Bạn không thể để trống bất kỳ mật khẩu nào.'
+            }
+            return str(json.dumps(result))
+
+        if new_password != confirm_password:
+            result = {
+                'error': 'Mật khẩu mới không khớp với mật khẩu xác nhận.'
+            }
+            return str(json.dumps(result))
+
+        try:
+            if http.request.env['res.users'].change_password(old_password, new_password):
+                result = {
+                    'success':'Thay đổi mật khẩu thành công.'
+                }
+                return str(json.dumps(result))
+
+        except Exception:
+            result = {
+                'error':'Mật khẩu cũ mà bạn cung cấp không chính xác, mật khẩu của bạn không được thay đổi.'
+            }
+            return str(json.dumps(result))
+
+        result = {
+            'error': 'Error, Mật khẩu của bạn không được thay đổi !'
+        }
+        return str(json.dumps(result))
+
+
 class Website(Website):
     @http.route(auth='public')
     def index(self, data={}, **kw):

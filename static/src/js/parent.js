@@ -57,6 +57,41 @@ $(document).ready(function() {
 
 });
 
+function changePassword(){
+	var old_pwd = $('input[name=old_pwd]').val();
+	var new_password = $('input[name=new_password]').val();
+	var confirm_pwd = $('input[name=confirm_pwd]').val();
+	
+	$.ajax({
+        url: "/home/session/change_password",
+        data:{
+        	"old_password": old_pwd,
+        	"new_password": new_password,
+        	"confirm_password": confirm_pwd
+        },
+        type: "POST",
+        dataType: 'json',
+        traditional: true,
+        success: function(result){
+        	findItem(result);
+		},
+        error: function(result){
+        	findItem(result);
+        }
+
+    });
+
+}
+
+function findItem(result){
+	$('.msg').empty();
+	if(result.error == undefined){
+		$('.msg').append('<p class="alert alert-success">' + result.success + '</p>');
+	}else{
+		$('.msg').append('<p class="alert alert-danger">' + result.error + '</p>');
+	}
+}
+
 function addQuestionClick(){
 	$('#questionname').val($('.name-question').val());
 }

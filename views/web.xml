@@ -196,7 +196,7 @@
 		  	            						</a>
 		  	            					</li>
 		  	            					<li>
-		  	            						<a data-menu="settings" href="#">
+		  	            						<a data-toggle="modal" data-target="#personModal" href="#">
 		  	            							<i class="fa-2x1 MR10 fa fa-cog text-info" aria-hidden="true"></i>Setting
 		  	            						</a>
 		  	            					</li>

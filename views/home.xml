@@ -246,7 +246,7 @@
 										<p class="text-muted MB0">
 											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
 											<span class="MR10 text-danger">
-												<t t-esc="online_paid_course.price"/>
+												<!-- <t t-esc="online_paid_course.price"/> -->
 											</span>
 											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
 											<span class="MR10 text-primary">
@@ -329,6 +329,116 @@
 					    	</div>
 					    </form>
 				  	</div>
+				</div>
+
+				<div class="modal fade" id="personModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog modal-lg" role="document">
+				    	<div class="modal-content">
+					      	<div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+					        	<h4 class="modal-title">Thông tin cá nhân</h4>
+					      	</div>
+				      		<div class="modal-body">
+				      			<div role="tabpanel">
+		                            <ul class="nav nav-tabs" role="tablist">
+		                                <li role="presentation" class="active">
+		                                    <a href="#infomation" data-toggle="tab" role="tab" aria-controls="tab1">Thông tin chung</a>
+		                                </li>
+		                                <li role="presentation">
+		                                    <a href="#password" data-toggle="tab" role="tab" aria-controls="tab2">Đổi mật khẩu</a>
+		                                </li>
+		                                <li role="presentation">
+		                                    <a href="#attmental" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Tài liệu</a>
+		                                </li>
+		                            </ul>
+
+		                            <div id="tabContent1" class="tab-content">
+		                                <div role="tabpanel" class="tab-pane fade in active" id="infomation">
+		                                	<div class="row">
+		                                		<div class="col-md-12">
+		                                			<div class="col-md-2">
+		                                				<img t-att-src="'data:image/png;base64,%s' % (user_id.image_small)"
+	                                                         class="img img-responsive img-circle" style="margin-top: 15px;margin-left: 20px;"/>
+		                                			</div>
+		                                			<div class="col-md-10">
+		                                				<table class="table table-user-information">
+										                    <tbody>
+											                    <tr>
+											                        <td>Họ tên</td>
+											                        <td><t t-esc="user_id.name"/></td>
+											                    </tr>
+									                      		<tr>
+									                        		<td>Ngày sinh</td>
+									                        		<td><t t-esc="user_id.birthday"/></td>
+									                      		</tr>
+									                   
+									                         	<tr>
+									                        		<td>Giới tính</td>
+									                        		<td>
+									                        		<t t-if="user_id.gender == 'male'">Nam</t>
+									                        		<t t-if="user_id.gender == 'female'">Nữ</t>
+									                        		</td>
+									                     		</tr>
+									                        	<tr>
+									                        		<td>Địa chỉ</td>
+									                        		<td>
+									                        			<t t-esc="user_id.partner_id.street"/>,
+									                        			<t t-esc="user_id.partner_id.city"/>
+									                        		</td>
+									                        	</tr>
+									                        	<tr>
+									                        		<td>Email</td>
+									                        		<td><a t-att-href="'mailto:' + user_id.login"><t t-esc="user_id.login"/></a></td>
+									                      		</tr>
+									                        	<tr>
+									                        		<td>Số điện thoại</td>
+									                        		<td><t t-esc="user_id.partner_id.phone"/></td>
+									                      		</tr>
+										                    </tbody>
+										                </table>
+		                                			</div>
+		                                		</div>
+		                                	</div>
+	                                    </div>
+                                    
+		                                <div role="tabpanel" class="tab-pane fade" id="password">
+	                                    	<form t-name="ChangePassword" name="change_password_form" method="POST" style="margin-top: 10px;">
+	                                    		<div class="row">
+												    <div class="col-md-12">
+												    	<div class="msg"></div>
+												        <div class="form-group">
+												        	<label class="control-label">Mật khẩu hiện tại</label>
+												            <input type="password" name="old_pwd" minlength="1" autofocus="autofocus" class="form-control"/>
+											        	</div>
+											            <div class="form-group">
+											            	<label class="control-label">Nhập mật khẩu mới</label>
+											                <input type="password" name="new_password" minlength="1" class="form-control"/>
+											            </div>
+											             <div class="form-group">
+											                <label class="control-label">Nhập lại mật khẩu mới</label>
+											                <input type="password" name="confirm_pwd" minlength="1" class="form-control"/>
+											            </div>
+											            <div class="form-group">
+												        	<button type="button" class="btn btn-primary oe_form_button" onclick="changePassword()">Cập nhật</button>
+												    	</div>
+												    </div>
+												</div>
+											</form>
+	                                    </div>
+                                    
+		                                <div role="tabpanel" class="tab-pane fade" id="attmental">
+	                                    	<div class="row">
+	                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
+	                                    	</div>
+	                                    </div>
+                                    </div>
+                                </div>
+				      		</div>
+				      		<div class="modal-footer">
+					        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					      	</div>
+				      	</div>
+				    </div>
 				</div>
 			</t>
 		</template>
@@ -648,7 +758,7 @@
 										<p class="text-muted MB0">
 											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
 											<span class="MR10 text-danger">
-												<t t-esc="online_paid_course.price"/>
+												<!-- <t t-esc="online_paid_course.price"/> -->
 											</span>
 											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
 											<span class="MR10 text-primary">
@@ -731,6 +841,116 @@
 					    	</div>
 					    </form>
 				  	</div>
+				</div>
+
+				<div class="modal fade" id="personModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog modal-lg" role="document">
+				    	<div class="modal-content">
+					      	<div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+					        	<h4 class="modal-title">Thông tin cá nhân</h4>
+					      	</div>
+				      		<div class="modal-body">
+				      			<div role="tabpanel">
+		                            <ul class="nav nav-tabs" role="tablist">
+		                                <li role="presentation" class="active">
+		                                    <a href="#infomation" data-toggle="tab" role="tab" aria-controls="tab1">Thông tin chung</a>
+		                                </li>
+		                                <li role="presentation">
+		                                    <a href="#password" data-toggle="tab" role="tab" aria-controls="tab2">Đổi mật khẩu</a>
+		                                </li>
+		                                <li role="presentation">
+		                                    <a href="#attmental" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Tài liệu</a>
+		                                </li>
+		                            </ul>
+
+		                            <div id="tabContent1" class="tab-content">
+		                                <div role="tabpanel" class="tab-pane fade in active" id="infomation">
+		                                	<div class="row">
+		                                		<div class="col-md-12">
+		                                			<div class="col-md-2">
+		                                				<img t-att-src="'data:image/png;base64,%s' % (user_id.image_small)"
+	                                                         class="img img-responsive img-circle" style="margin-top: 15px;margin-left: 20px;"/>
+		                                			</div>
+		                                			<div class="col-md-10">
+		                                				<table class="table table-user-information">
+										                    <tbody>
+											                    <tr>
+											                        <td>Họ tên</td>
+											                        <td><t t-esc="user_id.name"/></td>
+											                    </tr>
+									                      		<tr>
+									                        		<td>Ngày sinh</td>
+									                        		<td><t t-esc="user_id.birthday"/></td>
+									                      		</tr>
+									                   
+									                         	<tr>
+									                        		<td>Giới tính</td>
+									                        		<td>
+									                        		<t t-if="user_id.gender == 'male'">Nam</t>
+									                        		<t t-if="user_id.gender == 'female'">Nữ</t>
+									                        		</td>
+									                     		</tr>
+									                        	<tr>
+									                        		<td>Địa chỉ</td>
+									                        		<td>
+									                        			<t t-esc="user_id.partner_id.street"/>,
+									                        			<t t-esc="user_id.partner_id.city"/>
+									                        		</td>
+									                        	</tr>
+									                        	<tr>
+									                        		<td>Email</td>
+									                        		<td><a t-att-href="'mailto:' + user_id.login"><t t-esc="user_id.login"/></a></td>
+									                      		</tr>
+									                        	<tr>
+									                        		<td>Số điện thoại</td>
+									                        		<td><t t-esc="user_id.partner_id.phone"/></td>
+									                      		</tr>
+										                    </tbody>
+										                </table>
+		                                			</div>
+		                                		</div>
+		                                	</div>
+	                                    </div>
+                                    
+		                                <div role="tabpanel" class="tab-pane fade" id="password">
+	                                    	<form t-name="ChangePassword" name="change_password_form" method="POST" style="margin-top: 10px;">
+	                                    		<div class="row">
+												    <div class="col-md-12">
+												    	<div class="msg"></div>
+												        <div class="form-group">
+												        	<label class="control-label">Mật khẩu hiện tại</label>
+												            <input type="password" name="old_pwd" minlength="1" autofocus="autofocus" class="form-control"/>
+											        	</div>
+											            <div class="form-group">
+											            	<label class="control-label">Nhập mật khẩu mới</label>
+											                <input type="password" name="new_password" minlength="1" class="form-control"/>
+											            </div>
+											             <div class="form-group">
+											                <label class="control-label">Nhập lại mật khẩu mới</label>
+											                <input type="password" name="confirm_pwd" minlength="1" class="form-control"/>
+											            </div>
+											            <div class="form-group">
+												        	<button type="button" class="btn btn-primary oe_form_button" onclick="changePassword()">Cập nhật</button>
+												    	</div>
+												    </div>
+												</div>
+											</form>
+	                                    </div>
+                                    
+		                                <div role="tabpanel" class="tab-pane fade" id="attmental">
+	                                    	<div class="row">
+	                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
+	                                    	</div>
+	                                    </div>
+                                    </div>
+                                </div>
+				      		</div>
+				      		<div class="modal-footer">
+					        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					      	</div>
+				      	</div>
+				    </div>
 				</div>
 				
     			<div class="modal fade" id="parentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
