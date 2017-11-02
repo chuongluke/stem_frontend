@@ -55,7 +55,7 @@
 									</ul>
 								
 								</div>	
-								
+								-->
 								<a href="#filterlist" data-toggle="collapse" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										Bộ lọc
@@ -76,7 +76,7 @@
 									</ul>
 								
 								</div>	
-								-->
+								
 								<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										People
@@ -179,43 +179,7 @@
 													</div>
 												</div>
 												
-												<script>
-													$(document).ready(function(){
-														
-														var datapost = [];
-
-														$('.forum-post-list .post-name').each(function(){
-															datapost.push(this.innerText.trim());
-														});
-														
-														var questions = new Bloodhound({
-															datumTokenizer: Bloodhound.tokenizers.whitespace,
-															queryTokenizer: Bloodhound.tokenizers.whitespace,
-															local: datapost
-														});
-
-														questions.initialize();
-
-														$('.name-question').typeahead({
-															hint: false,
-															highlight: true,
-															minLength: 1
-														},
-														{
-															source: questions,
-															templates: {
-																empty: '<a href="#" class="jsabutton" data-toggle="modal" data-target="#addQuestion"><button class="btn btn-default">Đặt câu hỏi</button></a>',
-																suggestion: function(el){
-																	var id = el.split("-")[0]
-																	var html = '<div class="tt-suggestion tt-selectable">'
-																	html += '<a href="/forum/2/question/'+ id +'">' + el +'</a>'
-																	html += '</div>'
-																	return html
-																}
-															}
-														});
-													});
-												</script>
+												
 											
 											</t>
 											
@@ -341,33 +305,8 @@
 					<span t-if="post_type == 'link'" style="display: initial;"> Links</span>
 					<span t-if="post_type == 'discussion'" style="display: initial;"> Threads</span>
 					
-					<small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')">
-						 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<t t-if="filters == 'unanswered'"> Unanswered</t>
-							<t t-if="filters == 'followed'"> Followed</t>
-							<t t-if="tag"> <b t-field="tag.name" style="display: initial;"/></t>
-							
-							<b class="caret"/>
-						 </a>
-						 <ul class="dropdown-menu">
-							<li class="dropdown-header">Filter on</li>
-							<li t-att-class="filters == 'all' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">All</a>
-							</li>
-							<li t-att-class="filters == 'unanswered' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Unanswered</a>
-							</li>
-							<li t-if="uid" t-att-class="filters == 'followed' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Followed</a>
-							</li>
-							<li t-if="tag" class="dropdown-header">Tags</li>
-							<li t-if="tag" t-att-class="tag and 'active' or None ">
-								<a href=""><t t-esc="tag.name"/></a>
-							</li>
-							
-						</ul>
-					</small>
 					<small class="dropdown">
+					    Sort: 
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<t t-if="sorting == 'relevancy desc'"> by relevance</t>
 							<t t-if="sorting == 'name asc'"> by name</t>
@@ -379,7 +318,7 @@
 							<b class="caret"/>
 						</a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header">Sort by</li>
+							<!--<li class="dropdown-header">Sort by</li>-->
 							<li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
 								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='relevancy desc')">Relevance</a>
 							</li>
@@ -403,6 +342,37 @@
 							</li>
 						</ul>
 							
+					</small>
+					
+					<small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')">
+					     Filter on: 
+						 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<t t-if="filters == 'all'"> All</t>
+							<t t-if="filters == 'unanswered'"> Unanswered</t>
+							<t t-if="filters == 'followed'"> Followed</t>
+							
+							<b class="caret"/>
+						 </a>
+						  
+						 <t t-if="tag"> Tag:<b t-field="tag.name" style="display: initial;"/></t>
+						 <ul class="dropdown-menu">
+							
+							<li t-att-class="filters == 'all' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">All</a>
+							</li>
+							<li t-att-class="filters == 'unanswered' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Unanswered</a>
+							</li>
+							<li t-if="uid" t-att-class="filters == 'followed' and 'active' or None ">
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Followed</a>
+							</li>
+							<!--
+							<li t-if="tag" class="dropdown-header">Tags</li>
+							<li t-if="tag" t-att-class="tag and 'active' or None ">
+								<a href=""><t t-esc="tag.name"/></a>
+							</li>
+							-->
+						</ul>
 					</small>
 				</h2>
 			</xpath>
