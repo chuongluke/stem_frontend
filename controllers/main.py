@@ -271,26 +271,31 @@ class Stem(http.Controller):
             'type': alert_type
         })
 
+    
     @http.route('/confirm/parentz', type='http', auth='user', method=['POST'],website=True)
     def confirm_parentz(self, **kw):
-        student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
-        student_id = [x.id for x in student]
-        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', 'in' ,student_id)])
-        parent_child_sm_id=[x.name for x in parent_child_sm]
-        parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
-        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
-        message='Bạn không chấp nhận phụ huynh nào cả!'
-        for x in range(1, len(parent_child_rg)+1):
-            val = kw.get(str(x))
-            if val:       
-                http.request.env['op.parent'].sudo().create({
-                        'name': parent_child_rg[x-1].parent_id.id,
-                        'student_ids': [(6, 0,student_id)]
-                    })
-                
-                message = 'Xác nhận thành công'
-        alert_type = 'success'
-        
+        token = kw.get('token')
+        if token:
+            student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
+            student_id = [x.id for x in student]
+            parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', 'in' ,student_id)])
+            parent_child_sm_id=[x.name for x in parent_child_sm]
+            parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
+            parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+            for x in range(1, len(parent_child_rg)+1):
+                val = kw.get(str(x))
+                if val:       
+                    http.request.env['op.parent'].sudo().create({
+                            'name': parent_child_rg[x-1].parent_id.id,
+                            'student_ids': [(6, 0,student_id)]
+                        })
+            
+            parent_child_rg.unlink() 
+            message = 'Xác nhận thành công'
+            alert_type = 'success'
+        else:
+            message = 'Error'
+            alert_type = 'danger'
         return http.request.render('stem_frontend_theme.stem_alert', {
             'message': message,
             'type': alert_type
@@ -692,10 +697,10 @@ class Stem(http.Controller):
             try:
                 ppg = int(ppg)
             except ValueError:
-                ppg = 10
+                ppg = 5
             post["ppg"] = ppg
         else:
-            ppg = 10
+            ppg = 5
 
             
         forum = request.env['forum.forum'].search([('id', '=', 2)])       

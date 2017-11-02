@@ -266,7 +266,7 @@
       				<aside class="col-md-3">
       	 				<div class="box-bor">
       	 					<h3 class="text-xanh1">
-      	 						<a href="https://beta.stem.vn/blog/cong-ong-stem-vn-1">Tin tức</a>
+      	 						<a href="/blog">Tin tức</a>
       	 					</h3>
 
       	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
@@ -338,6 +338,7 @@
 				<section class="row">
   	  				<aside class="col-md-2">
   	  					<div class="list-group" id="menu">
+						    
 		  					<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
 		  						<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
 		  						<t t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
@@ -370,6 +371,9 @@
 		  					</a>
 						
                             <t t-if="parent_child"> 
+							    <script>
+									alert('Có phụ huynh muốn quản lý bạn. Vui lòng vào Xác nhận phụ huynh để xác nhận! ');
+								</script>
 								<a class="list-group-item list-group-item1" data-toggle="modal" data-target="#childModal">
 			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
 			  						Xác nhận phụ huynh
@@ -664,7 +668,7 @@
       				<aside class="col-md-3">
       	 				<div class="box-bor">
       	 					<h3 class="text-xanh1">
-      	 						<a href="https://beta.stem.vn/blog/cong-ong-stem-vn-1">Tin tức</a>
+      	 						<a href="/blog">Tin tức</a>
       	 					</h3>
 
       	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
@@ -770,7 +774,7 @@
 				  	</div>
 				</div>
                 <div class="modal fade" id="childModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-				  	<div class="modal-dialog modal-lg" role="document">
+				  	<div class="modal-dialog" role="document">
 				    	<div class="modal-content">
 					      	<div class="modal-header">
 					        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
@@ -779,16 +783,17 @@
 				      		<div class="modal-body">
 				      			<form id="childForm" method="POST" action="/confirm/parentz">
 									<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-									<table>
+									<input type="hidden" name="token" value="111"/>
+									<table class="table table-hover table-stripped" style="width: 100%">
 										<t t-set="number" t-value="1"/>
 										<t t-foreach="parent_child" t-as="parent">
 											<tr>     
-												<th>
-													<input type="checkbox" t-att-name="number" />
+												<th class="action">
+													<input class="mt16" type="checkbox" t-att-name="number"  />
 													 <t t-set="number" t-value="number+1"/>
 												</th>
-												<th style="padding-left:10px">
-													<a t-att-href="'/profile/%s/blogs' % (parent.id)" class="list-group-item list-group-item1" t-esc="parent.name" /> 
+												<th>
+													<a  t-att-href="'/profile/%s/blogs' % (parent.id)" class="list-group-item list-group-item1" t-esc="parent.name" style="margin-left:50px" /> 
 												</th>
 											</tr>	
 										</t>

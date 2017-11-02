@@ -3,7 +3,83 @@
 	<data>
 		<template id="stem_my_question" name="STEM My question">
 			<t t-call="stem_frontend_theme.stem_profile">
-			    <div>
+				<div class="box-bor MB20">
+					<div>
+						<h3>Tri thức STEM</h3>
+					</div>
+					<div>
+						<div>
+							<div>
+								<div class="form-group">
+									<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+									<span class="input-question-btn-search">
+										<button type="button" class="btn btn-search-question" disabled="disabled">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="forum-post-list" style="display: none;">
+					<t t-foreach="question_ids" t-as="post">
+						<div class="post-name">
+							<t t-esc="post.id"/> - <t t-esc="post.name"/>
+						</div>
+					</t>
+				</div>
+				<div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+					<div class="modal-dialog modal-lg" role="document">
+						<form id="questionForm" method="POST" action="/ask">
+							<div class="modal-content">
+								<div class="modal-header" style="height: 57px;">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+									<h4 class="modal-title">
+										<div class="fake_reason">
+											<span>
+												<span>
+													<span class="photo_tooltip">
+														<a href="#">
+															<img class="profile_photo_img" t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" t-att-alt="user_id.name" width="50" height="50"/>
+														</a>
+													</span>
+												</span>
+												<span>
+													<span>
+														<a class="user-question" href="#">
+															<t t-esc="user_id.name"/>
+														</a>
+													</span>
+												</span>
+											</span>
+										</div>
+									</h4>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+										<div class="col-md-12">
+											<div class="form-group cspan">
+												<label class="control-label">Tiêu đề</label><br/>
+												<input type="name" class="form-control" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
+											</div>
+											<div class="form-group">
+												<label for="exampleFormControlTextareal">Nội dung</label>
+												<textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+											  </div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="submit" class="btn btn-primary" form="questionForm">Đặt câu hỏi</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div>
 					<h2><t t-esc="len(my_questions)"/> Câu hỏi</h2>
 				</div>
 				<div class="mb16" t-foreach="my_question_ids" t-as="question">
