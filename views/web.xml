@@ -16,7 +16,7 @@
 			  						<li><a href="/">Trang chủ</a></li>
 			  						<li><a href="/page/gioi-thieu">Giới thiệu</a></li>
 			  						<li><a href="/courses">Khóa học</a></li>
-			  						<li><a href="/blog">Tin tức</a></li>
+			  						<li><a href="/blog/cong-ong-stem-vn-1">Tin tức</a></li>
 			  						<li><a href="/event">Sự kiện</a></li>
 			  						<li><a href="/page/contactus">Liên hệ</a></li>
 			  						<li><a href="/web/content/4477?download=1">Mobile</a></li>
@@ -97,6 +97,7 @@
 							        <li>
 							        	<a class="text-trang hover" href="/">Trang chủ</a>
 							        </li>
+									<!--
 									<li>
 							        	<a class="text-trang hover" href="/home/my-mes">
 											Thông báo
@@ -104,7 +105,7 @@
 										</a>
 							        </li>
 
-							        <!-- <li class="dropdown">
+							         <li class="dropdown">
  	          							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
  	          								<i class="fa fa-envelope-o MT5"></i>
                 							<span class="badge badge-sm up bg-pink count">4</span>
