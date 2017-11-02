@@ -22,7 +22,7 @@
 								
 								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Tri thức STEM<span class="badge bg-pink"></span>
+										Trang chủ<span class="badge bg-pink"></span>
 								</a>							
 								<!--
 								<a href="#sortlist" data-toggle="collapse" class="list-group-item list-group-item1">
@@ -55,7 +55,7 @@
 									</ul>
 								
 								</div>	
-								-->
+								
 								<a href="#filterlist" data-toggle="collapse" class="list-group-item list-group-item1">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										Bộ lọc
@@ -76,7 +76,7 @@
 									</ul>
 								
 								</div>	
-								
+								-->
 								<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
 										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
 										People
@@ -104,7 +104,7 @@
 										    <t t-if="question_ids">
 												<div class="box-bor MB20">
 												    <div>
-														<h3>Tri thức STEM</h3>
+														<h3>Tìm kiếm</h3>
 													</div>
 													<div>
 														<div>
@@ -206,6 +206,8 @@
 											<t t-raw="0"/>
 										</div>
 										<div class="col-sm-3" id="right-column">
+										
+										     <!---
 										    <div>
 												<form class="navbar-form mb16" style="padding:0px 0px;" role="search" t-attf-action="/forum/#{ slug(forum) }" method="get">
 													<t t-call="website.website_search_box"/>
@@ -213,6 +215,7 @@
 													
 												</form>
 											</div>
+											-->
 											<div t-if="not header.get('ask_hide')" t-attf-class="btn-group btn-block mb16 #{(user.karma &lt; forum.karma_ask) and not is_public_user and 'karma_required' or ''}" t-attf-data-karma="#{forum.karma_ask}">
 												<t t-set="multi_type" t-value="(forum.allow_link and forum.allow_question) or (forum.allow_link and forum.allow_discussion) or (forum.allow_question and forum.allow_discussion)"/>
 												<a type="button"  t-attf-class="btn btn-primary btn-lg #{'col-sm-10' if multi_type else 'col-sm-12'}" t-attf-href="/forum/#{slug(forum)}/ask?post_type=#{forum.default_post_type}">
@@ -305,7 +308,7 @@
 					<span t-if="post_type == 'link'" style="display: initial;"> Links</span>
 					<span t-if="post_type == 'discussion'" style="display: initial;"> Threads</span>
 					
-					<small class="dropdown">
+					<small class="dropdown" style="margin-left: 20px;">
 					    Sort: 
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<t t-if="sorting == 'relevancy desc'"> by relevance</t>
@@ -344,17 +347,21 @@
 							
 					</small>
 					
-					<small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')">
+					<small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')" style="margin-left: 20px;">
 					     Filter on: 
 						 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<t t-if="filters == 'all'"> All</t>
+							<t t-if="filters in ('all','tag')"> All</t>
 							<t t-if="filters == 'unanswered'"> Unanswered</t>
 							<t t-if="filters == 'followed'"> Followed</t>
 							
-							<b class="caret"/>
+							<b class="caret" style="margin-right: 20px;"/>
 						 </a>
-						  
-						 <t t-if="tag"> Tag:<b t-field="tag.name" style="display: initial;"/></t>
+						 
+						 <t t-if="tag" > 
+						    Tag:
+							<b t-field="tag.name" style="display: initial;"/>
+						 </t>
+						
 						 <ul class="dropdown-menu">
 							
 							<li t-att-class="filters == 'all' and 'active' or None ">
