@@ -124,7 +124,7 @@ class Stem(http.Controller):
         return http.request.redirect('/blog/cong-ong-stem-1')
 
     @http.route('/forum', auth='public',website=True)
-    def view_blog(self):
+    def view_forum(self):
         return http.request.redirect('/forum/stem-forum-2')
     
     @http.route('/home/my-courses', auth='user', website=True)
