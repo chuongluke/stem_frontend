@@ -103,6 +103,17 @@
   	  								</div>
   	  							</div>
   	  						</div>
+							
+							<div class="box-bor MB20">
+			  	    			<h3 class="text-xanh1">
+			  	    				<a href="/forum">Câu hỏi mới nhất</a>
+			  	    			</h3>
+
+			  	    			<div class="mb16" t-foreach="questions" t-as="question">
+									<t t-call="stem_frontend_theme.stem_display_post"/>
+								</div>
+	          				</div>
+							
 			  				<div class="box-bor MB20">
 			  	    			<h3 class="text-xanh1">
 			  	    				<a href="#">Khóa học trực tuyến Miễn phí</a>
@@ -492,7 +503,7 @@
 							<t t-if="parent_child_sm">
 								<a href="#p-list" data-toggle="collapse" class="list-group-item list-group-item1">
 			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
-			  						Phụ huynh của bạn
+			  						Phụ huynh của tôi
 			  					</a>	
 								<div class="list-group list-group-child collapse" id="p-list">
 									<t t-foreach="parent_child_sm" t-as="p">
@@ -567,10 +578,25 @@
   	  								</div>
   	  							</div>
   	  						</div>
-  	  						<!-- my courses -->
+  	  						
+							<div class="box-bor MB20">
+			  	    			<h3 class="text-xanh1">
+			  	    				<a href="/home/my-question">Câu hỏi của tôi</a>
+			  	    			</h3>
+								<t t-set="nb" t-value="0"/>
+								
+								<div class="mb16" t-foreach="my_questions" t-as="question">
+									<t t-if="nb!=5">	
+										<t t-set="nb" t-value="nb+1"/>
+										<t t-call="stem_frontend_theme.stem_display_post"/>
+									</t>	
+								</div>
+								
+	          				</div>
+							<!-- my courses -->
   	  						<div class="box-bor MB20">
 			  	    			<h3 class="text-xanh1">
-			  	    				<a href="#">Khóa học của tôi</a>
+			  	    				<a href="/home/my-courses">Khóa học của tôi</a>
 			  	    			</h3>
 
 			    				<t t-if="not my_courses">
@@ -1022,13 +1048,22 @@
 				      			</form>
 					      	</div>
 					      	<div class="modal-footer">
-					        	<button type="submit" class="btn btn-primary" form="childForm" >Submit</button>
+					        	<button type="submit" class="btn btn-primary" form="childForm" data-toggle="modal" data-target="#Successmodal" >Submit</button>
+								
 					        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					      	</div>
 				    	</div>
 				  	</div>
 				</div>
-				 
+				 <div class="modal fade" id="Successmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+				  	<div class="modal-dialog" role="document">
+				    	<div class="modal-content">
+					      	<div class="modal-header">
+					        	<h3 class="modal-title">Xác nhận thành công</h3>
+					      	</div>
+				    	</div>
+				  	</div>
+				</div>
 				<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 				  	<div class="modal-dialog" role="document">
 				    	<div class="modal-content">
