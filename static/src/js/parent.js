@@ -86,6 +86,7 @@ function changePassword(){
 function findItem(result){
 	$('.msg').empty();
 	if(result.error == undefined){
+		$("input[type='password']").val('');
 		$('.msg').append('<p class="alert alert-success">' + result.success + '</p>');
 	}else{
 		$('.msg').append('<p class="alert alert-danger">' + result.error + '</p>');
