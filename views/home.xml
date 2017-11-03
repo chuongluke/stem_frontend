@@ -490,7 +490,7 @@
 			  					</a>
 							</t>
 							<t t-if="parent_child_sm">
-								<a href="#parent-list" data-toggle="collapse" class="list-group-item list-group-item1">
+								<a href="#p-list" data-toggle="collapse" class="list-group-item list-group-item1">
 			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
 			  						Phụ huynh của bạn
 			  					</a>	
