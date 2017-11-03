@@ -57,6 +57,7 @@ class Stem(http.Controller):
             my_courses = self.my_course_details(enrollments)
 
         forums = http.request.env['forum.forum'].sudo().search([])
+        forum = http.request.env['forum.forum'].sudo().search([('id', '=', 2)])
 
         posts = http.request.env['blog.post'].sudo().search([('website_published', '=', True)])
 
@@ -75,7 +76,11 @@ class Stem(http.Controller):
         
         my_question = request.env['forum.post'].search([
                 ('parent_id', '=', False),
-                ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)])
+                ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)],order='relevancy desc')
+				
+        questions = request.env['forum.post'].search([
+                ('parent_id', '=', False),
+                ('forum_id', '=', 2)], limit=5,order='create_date desc')
 
         return {
             'needaction_inbox_counterz': http.request.env['res.partner'].get_needaction_count(),
@@ -84,7 +89,9 @@ class Stem(http.Controller):
             'my_channels': my_channels,
             'my_courses': my_courses,
             'my_questions':my_question,
+            'questions':questions,
             'forums': forums,
+            'forum': forum,
             'posts': posts,
             'online_paid_courses': online_paid_courses, 
             'course_porpular': porpular_courses,
@@ -290,16 +297,8 @@ class Stem(http.Controller):
                             'student_ids': [(6, 0,student_id)]
                         })
             
-            parent_child_rg.unlink() 
-            message = 'Xác nhận thành công'
-            alert_type = 'success'
-        else:
-            message = 'Error'
-            alert_type = 'danger'
-        return http.request.render('stem_frontend_theme.stem_alert', {
-            'message': message,
-            'type': alert_type
-        })
+            parent_child_rg.unlink()
+	return http.request.redirect('/home')
             
         
     @http.route('/home/my-blogs', auth='user', website=True)
