@@ -4,8 +4,8 @@
     "category": "Themes/Frontend",
     "author": "BU1 - DTT",
     "website": "http://dtt.vn",
-	"description": """
-		STEM Frontend Theme
+    "description": """
+        STEM Frontend Theme
     """,
     "author": "BU1 - DTT",
     "external_dependencies": {
@@ -51,7 +51,7 @@
         'views/profile.xml',
         'views/profile_blogs.xml',
         'views/profile_courses.xml',
-		'views/my_question.xml'
+        'views/my_question.xml'
     ],
 }
 

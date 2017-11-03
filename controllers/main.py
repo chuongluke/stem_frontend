@@ -77,7 +77,7 @@ class Stem(http.Controller):
         my_question = request.env['forum.post'].search([
                 ('parent_id', '=', False),
                 ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)],order='relevancy desc')
-				
+                
         questions = request.env['forum.post'].search([
                 ('parent_id', '=', False),
                 ('forum_id', '=', 2)], limit=5,order='create_date desc')
@@ -298,7 +298,7 @@ class Stem(http.Controller):
                         })
             
             parent_child_rg.unlink()
-	return http.request.redirect('/home')
+    return http.request.redirect('/home')
             
         
     @http.route('/home/my-blogs', auth='user', website=True)
@@ -940,7 +940,7 @@ class SignupVerifyEmail(AuthSignupHome):
 
         qcontext["message"] = _("Kiểm tra email của bạn để kích hoạt tài khoản của bạn!")
         return http.request.render("auth_signup.reset_password", qcontext)
-		
+        
 class WebsiteForums(http.Controller):
     @http.route('/forum/<model("forum.forum"):forum>/user/<model("res.users"):user>/saved', type='http', auth="user", methods=['POST'], website=True)
     def save_edited_profiles(self, forum, user, **kwargs):
