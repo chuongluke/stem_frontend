@@ -246,7 +246,7 @@
 										<p class="text-muted MB0">
 											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
 											<span class="MR10 text-danger">
-												<!-- <t t-esc="online_paid_course.price"/> -->
+												<t t-esc="online_paid_course.price"/>
 											</span>
 											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
 											<span class="MR10 text-primary">
@@ -758,7 +758,7 @@
 										<p class="text-muted MB0">
 											<i class="MR5 fa fa-usd" aria-hidden="true"></i>
 											<span class="MR10 text-danger">
-												<!-- <t t-esc="online_paid_course.price"/> -->
+												<t t-esc="online_paid_course.price"/>
 											</span>
 											<i class="MR5 fa fa-eye" aria-hidden="true"></i>
 											<span class="MR10 text-primary">
