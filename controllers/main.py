@@ -298,7 +298,7 @@ class Stem(http.Controller):
                         })
             
             parent_child_rg.unlink()
-    return http.request.redirect('/home')
+        return http.request.redirect('/home')
             
         
     @http.route('/home/my-blogs', auth='user', website=True)
