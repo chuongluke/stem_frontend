@@ -400,4 +400,13 @@ body {
     border-top: 0;
     padding: 10px !important;
 }
+
+.table-user-information tbody tr td:last-child {
+    text-align: right;
+}
+
+.table-user-information tbody tr td:nth-child(2) {
+    max-width: 70% !important;
+    width: 70%;
+}
 /* end custom for stem */
