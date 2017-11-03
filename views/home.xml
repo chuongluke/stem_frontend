@@ -347,9 +347,11 @@
 		                                <li role="presentation">
 		                                    <a href="#password" data-toggle="tab" role="tab" aria-controls="tab2">Đổi mật khẩu</a>
 		                                </li>
-		                                <li role="presentation">
-		                                    <a href="#attmental" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Tài liệu</a>
-		                                </li>
+		                                <t t-if="user_id.partner_id.employee == True">
+			                                <li role="presentation">
+			                                    <a href="#attmental" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Tài liệu</a>
+			                                </li>
+		                            	</t>
 		                            </ul>
 
 		                            <div id="tabContent1" class="tab-content">
@@ -426,11 +428,13 @@
 											</form>
 	                                    </div>
                                     
-		                                <div role="tabpanel" class="tab-pane fade" id="attmental">
-	                                    	<div class="row">
-	                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
-	                                    	</div>
-	                                    </div>
+		                                <t t-if="user_id.partner_id.employee == True">
+			                                <div role="tabpanel" class="tab-pane fade" id="attmental">
+		                                    	<div class="row">
+		                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
+		                                    	</div>
+		                                    </div>
+		                                </t>
                                     </div>
                                 </div>
 				      		</div>
@@ -859,9 +863,11 @@
 		                                <li role="presentation">
 		                                    <a href="#password" data-toggle="tab" role="tab" aria-controls="tab2">Đổi mật khẩu</a>
 		                                </li>
-		                                <li role="presentation">
-		                                    <a href="#attmental" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Tài liệu</a>
-		                                </li>
+		                                <t t-if="user_id.partner_id.employee == True">
+			                                <li role="presentation">
+			                                    <a href="#attmental" class="course-comments" data-toggle="tab" role="tab" aria-controls="tab2">Tài liệu</a>
+			                                </li>
+		                            	</t>
 		                            </ul>
 
 		                            <div id="tabContent1" class="tab-content">
@@ -938,11 +944,13 @@
 											</form>
 	                                    </div>
                                     
-		                                <div role="tabpanel" class="tab-pane fade" id="attmental">
-	                                    	<div class="row">
-	                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
-	                                    	</div>
-	                                    </div>
+		                                <t t-if="user_id.partner_id.employee == True">
+			                                <div role="tabpanel" class="tab-pane fade" id="attmental">
+		                                    	<div class="row">
+		                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
+		                                    	</div>
+		                                    </div>
+		                                </t>
                                     </div>
                                 </div>
 				      		</div>
