@@ -48,6 +48,25 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.x-name-question').typeahead({
+		hint: false,
+		highlight: true,
+		minLength: 1
+		},
+		{
+		source: questions,
+		templates: {
+			empty: '<form method="POST" action="/ask"><input type="hidden" name="questionname"/><input type="hidden" name="questioncontent"/><div class="jsabutton"><button type="submit" class="btn btn-default" onclick="askQuestionClick(this)">Đặt câu hỏi</button></div></form>',
+		    suggestion: function(el){
+		    	var id = el.split("-")[0];
+		    	var html = '<div class="tt-suggestion tt-selectable">';
+		    	html += '<a href="/forum/2/question/'+ id +'">' + el +'</a>';
+		    	html += '</div>';
+		    	return html;
+		    }
+		}
+	});
+
 	//------------------------------------------
 
 	if ($('[name=bd_year] option').length) {
@@ -94,6 +113,12 @@ function findItem(result){
 
 function addQuestionClick(){
 	$('#questionname').val($('.name-question').val());
+}
+
+function askQuestionClick(elm){
+	var question = $('.x-name-question').val();
+	$(elm).parent().parent().find('input[name="questionname"]').val(question);
+	$(elm).parent().parent().find('input[name="questioncontent"]').val(question);
 }
 
 function selectChildren() {

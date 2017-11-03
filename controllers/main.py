@@ -567,7 +567,7 @@ class Stem(http.Controller):
         return http.request.render("stem_frontend_theme.my_courses_teach", data)
 
 
-    @http.route('/ask', type='http', auth="public", website=True)
+    @http.route('/ask', type='http', auth="public", website=True, csrf=False)
     def add_post(self, **kw):
         # data = self.get_menu_data()
         name = kw.get('questionname')

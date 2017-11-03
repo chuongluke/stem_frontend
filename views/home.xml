@@ -91,7 +91,7 @@
   	  												</span>
   	  											</div>
   	  											<div class="form-group">
-  	  												<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+  	  												<input type="text" class="x-name-question form-control" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
   	  												<span class="input-question-btn-search">
 								                        <button type="button" class="btn btn-search-question" disabled="disabled">
 								                            <i class="fa fa-search"></i>
@@ -566,7 +566,7 @@
   	  												<h3>TRI THỨC STEM</h3>
   	  											</span>
   	  											<div class="form-group">
-  	  												<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+  	  												<input type="text" class="x-name-question form-control" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
   	  												<span class="input-question-btn-search">
 								                        <button type="button" class="btn btn-search-question" disabled="disabled">
 								                            <i class="fa fa-search"></i>
