@@ -364,6 +364,10 @@ body {
 	height: 45px;
 }
 
+.x-name-question {
+	height: 45px;
+}
+
 .input-question-btn-search {
 	float: right;
 	top: -36px;
