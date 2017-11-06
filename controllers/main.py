@@ -754,6 +754,57 @@ class Stem(http.Controller):
         return str(json.dumps(result))
 
 
+    @http.route('/home/session/change_profile', type="http", method="POST", auth="user", website=True, csrf=False)
+    def change_profile(self, **kw):
+        value_edit = kw.get('value')
+        model_edit = kw.get('model')
+        fields_edit = kw.get('fields')
+        editfield = kw.get('editfield')
+        result = {}
+        value_s = value_edit.encode('utf-8').strip()
+        model_s = model_edit.encode('utf-8').strip()
+        fields_s = fields_edit.encode('utf-8').strip()
+        editfield_s = editfield.encode('utf-8').strip()
+
+
+        if not value_s:
+            result = {
+                'error':'Bạn không thể để trống ' + editfield_s + '.'
+            }
+            return str(json.dumps(result))
+
+        try:
+            if model_s == 'res.partner':
+                partner = http.request.env['res.partner'].sudo().browse(http.request.env.user.partner_id.id)
+                partner.write({fields_s: value_s})
+                
+
+            if model_s == 'res.users':
+                user = http.request.env['res.users'].sudo().browse(http.request.env.user.id)
+                user.write({fields_s: value_s})
+
+                if fields_s == 'login':
+                    user.partner_id.write({'email': value_s})
+
+                
+            result = {
+                'success':'Thay đổi '+ editfield_s +' thành công.',
+                'values': value_s
+            }
+            return str(json.dumps(result))
+
+        except Exception:
+            result = {
+                'error':'Thông tin mà bạn cung cấp không chính xác, thông tin của bạn không được thay đổi.'
+            }
+            return str(json.dumps(result))
+
+        result = {
+            'error':'Thông tin của bạn không được thay đổi.'
+        }
+        return str(json.dumps(result))
+
+
 class Website(Website):
     @http.route(auth='public')
     def index(self, data={}, **kw):

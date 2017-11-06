@@ -197,7 +197,7 @@
 		  	            					</li>
 		  	            					<li>
 		  	            						<a data-toggle="modal" data-target="#personModal" href="#">
-		  	            							<i class="fa-2x1 MR10 fa fa-cog text-info" aria-hidden="true"></i>Setting
+		  	            							<i class="fa-2x1 MR10 fa fa-cog text-info" aria-hidden="true"></i>Thông tin cá nhân
 		  	            						</a>
 		  	            					</li>
 		  	            					<li t-ignore="true" t-if="website.user_id != user_id">
@@ -216,7 +216,7 @@
 					    	<div class="modal-content">
 						      	<div class="modal-header">
 						        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
-						        	<h4 class="modal-title">Thông tin cá nhân</h4>
+						        	<h4 class="modal-title" style="color: #198a66;">Thông tin cá nhân</h4>
 						      	</div>
 					      		<div class="modal-body">
 					      			<div role="tabpanel">
@@ -240,47 +240,83 @@
 			                                		<div class="col-md-12">
 			                                			<div class="col-md-2">
 			                                				<img t-att-src="'data:image/png;base64,%s' % (user_id.image_small)"
-		                                                         class="img img-responsive img-circle" style="margin-top: 15px;margin-left: 20px;"/>
+		                                                         class="img img-responsive" style="margin-top: 15px;margin-left: 20px;"/>
 			                                			</div>
 			                                			<div class="col-md-10">
+			                                				<div class="msg-info"></div>
 			                                				<table class="table table-user-information">
 											                    <tbody>
 												                    <tr>
 												                        <td>Họ tên</td>
-												                        <td><t t-esc="user_id.name"/></td>
-												                        <td><a><i class="fa fa-pencil"></i>Edit</a></td>
+												                        <td  class="res.partner-name">
+												                        	<t t-esc="user_id.name"/>
+												                        </td>
+												                        <td>
+												                        	<a onclick="editButton(this)">
+												                        		<i class="fa fa-pencil"></i>
+												                        		Edit
+												                        	</a>
+												                        </td>
 												                    </tr>
 										                      		<tr>
 										                        		<td>Ngày sinh</td>
-										                        		<td><t t-esc="user_id.birthday"/></td>
-										                        		<td><a><i class="fa fa-pencil"></i>Edit</a></td>
+										                        		<td class="res.users-birthday">
+										                        			<t t-esc="user_id.birthday"/>
+										                        		</td>
+										                        		<td>
+										                        			<a onclick="editButton(this)">
+										                        				<i class="fa fa-pencil"></i> Edit
+										                        			</a>
+										                        		</td>
 										                      		</tr>
 										                   
 										                         	<tr>
 										                        		<td>Giới tính</td>
-										                        		<td>
-										                        		<t t-if="user_id.gender == 'male'">Nam</t>
-										                        		<t t-if="user_id.gender == 'female'">Nữ</t>
+										                        		<td class="res.users-gender">
+										                        			<t t-if="user_id.gender == 'male'">Nam</t>
+										                        			<t t-if="user_id.gender == 'female'">Nữ</t>
 										                        		</td>
-										                        		<td><a><i class="fa fa-pencil"></i>Edit</a></td>
+										                        		<td>
+										                        			<a onclick="editButton(this)">
+										                        				<i class="fa fa-pencil"></i>
+										                        				Edit
+										                        			</a>
+										                        		</td>
 										                     		</tr>
 										                        	<tr>
 										                        		<td>Địa chỉ</td>
-										                        		<td>
-										                        			<t t-esc="user_id.partner_id.street"/>,
-										                        			<t t-esc="user_id.partner_id.city"/>
+										                        		<td class="res.partner-street">
+										                        			<t t-esc="user_id.partner_id.street"/>
 										                        		</td>
-										                        		<td><a><i class="fa fa-pencil"></i>Edit</a></td>
+										                        		<td>
+										                        			<a onclick="editButton(this)">
+										                        				<i class="fa fa-pencil"></i>
+										                        				Edit
+										                        			</a>
+										                        		</td>
 										                        	</tr>
 										                        	<tr>
 										                        		<td>Email</td>
-										                        		<td><a t-att-href="'mailto:' + user_id.login"><t t-esc="user_id.login"/></a></td>
-										                        		<td><a><i class="fa fa-pencil"></i>Edit</a></td>
+										                        		<td class="res.users-login">
+										                        			<t t-esc="user_id.login"/></td>
+										                        		<td>
+										                        			<a onclick="editButton(this)">
+										                        				<i class="fa fa-pencil"></i>
+										                        				Edit
+										                        			</a>
+										                        		</td>
 										                      		</tr>
 										                        	<tr>
 										                        		<td>Số điện thoại</td>
-										                        		<td><t t-esc="user_id.partner_id.phone"/></td>
-										                        		<td><a><i class="fa fa-pencil"></i>Edit</a></td>
+										                        		<td class="res.partner-phone">
+										                        			<t t-esc="user_id.partner_id.phone"/>
+										                        		</td>
+										                        		<td>
+										                        			<a onclick="editButton(this)">
+										                        				<i class="fa fa-pencil"></i>
+										                        				Edit
+										                        			</a>
+										                        		</td>
 										                      		</tr>
 											                    </tbody>
 											                </table>
@@ -295,15 +331,15 @@
 													    <div class="col-md-12">
 													    	<div class="msg"></div>
 													        <div class="form-group">
-													        	<label class="control-label">Mật khẩu hiện tại</label>
+													        	<p>Mật khẩu hiện tại</p>
 													            <input type="password" name="old_pwd" minlength="1" autofocus="autofocus" class="form-control"/>
 												        	</div>
 												            <div class="form-group">
-												            	<label class="control-label">Nhập mật khẩu mới</label>
+												            	<p>Nhập mật khẩu mới</p>
 												                <input type="password" name="new_password" minlength="1" class="form-control"/>
 												            </div>
 												             <div class="form-group">
-												                <label class="control-label">Nhập lại mật khẩu mới</label>
+												                <p>Nhập lại mật khẩu mới</p>
 												                <input type="password" name="confirm_pwd" minlength="1" class="form-control"/>
 												            </div>
 												            <div class="form-group">
@@ -317,7 +353,17 @@
 			                                <t t-if="user_id.partner_id.employee == True">
 				                                <div role="tabpanel" class="tab-pane fade" id="attmental">
 			                                    	<div class="row">
-			                                    		<p class="alert alert-success">Xin chân thành xin lỗi quý khách. Thông tin đang được cập nhật. Vui lòng quay lại sau.</p>
+			                                    		<div class="col-md-12">
+			                                    			<div class="msg-att">
+			                                    				<p class="alert alert-danger">Chức năng đang được phát triển.</p>
+			                                    			</div>
+													        <!-- <div class="form-group">
+													        	<form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+													        		<p>Giấy tờ liên quan</p>
+													            	<input type="file" name="attachment" multiple="true" data-show-upload="true" data-show-caption="true" lass="file" data-show-preview="true" class="form-control"/>
+													            </form>
+												        	</div> -->
+			                                    		</div>
 			                                    	</div>
 			                                    </div>
 			                                </t>

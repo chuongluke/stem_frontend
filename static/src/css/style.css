@@ -393,7 +393,7 @@ body {
 }
 
 .table-user-information tbody tr {
-    border-top: 1px solid rgb(221, 221, 221);
+    border-bottom: 1px solid rgb(221, 221, 221);
 }
 
 .table-user-information tbody tr:first-child {
