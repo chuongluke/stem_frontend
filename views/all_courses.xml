@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_all_courses" name="STEM Courses">
+			<t t-call="stem_frontend_theme.stem_home">
+				<div class="box-bor MB20">
+					<h3 class="text-xanh1">
+			  	    	<a href="#">Khóa học</a>
+			  	    </h3>
+					<t t-if="not all_courses">
+						<div class="MB20">
+							<p>Không có khóa học nào.</p>
+						</div>	
+					</t>
+					<t t-if="all_courses">
+						<t t-foreach="course_ids" t-as="course">
+							<div t-attf-class="MB20 {{ '' if course_index == 0 else 'course-container' }}">
+								<img t-if="not course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+								<img t-if="course.image" t-attf-src="/web/image/op.course/#{course.id}/image" class="img-responsive" />
+
+								<h4 class="MB5">
+									<a t-attf-href="/course-detail/#{slug(course)}"
+										t-esc="course.name"/>
+								</h4>
+								<p class="text-a">
+									Giáo viên:
+									<t t-foreach="course.faculty_ids"
+										   t-as="faculty">
+										<span t-raw="faculty.name"/>
+									</t>
+								</p>
+								<p class="text-a" t-raw="course.short_description"></p>
+								<p class="text-muted MB0">
+									<i class="MR5 fa fa-usd" aria-hidden="true"></i>
+									<t t-if="course.type=='free'">
+										<span class="MR10 text-danger">Miễn phí</span>
+									</t>
+									<t t-if="course.type=='paid'">
+										<span class="MR10 text-danger"><t t-esc="course.price"/></span>
+									</t>
+									<i class="MR5 fa fa-eye" aria-hidden="true"></i>
+									<span class="MR10 text-primary">
+										<t t-esc="len(course.course_enrollment_ids)"/>
+									</span>
+									<i class="MR5 fa fa-star-half-o" aria-hidden="true"></i>
+									<span class="text-vang">
+										<t t-esc="course.rating_last_value"/>
+									</span>
+								</p>
+							</div>
+						</t>
+					</t>
+					<t t-call="website.pager"/>
+			    </div>
+			</t>
+		</template>
+    </data>
+</odoo>
