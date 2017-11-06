@@ -56,7 +56,7 @@ $(document).ready(function() {
 		{
 		source: questions,
 		templates: {
-			empty: '<form method="POST" action="/ask"><input type="hidden" name="questionname"/><input type="hidden" name="questioncontent"/><div class="jsabutton"><button type="submit" class="btn btn-default" onclick="askQuestionClick(this)">Đặt câu hỏi</button></div></form>',
+			empty: '<form method="POST" action="/ask"><input type="hidden" name="questionname"/><input type="hidden" name="questioncontent"/><div class="jsabutton"><button type="submit" class="btn btn-danger" onclick="askQuestionClick(this)">Đặt câu hỏi nhanh</button><a href="#" onclick="addQuestionClick()" data-toggle="modal" data-target="#addQuestion" style="margin-left: 5px;"><button class="btn btn-default">Đặt câu hỏi</button></a></div></form>',
 		    suggestion: function(el){
 		    	var id = el.split("-")[0];
 		    	var html = '<div class="tt-suggestion tt-selectable">';
