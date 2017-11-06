@@ -97,4 +97,29 @@ $(function () {
 
   $('[data-toggle="datepicker"]').datepicker();
   $('[data-toggle="tooltip"]').tooltip();
+  $('textarea.load_editor').each(function () {
+        var $textarea = $(this);
+        if (!$textarea.val().match(/\S/)) {
+            $textarea.val("<p><br/></p>");
+        }
+        var $form = $textarea.closest('form');
+        var toolbar = [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['history', ['undo', 'redo']],
+				['insert', ['link', 'picture']],
+            ];
+        $textarea.summernote({
+                height: 150,
+                toolbar: toolbar,
+                styleWithSpan: false
+            });
+        $form.on('click', 'button, .a-submit', function () {
+            $textarea.html($form.find('.note-editable').code());
+        });
+    });
+
+
 });

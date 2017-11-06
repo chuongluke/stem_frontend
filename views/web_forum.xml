@@ -14,7 +14,7 @@
                 <div class ="container website_forum">
 					<section class="row">
 						<div class="col-md-2">
-							<div class="list-group">
+							<div class="list-group" id="menu">
 								<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
 										<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
 										<span t-field="user_id.name"/>
@@ -27,7 +27,7 @@
 									<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
 									Sự kiện<span class="badge bg-pink"><t t-esc="len(events)"/></span>
 								</a>
-								<a href="#forum-list" data-toggle="collapse" class="list-group-item list-group-item1">
+								<a href="#forum-list" data-toggle="collapse" class="list-group-item list-group-item1 ">
 									<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
 									Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
 								</a>	
@@ -36,7 +36,7 @@
 									
 																
 									<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
-											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											<i class="MR10 fa fa-home" aria-hidden="true"></i>
 											Trang chủ<span class="badge bg-pink"></span>
 									</a>							
 									<!--
@@ -93,19 +93,19 @@
 									</div>	
 									-->
 									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
-											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											<i class="MR10 fa fa-users" aria-hidden="true"></i>
 											People
 									</a>
 									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/tag">
-											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											<i class="MR10 fa fa-tags" aria-hidden="true"></i>
 											Thẻ
 									</a>
 									<a class="list-group-item list-group-item1 border-B1" t-attf-href="/forum/#{ slug(forum) }/badge">
-											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											<i class="MR10 fa fa-trophy" aria-hidden="true"></i>
 											Huy Hiệu
 									</a>
 									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/user/#{ uid }">
-											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											<i class="MR10 fa fa-book" aria-hidden="true"></i>
 											Your profile
 									</a>
 								</div>
@@ -121,20 +121,14 @@
 												    <div>
 														<h3>Tìm kiếm</h3>
 													</div>
-													<div>
-														<div>
-															<div>
-																<div class="form-group">
-																	<input type="text" class="name-question form-control" id="name-question" name="name-question" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
-																	<span class="input-question-btn-search">
-																		<button type="button" class="btn btn-search-question" disabled="disabled">
-																			<i class="fa fa-search"></i>
-																		</button>
-																	</span>
-																</div>
-															</div>
-														</div>
-													</div>
+													<div class="form-group">
+														<input type="text" class="x-name-question form-control" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+														<span class="input-question-btn-search">
+															<button type="button" class="btn btn-search-question" disabled="disabled">
+																<i class="fa fa-search"></i>
+															</button>
+														</span>
+													</div>				
 												</div>
 												<div class="forum-post-list" style="display: none;">
 													<t t-foreach="question_ids" t-as="post">
@@ -180,7 +174,7 @@
 																			</div>
 																			<div class="form-group">
 																				<label for="exampleFormControlTextareal">Nội dung</label>
-																				<textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+																				<textarea class="form-control load_editor" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
 																			  </div>
 																		</div>
 																	</div>

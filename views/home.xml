@@ -38,7 +38,7 @@
 			     
 				<section class="row">
   	  				<aside class="col-md-2">
-  	  					<div class="list-group">
+  	  					<div class="list-group" id="menu">
 		  					<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
 		  						<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
 		  						<t t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
@@ -68,19 +68,19 @@
 								
 															
 								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-home" aria-hidden="true"></i>
 										Trang chủ<span class="badge bg-pink"></span>
 								</a>							
 								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/users">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-users" aria-hidden="true"></i>
 										People
 								</a>
 								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/tag">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-tags" aria-hidden="true"></i>
 										Thẻ
 								</a>
 								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/badge">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-trophy" aria-hidden="true"></i>
 										Huy Hiệu
 								</a>
 								
@@ -346,11 +346,11 @@
 				      					<div class="col-md-12">
 							      			<div class="form-group cspan">
 												<label class="control-label">Tiêu đề</label><br/>
-												<input type="name" class="form-control" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
+												<input type="name" class="form-control load_editor" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
 											</div>
 											<div class="form-group">
 											    <label for="exampleFormControlTextareal">Nội dung</label>
-											    <textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+											    <textarea class="form-control load_editor" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
 											  </div>
 					      				</div>
 						      		</div>
@@ -393,23 +393,23 @@
 
 							<div class="list-group list-group-child collapse" id="forum-list">																						
 								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-home" aria-hidden="true"></i>
 										Trang chủ<span class="badge bg-pink"></span>
 								</a>							
 								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/users">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-users" aria-hidden="true"></i>
 										People
 								</a>
 								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/tag">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-tags" aria-hidden="true"></i>
 										Thẻ
 								</a>
 								<a class="list-group-item list-group-item1 border-B1" href="/forum/stem-forum-2/badge">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-trophy" aria-hidden="true"></i>
 										Huy Hiệu
 								</a>
 								<a class="list-group-item list-group-item1" t-attf-href="/forum/stem-forum-2/user/#{ uid }">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										<i class="MR10 fa fa-book" aria-hidden="true"></i>
 										Your profile
 								</a>
 								
@@ -439,7 +439,7 @@
 							</t>
 							<t t-if="parent_child_sm">
 								<a href="#p-list" data-toggle="collapse" class="list-group-item list-group-item1">
-			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						<i class="MR10 fa fa-user text-info" aria-hidden="true"></i>
 			  						Phụ huynh của tôi
 			  					</a>	
 								<div class="list-group list-group-child collapse" id="p-list">
@@ -451,7 +451,7 @@
 							
 		  					<t t-if="parent">
 		  						<a href="#children-list" data-toggle="collapse" class="list-group-item list-group-item1">
-			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						<i class="MR10 fa fa-user text-info" aria-hidden="true"></i>
 			  						Phụ huynh quản lý
 			  					</a>
 
@@ -486,7 +486,7 @@
 			  				</t>
 							
 							<a href="/home/my-question" class="list-group-item list-group-item1">
-		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+		  						<i class="MR10 fa fa-question-circle text-danger" aria-hidden="true"></i>
 		  						Câu hỏi của tôi<span class="badge bg-pink"><t t-esc="len(my_questions)"/></span>
 		  					</a>
 						</div>
