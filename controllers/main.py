@@ -1,241 +1,447 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#
-#    Tech-Receptives Solutions Pvt. Ltd.
-#    Copyright (C) 2009-TODAY Tech-Receptives(<http://www.techreceptives.com>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Lesser General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Lesser General Public License for more details.
-#
-#    You should have received a copy of the GNU Lesser General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-###############################################################################
+import json
+import uuid
+import werkzeug.utils
+import base64
+import logging
+import random
+import requests
+import werkzeug.exceptions
+import werkzeug.urls
+import werkzeug.wrappers
+from datetime import datetime, timedelta
 
-import calendar
-from datetime import datetime, date
-from dateutil.relativedelta import relativedelta
-import werkzeug
-
-from odoo import fields, tools
-from odoo import http
-from odoo.addons.openeducat_quiz.controllers.main import OpeneducatQuizRender
+from odoo import _, http, fields,modules, SUPERUSER_ID, tools
+from odoo.addons.website.controllers.main import Website
+from odoo.addons.web.controllers.main import Home
 from odoo.addons.website.models.website import slug
-from odoo.addons.website_portal.controllers.main import website_account
-from odoo.exceptions import AccessError
+from odoo.addons.auth_signup.controllers.main import AuthSignupHome
+from odoo.addons.web.controllers.main import binary_content
 from odoo.http import request
-PPG = 12  # Products Per Page
-PPR = 4  # Products Per Row
+PPG = 2
+PPR = 4
+_logger = logging.getLogger(__name__)
+
+try:
+    from validate_email import validate_email
+except ImportError:
+    _logger.debug("Cannot import `validate_email`.")
+
+class Stem(http.Controller):
+    def get_menu_data(self):
+        parent = http.request.env['op.parent'].sudo().search([('name', '=', http.request.env.user.partner_id.id)], limit=1)
+        
+        student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
+        student_id = [x.id for x in student]
+        parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', 'in' ,student_id)])
+        parent_child_sm_id=[x.name for x in parent_child_sm]
+        parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
+        parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+        parent_child = [x.parent_id for x in parent_child_rg]
+    
+                                                             
+                           
+        online_free_courses = http.request.env['op.course'].sudo().search([('online_course', '=', True), ('type', '=', 'free')], limit=3, order='create_date desc')
+
+        online_paid_courses = http.request.env['op.course'].sudo().search(                
+                [('online_course', '=', True), ('type', '=', 'paid')], limit=3, order='create_date desc')
 
 
-class OpeneducatQuizRenderInherit(OpeneducatQuizRender):
+        my_channels = http.request.env['mail.channel'].sudo().search([('channel_partner_ids', 'in', [http.request.env.user.partner_id.id])],limit=10, order='__last_update asc')
 
-    def get_quiz_result_data(self, values):
-        res = super(OpeneducatQuizRenderInherit, self).get_quiz_result_data(
-            values)
-        res['course_val'] = False
-        res['material_val'] = False
-        res['section_val'] = False
-        return res
+        enrollments = http.request.env['op.course.enrollment'].sudo().search(
+            [('user_id', '=', http.request.env.uid),
+            ('state', 'in', ['in_progress', 'done'])])
+        my_courses = []
+        if enrollments:
+            my_courses = self.my_course_details(enrollments)
 
-    @http.route()
-    def quiz_result(self, **kwargs):
-        val = super(OpeneducatQuizRenderInherit, self).quiz_result(**kwargs)
-        values = {}
-        for field_name, field_value in kwargs.items():
-            values[field_name] = field_value
-        result = request.env['op.quiz.result'].browse(int(values['ExamID']))
-        if result.quiz_id.lms:
-            if values['CourseID']:
-                course = request.env['op.course'].browse(
-                    int(values['CourseID']))
-                material = request.env['op.material'].browse(
-                    int(values['MaterialID']))
-                section = request.env['op.course.section'].browse(
-                    int(values['SectionID']))
-                return request.redirect(
-                    '/course/%s/section/%s/material/%s/result/%s' % (
-                        course.id, section.id, material.id, result.id))
-                # slug(course), slug(section), slug(material)))
-        return val
+        forums = http.request.env['forum.forum'].sudo().search([])
+        forum = http.request.env['forum.forum'].sudo().search([('id', '=', 2)])
 
+        posts = http.request.env['blog.post'].sudo().search([('website_published', '=', True)])
 
-class OpenEduCatLms(http.Controller):
-    # --------------------------------------------------
-    # MAIN / SEARCH
-    # --------------------------------------------------
+        all_courses = http.request.env['op.course'].sudo().search([])
 
-    @http.route(['/become-instructor'], type='http', auth="user", website=True,
-                csrf=False)
-    def register_faculty(self, **kwargs):
-        faculty = request.env['op.faculty'].search(
-            [('user_id', '=', request.env.uid)])
-        if not faculty:
-            faculty = request.env['op.faculty'].sudo().create(
-                {'partner_id': request.env.user.partner_id.id,
-                 'last_name': kwargs.get('last_name', False),
-                 'gender': kwargs.get('gender', False),
-                 'birth_date': kwargs.get('birth_date', False),
-                 'bio_data': kwargs.get('bio_data', False),
-                 'designation': kwargs.get('designation', False)})
-            faculty.sudo().user_id = request.env.user.id
-            group_ids = faculty.user_id.groups_id.ids
-            group_ids.append(
-                request.env.ref('openeducat_lms.group_op_lms_instructor').id)
-            faculty.user_id.sudo().groups_id = [[6, 0, list(set(group_ids))]]
-        elif not faculty.user_id.has_group(
-                'openeducat_lms.group_op_lms_instructor'):
-            group_ids = faculty.user_id.groups_id.ids
-            group_ids.append(
-                request.env.ref('openeducat_lms.group_op_lms_instructor').id)
-            faculty.user_id.sudo().groups_id = [[6, 0, list(set(group_ids))]]
-        return request.redirect('/courses')
+        events = http.request.env['event.event'].sudo().search([])
 
-    @http.route(['''/course/enroll/<model("op.course"):course>'''],
-                type='http', auth="user", website=True)
-    def enroll_course(self, course, **kwargs):
-        enrollment = request.env['op.course.enrollment'].sudo().search(
-            [('user_id', '=', request.env.user.id),
-             ('course_id', '=', course.id)])
-        if not enrollment:
-            request.env['op.course.enrollment'].sudo().create(
-                {'user_id': request.env.user.id,
-                 'course_id': course.id,
-                 'enrollment_date': fields.Datetime.now(),
-                 'state': 'in_progress'})
-        student = request.env['op.student'].sudo().search(
-            [('user_id', '=', request.env.uid)])
-        if not student:
-            student = request.env['op.student'].sudo().create(
-                {'name': request.env.user.name,
-                 'partner_id': request.env.user.partner_id.id})
-        return request.redirect('/my-courses')
+        #course_porpular = http.request.env['rec.cu.by.predef'].sudo().search([])
+        course_porpular = []
 
-    @http.route([
-        '/courses',
-        '/courses/page/<int:page>',
-        '/courses/category/<model("op.course.category"):category>',
-        '/courses/category/<model("op.course.category"):category>/page/<int:page>'
+        course_porpular_ids = [x.course_id.id for x in course_porpular]
+
+        porpular_courses = http.request.env['op.course'].sudo().search([('id', 'in', course_porpular_ids)], limit=9, order='create_date desc')
+        
+        forum_posts = http.request.env['forum.post'].sudo().search([('parent_id', '=', False),('forum_id', '=', 2)], order='create_date desc')
+        
+        my_question = request.env['forum.post'].search([
+                ('parent_id', '=', False),
+                ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)],order='relevancy desc')
+                
+        questions = request.env['forum.post'].search([
+                ('parent_id', '=', False),
+                ('forum_id', '=', 2)], limit=5,order='create_date desc')
+
+        return {
+            'needaction_inbox_counterz': http.request.env['res.partner'].get_needaction_count(),
+            'parent': parent,
+            'online_free_courses': online_free_courses,
+            'my_channels': my_channels,
+            'my_courses': my_courses,
+            'my_questions':my_question,
+            'questions':questions,
+            'forums': forums,
+            'forum': forum,
+            'posts': posts,
+            'online_paid_courses': online_paid_courses, 
+            'course_porpular': porpular_courses,
+            'events': events, 
+            'all_courses': all_courses,
+            'forum_posts': forum_posts,
+            'parent_child': parent_child,
+            'parent_child_sm':parent_child_sm_id
+        }
+
+    @http.route('/home', auth='user', website=True)
+    def home(self, **kw):
+        data = self.get_menu_data()
+
+        #online_free_courses
+        online_free_courses = http.request.env['op.course'].sudo().search(
+            [('online_course', '=', True), ('type', '=', 'free')], limit=3, order='create_date desc')
+        data['online_free_courses'] = online_free_courses
+        
+
+        #my courses
+        enrollments = http.request.env['op.course.enrollment'].sudo().search(
+            [('user_id', '=', http.request.env.uid),
+            ('state', 'in', ['in_progress', 'done'])])
+        if enrollments:
+            data.update(self.my_course_details(enrollments))
+        #my courses
+        
+        return http.request.render('stem_frontend_theme.stem_profile', data)
+
+    @http.route(['/all-courses',
+                 '/all-courses/page/<int:page>'
     ], type='http', auth="public", website=True)
-    def courses(self, search='', category=False, page=0, ppg=False, **post):
+    def view_all_courses(self, search='', page=1, ppg=False, **post):
+        data = self.get_menu_data()
         if ppg:
             try:
                 ppg = int(ppg)
             except ValueError:
-                ppg = PPG
+                ppg = 5
             post["ppg"] = ppg
         else:
-            ppg = PPG
+            ppg = 5
 
-        domain = [('online_course', '=', True)]
-        url = "/courses"
-        if search:
-            post["search"] = search
+        url = '/all-courses'
+        pager = request.website.pager(url=url, total=len(data['all_courses']), page=page,
+                                      step=ppg, scope=7,
+                                      url_args=post)
+        
+        course_ids = request.env['op.course'].sudo().search([],
+                limit=ppg, offset=pager['offset'])
+        data['course_ids']= course_ids 
+        data['pager']= pager 		
+        return http.request.render('stem_frontend_theme.stem_all_courses', data)
 
-            for srch in search.split(" "):
-                domain += [('name', 'ilike', srch)]
-        if category:
-            url = "/courses/category/%s" % slug(category)
+    @http.route('/googleb90fcbde0047b306.html', auth='public')
+    def google_html(self):
+        return 'google-site-verification: googleb90fcbde0047b306.html'
 
-            domain += [('category_ids', 'in', [category.id])]
+    @http.route('/blog', auth='public',website=True)
+    def view_blog(self):
+        return http.request.redirect('/blog/cong-ong-stem-1')
 
-        course_domain = domain + [
-            ('visibility', 'in', ['public', 'logged_user']),
-            ('state', '=', 'open')]
-        courses = request.env['op.course'].sudo().search(course_domain)
+    @http.route('/forum', auth='public',website=True)
+    def view_forum(self):
+        return http.request.redirect('/forum/stem-forum-2')
+    
+    @http.route('/home/my-courses', auth='user', website=True)
+    def my_courses(self, **kw):
+        data = self.get_menu_data()
 
-        invited_domain = domain + [
-            ('invited_users_ids', 'in', [request.env.uid]),
-            ('state', '=', 'open')]
-        invited_courses = request.env[
-            'op.course'].sudo().search(invited_domain)
+        enrollments = http.request.env['op.course.enrollment'].sudo().search(
+            [('user_id', '=', http.request.env.uid),
+            ('state', 'in', ['in_progress', 'done'])])
+        if enrollments:
+            data.update(self.my_course_details(enrollments))
 
-        total_count = len(courses) + len(invited_courses)
+        return http.request.render('stem_frontend_theme.stem_my_courses', data)
 
-        pager = request.website.pager(
-            url=url, total=total_count, page=page, step=ppg, scope=7,
-            url_args=post)
-
-        all_course_ids = [x.id for x in courses]
-        all_course_ids += [x.id for x in invited_courses]
-
-        all_courses = request.env['op.course'].sudo().search(
-            [('id', 'in', all_course_ids)], limit=ppg, offset=pager['offset'])
-        if category:
-            categories = request.env['op.course.category'].search(
-                [('parent_id', '=', category.id)])
-        else:
-            categories = request.env['op.course.category'].sudo().search(
-                [('parent_id', '=', False)])
-        values = {
-            'search': search,
-            'pager': pager,
-            'search_count': total_count,
-            'courses': all_courses,
-            'category': category,
-            'categories': categories,
-            'rows': 3,
-            'is_instructor': request.env.user.has_group(
-                'openeducat_lms.group_op_lms_instructor')
-        }
-        return request.render("openeducat_lms.courses", values)
-
-    def my_corse_details(self, enrollments):
+    def my_course_details(self, enrollments):
         courses = []
         for en in enrollments:
             completed_percentage = 0
             if en and en.course_id.training_material > 0:
-                viewed_material = request.env[
-                    'op.course.enrollment.material'].sudo().search_count(
-                    [('completed', '=', True),
-                     ('course_id', '=', en.course_id.id),
-                     ('enrollment_id', '=', en.id)])
-                completed_percentage = (
-                    viewed_material * 100) / en.course_id.training_material
-            courses.append({'course': en.course_id,
-                            'enrolled': en.state in ['in_progress',
-                                                     'done'] and True or False,
-                            'completed_percentage': completed_percentage, })
+                viewed_material = http.request.env[
+                    'op.course.enrollment.material'].sudo().search_count([   
+                        ('completed', '=', True),
+                        ('course_id', '=', en.course_id.id),
+                        ('enrollment_id', '=', en.id)
+                    ])
+                completed_percentage = (viewed_material * 100) / en.course_id.training_material
+            courses.append({
+                'course': en.course_id,
+                'enrolled': en.state in ['in_progress', 'done'] and True or False,
+                'completed_percentage': completed_percentage, 
+            })
         return {
-            'courses': courses,
-            'user': request.env.user,
-            'is_public_user': request.env.user == request.website.user_id
+            'my_courses': courses
         }
 
-    @http.route('/my-courses', type='http', auth="public", website=True)
-    def my_courses(self, *args, **post):
-        # Show Courses To Logged in User
-        enrollments = request.env['op.course.enrollment'].sudo().search(
-            [('user_id', '=', request.env.uid),
-             ('state', 'in', ['in_progress', 'done'])])
+    @http.route('/home/register_teacher', auth='user', methods=['POST'], website=True)
+    def register_teacher(self, **post):
+        name = post.get('name')
+        middle_name = post.get('middle_name')
+        last_name = post.get('last_name')
+        gender = post.get('gender')
+        phone = post.get('phone')
+        email = post.get('email')
+        birth_date = post.get('birth_date')
+        
+        #birth_date = birth_date.strftime('%Y-%m-%d')
+        
+        faculty = http.request.env['op.faculty'].search([('user_id', '=', http.request.env.uid)])
+        if not faculty:
+            fac = http.request.env['op.faculty'].sudo().create({
+                'partner_id': http.request.env.user.partner_id.id,
+                'last_name': last_name,
+                'gender': gender,
+                'phone': phone,
+                'email': email,
+                'birth_date': birth_date,
+                'status': 'unapprove'
+            })
 
-        if not enrollments:
-            return request.render('openeducat_lms.course_not_found')
-        data = self.my_corse_details(enrollments)
-        return request.render('openeducat_lms.my-courses', data)
+            if fac:
+                vals = {
+                    'name': name + ' ' + (middle_name or '') +
+                    ' ' + last_name,
+                    'country_id': fac.nationality.id,
+                    'gender': gender,
+                    'address_home_id': fac.partner_id.id
+                }
+                emp_id = http.request.env['hr.employee'].sudo().create(vals)
+                fac.write({'emp_id': emp_id.id})
+                fac.partner_id.write({'user_id': http.request.env.uid, 'supplier': True, 'employee': True})
 
-    @http.route('''/course-detail/<model("op.course"):course>''', type='http',
-                auth="public", website=True)
-    def course(self, course, **kw):
-        course = request.env['op.course'].sudo().browse([course.id])
-        sections = request.env['op.course.section'].sudo().search(
+        return http.request.render('stem_frontend_theme.stem_alert', {
+            'message': 'Đăng ký thành công, vui lòng chờ xác nhận của quản lý hệ.',
+            'type': 'success'
+        })
+
+    def random_token(self):
+        # the token has an entropy of about 120 bits (6 bits/char * 20 chars)
+        chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        return ''.join(random.SystemRandom().choice(chars) for i in xrange(20))
+
+    def now(self, **kwargs):
+        dt = datetime.now() + timedelta(**kwargs)
+        return fields.Datetime.to_string(dt)
+
+    @http.route('/register/parent', type='http', auth="user", methods=['POST'], website=True)
+    def register_parent(self, **kw):
+        sids = kw.get('student_ids')
+
+        if sids:
+            student_ids = [int(i) for i in sids.split(',')]
+            template = http.request.env.ref('stem_frontend_theme.register_parent_template')
+
+            for student_id in student_ids:
+                token = self.random_token()
+                parent_id = http.request.env.user.partner_id.id
+                expiration = self.now(days=+1)
+                student_child_id = student_id
+
+                registered = http.request.env['stem.register_parent'].sudo().create({
+                    'token': token,
+                    'parent_id': parent_id,
+                    'expiration': expiration,
+                    'student_child_id': student_id
+                })
+
+                http.request.env['mail.template'].sudo().browse(template.id).send_mail(registered.id, force_send=True)
+        return http.request.render('stem_frontend_theme.stem_alert', {
+            'message': 'Đăng ký thành công',
+            'type': 'success'
+        })
+
+            # res = http.request.env['op.parent'].sudo().create({
+            #     'name': http.request.env.user.partner_id.id,
+            #     'student_ids': [(6, 0, student_ids)]
+            # })
+
+        #return http.request.redirect('/home')
+
+    @http.route('/confirm/parent', type='http', auth='public', website=True)
+    def confirm_parent(self, **kw):
+        token = kw.get('token')
+        message = 'Mã xác thực đã hết hạn hoặc không tồn tại'
+        alert_type ='danger'
+        if token:
+            registered = http.request.env['stem.register_parent'].sudo().search([('token', '=', token)], limit=1)
+            dt = self.now()
+            if registered and token == registered.token and dt <= registered.expiration:
+                parent = http.request.env['op.parent'].sudo().search([('name', '=', registered.parent_id.id)], limit=1)
+                if parent:
+                    parent.write({
+                        'student_ids': [(4, registered.student_child_id.id, 0)]
+                    })
+                else:
+                    http.request.env['op.parent'].sudo().create({
+                        'name': registered.parent_id.id,
+                        'student_ids': [(6, 0, [registered.student_child_id.id])]
+                    })
+                message = 'Xác nhận thành công'
+                alert_type = 'success'
+
+        return http.request.render('stem_frontend_theme.stem_alert', {
+            'message': message,
+            'type': alert_type
+        })
+
+    
+    @http.route('/confirm/parentz', type='http', auth='user', method=['POST'],website=True)
+    def confirm_parentz(self, **kw):
+        token = kw.get('token')
+        if token:
+            student = http.request.env['op.student'].sudo().search([('partner_id', '=', http.request.env.user.partner_id.id)], limit=1)
+            student_id = [x.id for x in student]
+            parent_child_sm= http.request.env['op.parent'].sudo().search([('student_ids.id', 'in' ,student_id)])
+            parent_child_sm_id=[x.name for x in parent_child_sm]
+            parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
+            parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
+            for x in range(1, len(parent_child_rg)+1):
+                val = kw.get(str(x))
+                if val:       
+                    http.request.env['op.parent'].sudo().create({
+                            'name': parent_child_rg[x-1].parent_id.id,
+                            'student_ids': [(6, 0,student_id)]
+                        })
+            
+            parent_child_rg.unlink()
+        return http.request.redirect('/home')
+            
+        
+    @http.route('/home/my-blogs', auth='user', website=True)
+    def my_blogs(self, **kw):
+        data = self.get_menu_data()
+        return http.request.render('stem_frontend_theme.stem_my_blogs', data)
+
+    @http.route('/home/my-mes', auth='user', website=True)
+    def my_mes(self, **kw):
+        data = self.get_menu_data()
+        my_channels = http.request.env['mail.channel'].sudo().search(
+            [('channel_partner_ids', 'in', [http.request.env.user.partner_id.id])],limit=10, order='__last_update asc')
+        #_logger.info("my_channels len: " + str(len(my_channels)))
+        #for c in my_channels:
+        #    _logger.info("my_channels: " + c.public)
+        data['partner_id'] = http.request.env.user.partner_id.id
+        data['my_channels'] = my_channels
+        # for c in data['my_channels']:
+        #     body = c.message_ids[0].body
+        #     body = self.replaceTag(body)
+        #     c['first_body'] = body
+        #     _logger.info("body: " + body+"--c['first_body']--"+c['first_body'])
+
+        return http.request.render('stem_frontend_theme.stem_my_mes', data)
+
+    def replaceTag(self, enrollments):
+        num = re.sub(r"(<([^>]+)>)", '', enrollments)
+        return num
+
+    @http.route('/home/get_student', auth='public', type='http', csrf=False, website=True)
+    def get_student(self, **kw):
+        start = int(kw.get('start'))
+        length = int(kw.get('length'))
+        search = kw.get('search[value]')
+
+        total_count = http.request.env['op.student'].sudo().search_count([])
+        filtered_count = http.request.env['op.student'].sudo().search_count(['|', ('partner_id.email', 'ilike', search), ('partner_id.name', 'ilike', search)])
+        students = http.request.env['op.student'].sudo().search(['|', ('partner_id.email', 'ilike', search), ('partner_id.name', 'ilike', search)], offset=start, limit=length)
+
+        data = []
+        for student in students:
+            data.append({
+                'DT_RowId': student.id,
+                'action': '<input type="checkbox"/>',
+                'email': student.partner_id.email,
+                'name': student.name
+            })
+
+        result = {
+            'recordsTotal': total_count,
+            'recordsFiltered': filtered_count,
+            'data': data
+        }
+
+        return str(json.dumps(result))
+
+    @http.route('/home/my-child/<int:student_id>', auth='user', website=True)
+    def my_child(self, student_id=0):
+        data = self.get_menu_data()
+        parent = data['parent']
+        if parent:
+            student_ids = [s for s in parent.student_ids if s.id == student_id]
+            if student_ids:
+                child = student_ids[0]
+                student_user = http.request.env['res.users'].sudo().search([('partner_id', '=', child.partner_id.id)], limit=1)
+                student_user_id = student_user.id
+
+                enrollments = http.request.env['op.course.enrollment'].sudo().search(
+                    [('user_id', '=', student_user_id),
+                    ('state', 'in', ['in_progress', 'done'])])
+                if enrollments:
+                    data.update(self.my_course_details(enrollments))
+
+                data['child'] = child
+
+                return http.request.render('stem_frontend_theme.stem_my_child_courses', data)
+            else:
+                return http.request.redirect('/home')
+        else:
+            return http.request.redirect('/home')
+
+    @http.route('/home/get_messages_by_channel', auth='public', type='http', csrf=False, website=True)
+    def get_messages_by_channel(self, **kw):
+        data = self.get_menu_data()
+        channel_id = int(kw.get('channel_id'))
+
+        messages = http.request.env['mail.message'].sudo().search([('res_id', '=', channel_id), ('model', '=', 'mail.channel')], order='create_date desc')
+        data['messages']=messages
+        #result = []
+        # for m in messages:
+        #     result.append({
+        #         'id': m.id,
+        #         'body': m.body,
+        #         'author_name': m.author_id.name
+        #     })
+
+        return http.request.render('stem_frontend_theme.stem_my_mes_detail',  data)
+
+
+    @http.route(['''/course/register-course/<model("op.course"):course>'''],
+                type='http', auth="user", website=True)
+    def register_course(self, course, **kwargs):
+        course = http.request.env['op.course'].sudo().browse([course.id])
+        faculty = http.request.env['op.faculty'].search([('user_id', '=', http.request.env.uid)])
+        if course and faculty:
+            course.write({'faculty_ids': [(4, faculty.id, 0)]})
+
+        sections = http.request.env['op.course.section'].sudo().search(
             [('course_id', '=', course.id)], order='sequence asc')
 
-        enrollment = request.env['op.course.enrollment'].sudo().search(
-            [('user_id', '=', request.env.uid),
+        enrollment = http.request.env['op.course.enrollment'].sudo().search(
+            [('user_id', '=', http.request.env.uid),
              ('course_id', '=', course.id),
              ('state', 'in', ['in_progress', 'done'])])
 
         completed_percentage = enrollment and enrollment.completed_percentage or 0
 
-        ratings = request.env['rating.rating'].sudo().search(
+        ratings = http.request.env['rating.rating'].sudo().search(
             [('message_id', 'in', course.website_message_ids.ids)])
         rating_message_values = dict(
             [(record.message_id.id, record.rating) for record in ratings])
@@ -245,444 +451,591 @@ class OpenEduCatLms(http.Controller):
             'enrolled': enrollment and True or False,
             'completed_percentage': completed_percentage,
             'sections': sections,
-            'user': request.env.user,
-            'is_public_user': request.env.user == request.website.user_id,
+            'user': http.request.env.user,
+            'is_public_user': http.request.env.user == http.request.website.user_id,
             'rating_message_values': rating_message_values,
-            'rating_course': rating_course
+            'rating_course': rating_course,
+            'message': 'Đăng ký thành công.'
         }
-        return request.render('openeducat_lms.course_detail', values)
+        return http.request.render('openeducat_lms.course_detail', values)
 
-    @http.route(
-        '/course/preview/<model("op.course"):course>/section/<model("op.course.section"):section>/material/<model("op.material"):material>',
-        type='http', auth="public", website=True)
-    def preview_course_material(self, course, section=None, material=None,
-                                next=None, **kwargs):
-        preview_material = request.env['op.course.material'].search(
-            [('course_id', '=', course.id), ('section_id', '=', section.id),
-             ('material_id', '=', material.id), ('preview', '=', True)])
-        if preview_material:
-            return request.render('openeducat_lms.materila_preview_view',
-                                  {'course': course,
-                                   'section': section,
-                                   'material': material,
-                                   'user': request.env.user})
 
-    @http.route(['''/course/<model("op.course"):course>''',
-                 '''/course/<model("op.course"):course>/section/<model("op.course.section"):section>''',
-                 '''/course/<model("op.course"):course>/section/<model("op.course.section"):section>/material/<model("op.material"):material>''',
-                 '''/course/<model("op.course"):course>/section/<model("op.course.section"):section>/material/<model("op.material"):material>/result/<model("op.quiz.result"):result>''',
-                 '''/course/<model("op.course"):course>/section/<model("op.course.section"):section>/material/<model("op.material"):material>/<next>'''],
-                type='http', auth="user", website=True)
-    def get_course_material(self, course, section=None, material=None,
-                            result=None, next=None, **kwargs):
-        enrollment = request.env['op.course.enrollment'].sudo().search(
-            [('course_id', '=', course.id),
-             ('user_id', '=', request.env.user.id)], limit=1)
 
-        if not enrollment or not course.sudo().course_section_ids:
-            return request.render('openeducat_lms.course_not_found')
-
-        if section:
-            if material:
-                if next:
-                    next_material = False
-                    for x, y in enumerate(section.section_material_ids):
-                        if material == y.material_id and x + 1 != len(
-                                section.section_material_ids):
-                            next_material = section.section_material_ids[
-                                x + 1].material_id
-                            break
-
-                    if not next_material:
-                        next_section = self.get_next_section(course, section)
-                        if next_section:
-                            return request.redirect('/course/%s/section/%s' % (
-                                course.id, next_section.id))
-                        else:
-                            enrollment.sudo().write(
-                                {'completion_date': fields.Datetime.now(),
-                                 'state': 'done'})
-                        return request.redirect('/my-courses')
-
-                    next_material_access = self.check_material_access(
-                        enrollment, next_material)
-                    if not next_material_access:
-                        return request.redirect('/course/%s/section/%s/material/%s/1' % (
-                            course.id, section.id, next_material.id))
-
-                    cem_id = request.env[
-                        'op.course.enrollment.material'].sudo().search(
-                        [('course_id', '=', course.id),
-                         ('section_id', '=', section.id),
-                         ('material_id', '=', next_material.id),
-                         ('enrollment_id', '=', enrollment.id)], limit=1)
-
-                    if cem_id:
-                        cem_id.sudo().last_access_date = fields.Datetime.now()
-                    else:
-                        cem_id = self.create_course_enrollment_material(
-                            enrollment.id, section.id, next_material.id)
-
-                    return request.redirect(
-                        '/course/%s/section/%s/material/%s' % (
-                            course.id, section.id, next_material.id))
-                else:
-                    cem_id = request.env[
-                        'op.course.enrollment.material'].sudo().search(
-                        [('course_id', '=', course.id),
-                         ('section_id', '=', section.id),
-                         ('material_id', '=', material.id),
-                         ('enrollment_id', '=', enrollment.id)], limit=1)
-
-                    if cem_id:
-                        cem_id.sudo().last_access_date = fields.Datetime.now()
-                    else:
-                        cem_id = self.create_course_enrollment_material(
-                            enrollment.id, section.id, material.id)
-
-                    material = material
-            else:
-                if section.section_material_ids:
-                    cem_id = request.env[
-                        'op.course.enrollment.material'].sudo().search(
-                        [('course_id', '=', course.id),
-                         ('section_id', '=', section.id),
-                         ('material_id', '=',
-                          section.section_material_ids[0].material_id.id),
-                         ('enrollment_id', '=', enrollment.id)])
-                    if not cem_id:
-                        cem_id = self.create_course_enrollment_material(
-                            enrollment.id, section.id, section.section_material_ids[
-                                0].material_id.id)
-                    else:
-                        cem_id.sudo().last_access_date = fields.Datetime.now()
-                    material = section.section_material_ids[0].material_id
-
-                    material_access = self.check_material_access(
-                        enrollment, material)
-                    if not material_access:
-                        return request.redirect('/course/%s/section/%s/material/%s/1' % (
-                            course.id, section.id, material.id))
-                else:
-                    next_section = self.get_next_section(course, section)
-                    if next_section:
-                        return request.redirect('/course/%s/section/%s' % (
-                            course.id, next_section.id))
-                    else:
-                        return request.render(
-                            'openeducat_lms.course_not_found')
+    @http.route(['/searchz', '/searchz/page/<int:page>'], type='http', auth="public", website=True)
+    def searchz(self, search='', page=0, ppg=False, **post):
+        data = self.get_menu_data()
+        if ppg:
+            try:
+                ppg = int(ppg)
+            except ValueError:
+                ppg = PPG
+            post["ppg"] = ppg
         else:
-            # Display first material of first section
-            section_ids = request.env['op.course.section'].search(
-                [('course_id', '=', course.id)], order='sequence asc')
+            ppg = PPG
 
-            if section_ids and section_ids[0].section_material_ids:
-                section = section_ids[0]
+        url = '/searchz'
 
-                cm_id = request.env['op.course.material'].search(
-                    [('course_id', '=', course.id),
-                     ('section_id', '=', section.id)],
-                    order='sequence asc', limit=1)
+        domain_cource_default = [('online_course', '=', True)]
 
-                material_access = self.check_material_access(
-                    enrollment, cm_id.material_id)
-                if not material_access:
-                    return request.redirect('/course/%s/section/%s/material/%s/1' % (
-                        course.id, section.id, cm_id.material_id.id))
+        if search:
+            post["search"] = search
 
-                cem_id = request.env[
-                    'op.course.enrollment.material'].sudo().search(
-                    [('course_id', '=', course.id),
-                     ('section_id', '=', section.id),
-                     ('material_id', '=', cm_id.material_id.id),
-                     ('enrollment_id', '=', enrollment.id)], limit=1)
+            for srch in search.split(" "):
+                domain_cource_default += [('name', 'ilike', srch)]
 
-                if cem_id:
-                    cem_id.sudo().last_access_date = fields.Datetime.now()
-                else:
-                    cem_id = self.create_course_enrollment_material(
-                        enrollment.id, section.id, cm_id.material_id.id)
+        course_domain = domain_cource_default + [('state', '=', 'open')]
 
-                material = cm_id.material_id
-            else:
-                next_section = self.get_next_section(course, section)
-                if next_section:
-                    return request.redirect(
-                        '/course/%s/section/%s' % (course.id, next_section.id))
-                else:
-                    return request.render('openeducat_lms.course_not_found')
+        
 
-        related_materials = self.get_related_materials(course, enrollment)
-        material = request.env['op.material'].sudo().browse([material.id])
-        last_material = False
-        if not self.get_next_section(course, section):
-            last_material = material == section.section_material_ids[
-                -1:].material_id and True or False
-        data = {
-            'course': course,
-            'section': section,
-            'material': material,
-            'user': request.env.user,
-            'related_materials': related_materials,
-            'last_material': last_material
+        domain_post_default = [('website_published', '=', True)]
+
+        if search:
+            post["search"] = search
+
+            for srch in search.split(" "):
+                domain_post_default += [('name', 'ilike', srch)]
+
+        domain_partner_default = []
+
+        if search:
+            post["search"] = search
+
+            for srch in search.split(" "):
+                domain_partner_default += [('name', 'ilike', srch)]
+
+        posts = http.request.env['blog.post'].sudo().search(domain_post_default)
+        courses = http.request.env['op.course'].sudo().search(course_domain)
+        partners = http.request.env['res.partner'].sudo().search(domain_partner_default)
+        total_count_courses = len(courses)
+        total_count_posts =  len(posts)
+        total_count_partners = len(partners)
+
+        pager_courses = http.request.website.pager(
+            url=url, total=total_count_courses, page=page, step=ppg, scope=7,
+            url_args=post)
+
+        pager_posts = http.request.website.pager(
+            url=url, total=total_count_posts, page=page, step=ppg, scope=7,
+            url_args=post)
+
+        pager_partners = http.request.website.pager(
+            url=url, total=total_count_partners, page=page, step=ppg, scope=7,
+            url_args=post)
+        
+
+        all_search_idc = [x.id for x in courses]
+        all_search_idp = [x.id for x in posts]
+        all_search_idpn = [x.id for x in partners]
+        all_search_courses = http.request.env['op.course'].sudo().search([('id', 'in', all_search_idc)], limit=ppg, offset=pager_courses['offset'])
+        all_search_posts = http.request.env['blog.post'].sudo().search([('id', 'in', all_search_idp)], limit=ppg, offset=pager_posts['offset'])
+        all_search_partners = http.request.env['res.partner'].sudo().search([('id', 'in', all_search_idpn)], limit=ppg, offset=pager_partners['offset'])
+
+        values = {
+            'search': search,
+            'pager': pager_courses,
+            'pager_posts': pager_posts,
+            'total_count_courses': total_count_courses,
+            'all_search_courses': all_search_courses,
+            'total_count_posts': total_count_posts,
+            'all_search_posts': all_search_posts,
+            'total_count_partners': total_count_partners,
+            'all_search_partners': all_search_partners,
+            'rows': 3
         }
-        # ############ Material if type == Quiz ###########
-        if material.sudo().material_type and material.sudo().material_type == 'quiz':
-            quiz_limit = 0
-            result_val = False
-            if material.sudo().quiz_id.no_of_attempt > 0 and not result:
-                total_result_ids = 0
-                attempt_ids = request.env['op.quiz.result'].search([
-                    ('user_id', '=', request.env.uid),
-                    ('quiz_id', '=', material.sudo().quiz_id.id)])
-                for attempt in attempt_ids:
-                    total_correct = attempt.total_correct
-                    total_incorrect = attempt.total_incorrect
-                    if not total_correct and not total_incorrect:
-                        result_val = attempt
-                    else:
-                        total_result_ids += 1
-                if material.sudo().quiz_id.no_of_attempt <= total_result_ids:
-                    quiz_limit = 1
-            if quiz_limit == 0 and not result:
-                if not result_val:
-                    result_val = material.sudo().quiz_id.get_result_id()
-                data['exam'] = result_val.quiz_id
-                data['result'] = result_val
-                data['total_question'] = result_val.total_question
-                data['course_val'] = course.id
-                data['material_val'] = material.sudo().id
-                data['section_val'] = section.id
-            data['quiz_limit'] = quiz_limit
-        is_result = 0
-        is_thanks = 0
-        if result:
-            is_result = 1
-            if not result.quiz_id.show_result:
-                is_thanks = 1
-            else:
-                result_data = result.get_answer_data()
-                for key in result_data.keys():
-                    data.update({key: result_data[key]})
-        data['is_result'] = is_result
-        data['is_thanks'] = is_thanks
-        return request.render('openeducat_lms.material_detail_view', data)
+        
+        data.update(values)
 
-    def check_material_access(self, enrollment, material):
-        if not material.website_published:
-            return False
-        elif material.website_published and not material.auto_publish:
-            return True
-        elif material.website_published and material.auto_publish:
-            if material.auto_publish_type == 'wait_until':
-                wait_until_date = datetime.strptime(
-                    material.wait_until_date, tools.DEFAULT_SERVER_DATE_FORMAT).date()
-                return wait_until_date < date.today() and True or False
-            elif material.auto_publish_type == 'wait_until_duration':
-                allowed = False
-                enrollment_date = datetime.strptime(
-                    enrollment.enrollment_date, tools.DEFAULT_SERVER_DATETIME_FORMAT)
-                if material.wait_until_duration_period == 'minutes':
-                    access_time = enrollment_date + \
-                        relativedelta(minutes=material.wait_until_duration)
-                    allowed = access_time < datetime.today() and True or False
-                elif material.wait_until_duration_period == 'hours':
-                    access_time = enrollment_date + \
-                        relativedelta(hours=material.wait_until_duration)
-                    allowed = access_time < datetime.today() and True or False
-                elif material.wait_until_duration_period == 'days':
-                    access_time = enrollment_date + \
-                        relativedelta(days=material.wait_until_duration)
-                    allowed = access_time < datetime.today() and True or False
-                elif material.wait_until_duration_period == 'weeks':
-                    access_time = enrollment_date + \
-                        relativedelta(weeks=material.wait_until_duration)
-                    allowed = access_time < datetime.today() and True or False
-                elif material.wait_until_duration_period == 'months':
-                    access_time = enrollment_date + \
-                        relativedelta(months=material.wait_until_duration)
-                    allowed = access_time < datetime.today() and True or False
-                elif material.wait_until_duration_period == 'years':
-                    access_time = enrollment_date + \
-                        relativedelta(years=material.wait_until_duration)
-                    allowed = access_time < datetime.today() and True or False
-                return allowed and True or False
+        return http.request.render("stem_frontend_theme.search_results", data)
 
-    def create_course_enrollment_material(self, enrollment_id, section_id, material_id):
-        cem_id = request.env['op.course.enrollment.material'].sudo().create(
-            {'enrollment_id': enrollment_id,
-             'section_id': section_id,
-             'material_id': material_id,
-             'completed': True,
-             'completed_date': fields.Datetime.now(),
-             'last_access_date': fields.Datetime.now()})
-        return cem_id
 
-    def get_related_materials(self, course, enrollment):
-        if course.navigation_policy == 'free_learn':
-            cs_ids = request.env['op.course.section'].sudo().search(
-                [('course_id', '=', course.id)], order='sequence asc')
-            data = []
-            for x in cs_ids:
-                for y in x.section_material_ids:
-                    cem_id = request.env['op.course.enrollment.material'].sudo().search(
-                        [('enrollment_id', '=', enrollment.id),
-                         ('section_id', '=', x.id),
-                         ('material_id', '=', y.material_id.id)], limit=1)
-                    material_access = self.check_material_access(
-                        enrollment, y.material_id)
-                    if material_access:
-                        data.append({'section': x, 'material': y.material_id,
-                                     'completed': (
-                                         cem_id and cem_id.completed) and True or False})
-            return data
+    @http.route('/home/my-courses-teach', type='http', auth="public", website=True)
+    def my_courses_teach(self, page=0, ppg=False, **post):
+        data = self.get_menu_data()
+        if ppg:
+            try:
+                ppg = int(ppg)
+            except ValueError:
+                ppg = 4
+            post["ppg"] = ppg
         else:
-            cem_ids = request.env['op.course.enrollment.material'].sudo().search(
-                [('enrollment_id', '=', enrollment.id)],
-                order='completed_date asc')
-            return [{'section': x.section_id, 'material': x.material_id,
-                     'completed': x.completed} for x
-                    in cem_ids]
+            ppg = 4
 
-    def get_next_section(self, course, section):
-        section_ids = request.env['op.course.section'].search(
-            [('course_id', '=', course.id)], order='sequence asc')
-        next_section = False
-        for x, y in enumerate(section_ids):
-            if section == y and x + 1 != len(section_ids):
-                next_section = section_ids[x + 1]
-                break
-        return next_section
+        url = '/home/my-courses-teach'
 
-    @http.route(
-        '''/course/material/<model("op.material", "[('datas', '!=', False), ('material_type', '=', 'document')]"):material>/pdf_content''',
-        type='http', auth="public", website=True)
-    def material_get_pdf_content(self, material):
-        response = werkzeug.wrappers.Response()
-        response.data = material.datas and material.datas.decode(
-            'base64') or ''
-        response.mimetype = 'application/pdf'
-        return response
+        partner_id = http.request.env.user.partner_id.id;
+        facultys = http.request.env['op.faculty'].sudo().search([('partner_id', '=', partner_id)])
 
-    # --------------------------------------------------
-    # EMBED IN THIRD PARTY WEBSITES
-    # --------------------------------------------------
-    @http.route('/materials/embed/<int:material_id>', type='http',
-                auth='public', website=True)
-    def materials_embed(self, material_id, page="1", **kw):
+        all_faculty_id = [x.id for x in facultys]
+
+        course_domain = [('online_course', '=', True), ('state', '=', 'open'), ('faculty_ids', 'in', all_faculty_id)]
+
+        courses = http.request.env['op.course'].sudo().search(course_domain)
+        total_count = len(courses)
+
+        pager = http.request.website.pager(
+            url=url, total=total_count, page=page, step=ppg, scope=7,
+            url_args=post)
+        
+
+        all_courses_id = [x.id for x in courses]
+        all_courses_teach = http.request.env['op.course'].sudo().search([('id', 'in', all_courses_id)], limit=ppg, offset=pager['offset'])
+
+        values = {
+            'pager': pager,
+            'total_count': total_count,
+            'all_courses_teach': all_courses_teach,
+            'rows': 3
+        }
+        
+        data.update(values)
+
+        return http.request.render("stem_frontend_theme.my_courses_teach", data)
+
+
+    @http.route('/ask', type='http', auth="public", website=True, csrf=False)
+    def add_post(self, **kw):
+        # data = self.get_menu_data()
+        name = kw.get('questionname')
+        content = kw.get('questioncontent')
+        
+        if name:
+            post = http.request.env['forum.post'].sudo().create({
+                'name': name,
+                'plain_content': name,
+                'post_type': 'question',
+                'content': content,
+                'create_uid': http.request.env.uid,
+                'write_uid': http.request.env.uid,
+                'forum_id': 2,
+                'write_date': self.now(days=+1),
+                'create_date': self.now(days=+1)
+            })
+
+        # message = "Câu hỏi của bạn '"+ name +"'."
+        # values = {
+        #     'message': message
+        # }
+
+        # data.update(values)
+
+        return http.request.redirect('/forum/stem-forum-2')
+
+
+    @http.route('''/profile/<int:id>''', type='http',
+                auth="public", website=True)
+    def profile(self, id, **kw):
+        partner = http.request.env['res.partner'].sudo().browse(id);
+        if partner and partner.id == http.request.env.user.partner_id.id:
+            return http.request.redirect('/home')
+        else:
+            return http.request.redirect('/profile/' + str(id) + '/blogs')
+            # return http.request.render('stem_frontend_theme.stem_user_profile', {
+            #     'partner': partner
+            # })
+
+    @http.route('''/profile/<int:id>/blogs''', type='http',
+                auth="public", website=True)
+    def profile_blogs(self, id, **kw):
+        partner = http.request.env['res.partner'].sudo().browse(id);
+        if partner and partner.id == http.request.env.user.partner_id.id:
+            return http.request.redirect('/home/my-blogs')
+        else:
+            return http.request.render('stem_frontend_theme.stem_profile_blogs', {
+                'partner': partner
+            })
+
+    @http.route('''/profile/<int:id>/courses''', type='http',
+                auth="public", website=True)
+    def profile_courses(self, id, **kw):
+        partner = http.request.env['res.partner'].sudo().browse(id);
+        if partner and partner.id == http.request.env.user.partner_id.id:
+            return http.request.redirect('/home/my-courses')
+        else:
+            data = {
+                'partner': partner
+            }
+            student_user = http.request.env['res.users'].sudo().search([('partner_id', '=', partner.id)], limit=1)
+            student_user_id = student_user.id
+
+            enrollments = http.request.env['op.course.enrollment'].sudo().search(
+                [('user_id', '=', student_user_id),
+                ('state', 'in', ['in_progress', 'done'])])
+            if enrollments:
+                data.update(self.my_course_details(enrollments))
+            return http.request.render('stem_frontend_theme.stem_profile_courses', data)
+
+    def new_access_token(self):
+        return uuid.uuid4().hex
+
+
+    @http.route('/rating/post', type='http', auth="public", website=True)
+    def rating(self, **kw):
+        res_name = kw.get('res_name')
+        res_model = kw.get('res_model')
+        res_id  = kw.get('res_id')
+        rating = kw.get('rating')
+        feedback = kw.get('message')
+        access_token = self.new_access_token()
+        course_id = kw.get('course_id')
+        
+
+
+        rate = http.request.env['rating.rating'].sudo().create({
+            'res_name': res_name,
+            'res_model': res_model,
+            'res_id': res_id,
+            'rating': rating,
+            'feedback': feedback,
+            'access_token': access_token,
+            'consumed': True,
+            'website_published': True
+            })
+
+        if rate:
+            message_id = tools.generate_tracking_message_id(''+ res_id + '-' + res_model + '')
+            email_from = http.request.env.user.name + " " + http.request.env.user.login
+            msg = http.request.env['mail.message'].sudo().create({
+                'subject': 'Re: ' + res_name,
+                'subtype_id': 1,
+                'res_id': res_id,
+                'message_id': message_id,
+                'body': feedback,
+                'record_name': res_name,
+                'no_auto_thread': False,
+                'reply_to': 'OpenEduCat <catchall@gmail.com>',
+                'author_id': http.request.env.user.partner_id.id,
+                'model': res_model,
+                'message_type': 'comment',
+                'email_from': email_from
+                })
+            rate.write({'message_id': msg.id})
+
+        return http.request.redirect('/course-detail/' + course_id)
+
+    @http.route(['/home/my-question',
+                 '/home/my-question/page/<int:page>'
+    ], type='http', auth="public", website=True)
+    def my_questions(self, search='', page=1, ppg=False, **post):
+        data = self.get_menu_data()
+        if ppg:
+            try:
+                ppg = int(ppg)
+            except ValueError:
+                ppg = 5
+            post["ppg"] = ppg
+        else:
+            ppg = 5
+
+            
+        forum = request.env['forum.forum'].sudo().search([('id', '=', 2)])       
+        url = '/home/my-question'
+        pager = request.website.pager(url=url, total=len(data['my_questions']), page=page,
+                                      step=ppg, scope=7,
+                                      url_args=post)
+        
+        my_question_ids = request.env['forum.post'].sudo().search([
+                ('parent_id', '=', False),
+                ('forum_id', '=', 2), ('create_uid', '=', http.request.env.user.id)],
+                limit=ppg, offset=pager['offset'],order='relevancy desc')
+        data['my_question_ids']= my_question_ids 
+        data['forum']=forum
+        data['pager']=pager
+        return http.request.render('stem_frontend_theme.stem_my_question', data);
+
+    @http.route('/home/session/change_password', type="http", method="POST", auth="user", website=True, csrf=False)
+    def change_password(self, **kw):
+        old_password = kw.get('old_password')
+        new_password = kw.get('new_password')
+        confirm_password = kw.get('confirm_password')
+        result = {}
+        if not (old_password.strip() and new_password.strip() and confirm_password.strip()):
+            result = {
+                'error':'Bạn không thể để trống bất kỳ mật khẩu nào.'
+            }
+            return str(json.dumps(result))
+
+        if new_password != confirm_password:
+            result = {
+                'error': 'Mật khẩu mới không khớp với mật khẩu xác nhận.'
+            }
+            return str(json.dumps(result))
+
         try:
-            material = request.env['op.material'].browse(material_id)
-            return request.render('openeducat_lms.embed_material',
-                                  {'material': material})
-        except AccessError:
-            material = request.env['op.material'].sudo().browse(material_id)
-            return request.render('openeducat_lms.embed_material_forbidden',
-                                  {'material': material})
+            if http.request.env['res.users'].change_password(old_password, new_password):
+                result = {
+                    'success':'Thay đổi mật khẩu thành công.'
+                }
+                return str(json.dumps(result))
 
-    # Dashboard Controllers
+        except Exception:
+            result = {
+                'error':'Mật khẩu cũ mà bạn cung cấp không chính xác, mật khẩu của bạn không được thay đổi.'
+            }
+            return str(json.dumps(result))
 
-    @http.route('/openeducat_lms/fetch_course',
-                type='json', auth='user')
-    def fetch_openeducat_lms_course(self):
-        course_ids = request.env['op.course'].search_read(
-            [('online_course', '=', True)], ['id', 'name'], order='name')
-        return {'course_ids': course_ids}
-
-    @http.route('/openeducat_lms/get_lms_dash_data', type='json', auth='user')
-    def compute_lms_course_dashboard_data(self, course_id=None):
-        enrolled_users = 0
-        days_since_launch = 0
-        course_duration = 0
-        training_material = 0
-        course_to_begin = 0
-        course_in_progress = 0
-        course_completed = 0
-
-        if course_id:
-            course = request.env['op.course'].browse([int(course_id)])
-
-            enrolled_users = course.enrolled_users
-            days_since_launch = course.days_since_launch
-            course_duration = course.display_time
-            training_material = course.training_material
-            course_to_begin = course.course_to_begin
-            course_in_progress = course.course_in_progress
-            course_completed = course.course_completed
-
-        return {'enrolled_users': enrolled_users,
-                'days_since_launch': days_since_launch,
-                'course_duration': course_duration,
-                'training_material': training_material,
-                'course_to_begin': course_to_begin,
-                'course_in_progress': course_in_progress,
-                'course_completed': course_completed}
-
-    @http.route('/openeducat_lms/compute_openeducat_graph',
-                type='json', auth='user')
-    def compute_openeducat_lms_graph(self):
-        data = []
-
-        last_day = datetime.today().replace(day=calendar.monthrange(
-            datetime.today().year, datetime.today().month)[1])
-        for d in range(1, last_day.day + 1):
-            label = str(d)
-            start_date = datetime.now().replace(
-                day=d).strftime('%Y-%m-%d 00:00:00')
-            end_date = datetime.now().replace(
-                day=d).strftime('%Y-%m-%d 23:59:59')
-            count = request.env['op.course.enrollment'].sudo().search_count(
-                [('enrollment_date', '>=', start_date),
-                 ('enrollment_date', '<=', end_date)])
-            data.append({'label': label,
-                         'value': count and count or 0})
-        return data
-
-    @http.route('/openeducat_lms/compute_openeducat_course_graph',
-                type='json', auth='user')
-    def compute_openeducat_lms_course_graph(self, course_id=None):
-        data = []
-
-        if course_id:
-            last_day = datetime.today().replace(
-                day=calendar.monthrange(datetime.today().year,
-                                        datetime.today().month)[1])
-            for d in range(1, last_day.day + 1):
-                label = str(d)
-                start_date = datetime.now().replace(
-                    day=d).strftime('%Y-%m-%d 00:00:00')
-                end_date = datetime.now().replace(
-                    day=d).strftime('%Y-%m-%d 23:59:59')
-                count = request.env[
-                    'op.course.enrollment'].sudo().search_count(
-                    [('course_id', '=', int(course_id)),
-                     ('enrollment_date', '>=', start_date),
-                     ('enrollment_date', '<=', end_date)])
-                data.append({'label': label,
-                             'value': count and count or 0})
-        return data
-
-    @http.route(['/my/course'], type='http', auth='public',
-                website=True)
-    def my_lms_profile(self, **post):
-        enrollments = request.env['op.course.enrollment'].sudo().search(
-            [('user_id', '=', request.env.uid),
-             ('state', 'in', ['in_progress', 'done'])])
-        data = {'user': request.env.user}
-        if enrollments:
-            data = self.my_corse_details(enrollments)
-        return request.render("openeducat_lms.my_profile", data)
+        result = {
+            'error': 'Error, Mật khẩu của bạn không được thay đổi !'
+        }
+        return str(json.dumps(result))
 
 
-class website_account(website_account):
+    @http.route('/home/session/change_profile', type="http", method="POST", auth="user", website=True, csrf=False)
+    def change_profile(self, **kw):
+        value_edit = kw.get('value')
+        model_edit = kw.get('model')
+        fields_edit = kw.get('fields')
+        editfield = kw.get('editfield')
+        result = {}
+        value_s = value_edit.encode('utf-8').strip()
+        model_s = model_edit.encode('utf-8').strip()
+        fields_s = fields_edit.encode('utf-8').strip()
+        editfield_s = editfield.encode('utf-8').strip()
 
+
+        if not value_s:
+            result = {
+                'error':'Bạn không thể để trống ' + editfield_s + '.'
+            }
+            return str(json.dumps(result))
+
+        try:
+            if model_s == 'res.partner':
+                partner = http.request.env['res.partner'].sudo().browse(http.request.env.user.partner_id.id)
+                partner.write({fields_s: value_s})
+                
+
+            if model_s == 'res.users':
+                user = http.request.env['res.users'].sudo().browse(http.request.env.user.id)
+                user.write({fields_s: value_s})
+
+                if fields_s == 'login':
+                    user.partner_id.write({'email': value_s})
+
+                
+            result = {
+                'success':'Thay đổi '+ editfield_s +' thành công.',
+                'values': value_s
+            }
+            return str(json.dumps(result))
+
+        except Exception:
+            result = {
+                'error':'Thông tin mà bạn cung cấp không chính xác, thông tin của bạn không được thay đổi.'
+            }
+            return str(json.dumps(result))
+
+        result = {
+            'error':'Thông tin của bạn không được thay đổi.'
+        }
+        return str(json.dumps(result))
+
+
+class Website(Website):
+    @http.route(auth='public')
+    def index(self, data={}, **kw):
+        super(Website, self).index(**kw)
+
+        if http.request.session.uid:                        
+            stem = Stem()
+            data = stem.get_menu_data()
+
+            return http.request.render('stem_frontend_theme.stem_home', data)        
+        else:
+
+            try:   
+                providers = http.request.env['auth.oauth.provider'].sudo().search_read([('enabled', '=', True)])
+            except Exception:   
+                providers = []  
+            for provider in providers:   
+                return_url = http.request.httprequest.url_root + 'auth_oauth/signin'
+
+                redirect = http.request.params.get('redirect') or 'home'
+                if not redirect.startswith(('//', 'http://', 'https://')):
+                    redirect = '%s%s' % (http.request.httprequest.url_root, redirect[1:] if redirect[0] == '/' else redirect)
+                state = dict(
+                    d=http.request.session.db,
+                    p=provider['id'],
+                    r=werkzeug.url_quote_plus(redirect),
+                )
+                token = http.request.params.get('token')
+                if token:
+                    state['t'] = token
+
+                params = dict(    
+                    response_type='token',    
+                    client_id=provider['client_id'],    
+                    redirect_uri=return_url,    
+                    scope=provider['scope'],    
+                    state=json.dumps(state),   
+                )   
+                provider['auth_link'] = "%s?%s" % (provider['auth_endpoint'], werkzeug.url_encode(params))
+
+            online_free_courses = http.request.env['op.course'].sudo().search(
+                [], limit=5, order='create_date desc')
+
+            all_users = http.request.env['res.users'].sudo().search([])    
+            count_all_users = len(all_users)
+            all_courses = http.request.env['op.course'].sudo().search([])
+            count_all_courses = len(all_courses)
+            all_blog_posts = http.request.env['blog.post'].sudo().search([])
+            count_all_blog_posts = len(all_blog_posts)
+
+
+            data = { 
+                'online_free_courses': online_free_courses,
+                'providers': providers,
+                'count_all_users': count_all_users,
+                'count_all_courses': count_all_courses, 
+                'count_all_blog_posts': count_all_blog_posts
+            }
+
+            return http.request.render('stem_frontend_theme.stem_homepage', data)
+
+
+class AuthSignupHomeTwo(Home):    
+    def do_signup(self, qcontext):                
+        """ Shared helper that creates a res.partner out of a token """                
+        values = { key: qcontext.get(key) for key in ('login', 'name', 'password') }
+
+        if qcontext.get('gender'):
+            values['gender'] = qcontext.get('gender')
+
+        if qcontext.get('bd_year') and qcontext.get('bd_month') and qcontext.get('bd_date'):
+            values['birthday'] = qcontext.get('bd_year') + '-' + qcontext.get('bd_month') + '-' + qcontext.get('bd_date')       
+        assert values.values(), "The form was not properly filled in. "                
+        assert values.get('password') == qcontext.get('confirm_password'), "Passwords do not match; please retype them."                
+        supported_langs = [lang['code'] for lang in http.request.env['res.lang'].sudo().search_read([], ['code'])]                
+        if http.request.lang in supported_langs:                        
+            values['lang'] = http.request.lang
+        self._signup_with_values(qcontext.get('token'), values)                
+        http.request.env.cr.commit()
+
+
+
+class SignupVerifyEmail(AuthSignupHome):
     @http.route()
-    def account(self, **kw):
-        """ Add sales documents to main account page """
-        response = super(website_account, self).account(**kw)
-        course_count = request.env['op.course.enrollment'].sudo().search_count(
-            [('user_id', '=', request.env.uid),
-             ('state', 'in', ['in_progress', 'done'])])
-        response.qcontext.update({
-            'course_count': course_count
-        })
-        return response
+    def web_auth_signup(self, *args, **kw):
+        if (http.request.params.get("login") and http.request.params.get("password")):
+            return self.passwordless_signup(http.request.params)
+        else:
+            return super(SignupVerifyEmail, self).web_auth_signup(*args, **kw)
+
+    def passwordless_signup(self, values):
+        qcontext = self.get_auth_signup_qcontext()
+
+        try:   
+            providers = http.request.env['auth.oauth.provider'].sudo().search_read([('enabled', '=', True)])
+        except Exception:   
+            providers = []  
+        for provider in providers:   
+            return_url = http.request.httprequest.url_root + 'auth_oauth/signin'
+
+            redirect = http.request.params.get('redirect') or ''
+            if not redirect.startswith(('//', 'http://', 'https://')):
+                redirect = '%s%s' % (http.request.httprequest.url_root, redirect[1:] if redirect[0] == '/' else redirect)
+            state = dict(
+                d=http.request.session.db,
+                p=provider['id'],
+                r=werkzeug.url_quote_plus(redirect),
+            )
+            token = http.request.params.get('token')
+            if token:
+                state['t'] = token
+
+            params = dict(    
+                response_type='token',    
+                client_id=provider['client_id'],    
+                redirect_uri=return_url,    
+                scope=provider['scope'],    
+                state=json.dumps(state),   
+            )   
+            provider['auth_link'] = "%s?%s" % (provider['auth_endpoint'], werkzeug.url_encode(params))
+
+        online_free_courses = http.request.env['op.course'].sudo().search(
+            [], limit=5, order='create_date desc')
+
+        all_users = http.request.env['res.users'].sudo().search([])    
+        count_all_users = len(all_users)
+        all_courses = http.request.env['op.course'].sudo().search([])
+        count_all_courses = len(all_courses)
+        all_blog_posts = http.request.env['blog.post'].sudo().search([])
+        count_all_blog_posts = len(all_blog_posts)
+
+
+        qcontext['online_free_courses'] =  online_free_courses
+        qcontext['providers'] = providers
+        qcontext['count_all_users'] = count_all_users
+        qcontext['count_all_courses'] = count_all_courses 
+        qcontext['count_all_blog_posts'] = count_all_blog_posts
+
+
+        """ Shared helper that creates a res.partner out of a token """                
+        values = { key: qcontext.get(key) for key in ('login', 'name', 'password') }
+        
+
+        if qcontext.get('gender'):
+            values['gender'] = qcontext.get('gender')
+
+        if qcontext.get('bd_year') and qcontext.get('bd_month') and qcontext.get('bd_date'):
+            values['birthday'] = qcontext.get('bd_year') + '-' + qcontext.get('bd_month') + '-' + qcontext.get('bd_date')       
+        assert values.values(), "The form was not properly filled in. "                
+        assert values.get('password') == qcontext.get('confirm_password'), "Passwords do not match; please retype them."                
+        supported_langs = [lang['code'] for lang in http.request.env['res.lang'].sudo().search_read([], ['code'])]                
+        if http.request.lang in supported_langs:                        
+            values['lang'] = http.request.lang
+
+        # Check good format of e-mail
+        if not validate_email(values.get("login", "")):
+            qcontext["error"] = _("That does not seem to be an email address.")
+            return http.request.render("stem_frontend_theme.stem_homepage", qcontext)
+        elif not values.get("email"):
+            values["email"] = values.get("login")
+
+        if http.request.env["res.users"].sudo().search([("login", "=", values.get("login"))]):
+            qcontext["error"] = _("Một người dùng khác đã được đăng ký sử dụng địa chỉ email này.")
+            return http.request.render("stem_frontend_theme.stem_homepage", qcontext)
+
+        # Remove password
+        values["password"] = ""
+
+        
+        sudo_users = (http.request.env["res.users"]
+                      .with_context(create_user=True).sudo())
+
+        try:
+            with http.request.cr.savepoint():
+                sudo_users.signup(values, qcontext.get("token"))
+                sudo_users.reset_password(values.get("login"))
+        except Exception as error:
+            # Duplicate key or wrong SMTP settings, probably
+            _logger.exception(error)
+            # Agnostic message for security
+            qcontext["error"] = _(
+                "Đã xảy ra sự cố, vui lòng thử lại sau hoặc liên hệ với chúng tôi.")
+            return http.request.render("stem_frontend_theme.stem_homepage", qcontext)
+
+        qcontext["message"] = _("Kiểm tra email của bạn để kích hoạt tài khoản của bạn!")
+        return http.request.render("auth_signup.reset_password", qcontext)
+        
+class WebsiteForums(http.Controller):
+    @http.route('/forum/<model("forum.forum"):forum>/user/<model("res.users"):user>/saved', type='http', auth="user", methods=['POST'], website=True)
+    def save_edited_profiles(self, forum, user, **kwargs):
+        values = {
+            'name': kwargs.get('name'),
+            'website': kwargs.get('website'),
+            'email': kwargs.get('email'),
+            'city': kwargs.get('city'),
+            'country_id': int(kwargs.get('country')) if kwargs.get('country') else False,
+            'website_description': kwargs.get('description'),
+        }
+
+        if 'clear_image' in kwargs:
+            values['image'] = False
+        elif kwargs.get('ufile'):
+            image = kwargs.get('ufile').read()
+            values['image'] = base64.b64encode(image)
+
+        if request.uid == user.id:  # the controller allows to edit only its own privacy settings; use partner management for other cases
+            values['website_published'] = kwargs.get('website_published') == 'True'
+        user.write(values)
+        return werkzeug.utils.redirect("/forum/%s/user/%d" % (slug(forum), user.id))
