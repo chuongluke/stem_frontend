@@ -122,6 +122,31 @@ class Stem(http.Controller):
         
         return http.request.render('stem_frontend_theme.stem_profile', data)
 
+    @http.route(['/all-courses',
+                 '/all-courses/page/<int:page>'
+    ], type='http', auth="public", website=True)
+    def view_all_courses(self, search='', page=1, ppg=False, **post):
+        data = self.get_menu_data()
+        if ppg:
+            try:
+                ppg = int(ppg)
+            except ValueError:
+                ppg = 5
+            post["ppg"] = ppg
+        else:
+            ppg = 5
+
+        url = '/all-courses'
+        pager = request.website.pager(url=url, total=len(data['all_courses']), page=page,
+                                      step=ppg, scope=7,
+                                      url_args=post)
+        
+        course_ids = request.env['op.course'].search([],
+                limit=ppg, offset=pager['offset'])
+        data['course_ids']= course_ids 
+        data['pager']= pager 		
+        return http.request.render('stem_frontend_theme.stem_all_courses', data)
+
     @http.route('/googleb90fcbde0047b306.html', auth='public')
     def google_html(self):
         return 'google-site-verification: googleb90fcbde0047b306.html'
