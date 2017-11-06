@@ -1,8 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
+		<template id="stem_profile_for_blog" name="STEM Home">
+			<t t-call="website.layout">
+				<section class="row">
+  	  				<aside class="col-md-2">
+  	  					<div class="list-group" id="menu">
+						    
+		  					<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
+		  						<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
+		  						<t t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
+		  					</a>
+		  					<a href="/home/my-blogs" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-file-text-o text-primary" aria-hidden="true"></i>
+		  						Tin tức<span class="badge bg-pink"><t t-esc="len(posts)"/></span>
+		  					</a>
+							
+		  					<a href="/home/my-mes" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-commenting-o text-danger" aria-hidden="true"></i>
+		  						Thông báo<span class="badge bg-pink"><t t-esc="len(my_channels)"/></span>
+		  					</a>
+							<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+		  						Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+		  					</a>
+		  					<a href="/courses" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học<span class="badge bg-pink"><t t-esc="len(online_free_courses)"/></span>
+		  					</a>
+							
+		  					<!-- <a href="/event" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
+		  						Sự kiện<span class="badge bg-pink">14</span>
+		  					</a> -->
+		  					<a class="list-group-item list-group-item1" href="/home/my-courses">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học của tôi<span class="badge bg-pink"><t t-esc="len(my_courses)"/></span>
+		  					</a>
+						
+                            <t t-if="parent_child"> 
+							    <script>
+									alert('Có phụ huynh muốn quản lý bạn. Vui lòng vào Xác nhận phụ huynh để xác nhận! ');
+								</script>
+								<a class="list-group-item list-group-item1" data-toggle="modal" data-target="#childModal">
+			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						Xác nhận phụ huynh
+			  					</a>
+							</t>
+							<t t-if="parent_child_sm">
+								<a href="#p-list" data-toggle="collapse" class="list-group-item list-group-item1">
+			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						Phụ huynh của tôi
+			  					</a>	
+								<div class="list-group list-group-child collapse" id="p-list">
+									<t t-foreach="parent_child_sm" t-as="p">
+										<a t-att-href="'/profile/%s/blogs' % (p.id)" class="list-group-item list-group-item1" t-esc="p.name" />
+									</t>
+								</div>
+							</t>
+							
+		  					<t t-if="parent">
+		  						<a href="#children-list" data-toggle="collapse" class="list-group-item list-group-item1">
+			  						<i class="MR10 fa fa-th-large text-info" aria-hidden="true"></i>
+			  						Phụ huynh quản lý
+			  					</a>
+
+			  					<div class="list-group list-group-child collapse" id="children-list">
+			  						<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#parentModal">
+				  						<i class="MR5 fa fa-user-plus text-info" aria-hidden="true"></i>
+				  						Thêm
+				  					</a>
+
+			  						<t t-foreach="parent.student_ids" t-as="child">
+							    		<a t-att-href="'/home/my-child/' + str(child.id)" class="list-group-item list-group-item1" t-esc="child.name" />
+							    	</t>
+							    </div>
+		  					</t>
+		  					<t t-if="not parent">
+			  					<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#parentModal">
+			  						<i class="MR10 fa fa-user-plus text-info" aria-hidden="true"></i>
+			  						Đăng ký phụ huynh
+			  					</a>
+		  					</t>
+		  					<t t-if="user_id.partner_id.employee == True">
+								<a class="list-group-item list-group-item1" href="/home/my-courses-teach">
+									<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+									Danh sách lớp đào tạo<span class="badge bg-pink"></span>
+								</a>
+							</t>
+							<t t-if="user_id.partner_id.employee == False">
+			  					<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#teacherModal">
+			  						<i class="MR10 fa fa-user-plus text-warning" aria-hidden="true"></i>
+			  						Đăng ký giáo viên
+			  					</a>
+			  				</t>
+							
+							<a href="/home/my-question" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+		  						Câu hỏi của tôi<span class="badge bg-pink"><t t-esc="len(my_questions)"/></span>
+		  					</a>
+						</div>
+  	  				</aside>
+
+  	  				<aside class="col-md-7">
+  	  					<t t-raw="0">
+  	  					</t>
+      				</aside>
+
+      				<aside class="col-md-3">
+      	 				<div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="/courses">Khóa học</a>
+      	 					</h3>
+
+      	 					<t t-foreach="online_free_courses" t-as="online_free_course">
+      	 						<div class="MB20">
+      	 							<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+	                                <img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
+
+									<p>
+					      	 			<a class="text-justify text-link" t-attf-href="/course-detail/#{slug(online_free_course)}">
+					      	 				<span t-esc="online_free_course.name"/>
+					      	 			</a>
+					      	 		</p>
+					      	 		<p class="text-right">
+					      	 			<a t-attf-href="/course-detail/#{slug(online_free_course)}">
+					      	 				Chi tiết &gt;&gt;
+					      	 			</a>
+					      	 		</p>
+      	 						</div>
+      	 					</t>
+      	 				</div>
+      				</aside>
+    			</section>
+			</t>
+		</template>
+
 		<template id="stem_my_blogs" name="STEM My Blogs">
-			<t t-call="stem_frontend_theme.stem_profile">
+			<t t-call="stem_frontend_theme.stem_profile_for_blog">
 				<div class="box-bor MB20">
  					<h3 class="text-xanh1">
  						<a href="">Tin tức</a>
