@@ -110,7 +110,7 @@
       				<aside class="col-md-3">
       	 				<div class="box-bor">
       	 					<h3 class="text-xanh1">
-      	 						<a href="/courses">Khóa học</a>
+      	 						<a href="/all-courses">Khóa học</a>
       	 					</h3>
 
       	 					<t t-foreach="online_free_courses" t-as="online_free_course">

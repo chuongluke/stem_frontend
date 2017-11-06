@@ -59,10 +59,32 @@
 		  						<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
 		  						Sự kiện<span class="badge bg-pink"><t t-esc="len(events)"/></span>
 		  					</a>
-		  					<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
-		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
-		  						Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
-		  					</a>
+							<a href="#forum-list" data-toggle="collapse" class="list-group-item list-group-item1">
+								<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+								Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+							</a>	
+
+							<div class="list-group list-group-child collapse" id="forum-list">
+								
+															
+								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Trang chủ<span class="badge bg-pink"></span>
+								</a>							
+								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/users">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										People
+								</a>
+								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/tag">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Thẻ
+								</a>
+								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/badge">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Huy Hiệu
+								</a>
+								
+							</div>
 		  					<!-- <a class="list-group-item list-group-item1" href="/home/my-courses">
 		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
 		  						Khóa học của tôi
@@ -364,10 +386,34 @@
 		  						<i class="MR10 fa fa-commenting-o text-danger" aria-hidden="true"></i>
 		  						Thông báo<span class="badge bg-pink"><t t-esc="len(my_channels)"/></span>
 		  					</a>
-							<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
-		  						<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
-		  						Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
-		  					</a>
+							<a href="#forum-list" data-toggle="collapse" class="list-group-item list-group-item1">
+								<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+								Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+							</a>	
+
+							<div class="list-group list-group-child collapse" id="forum-list">																						
+								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Trang chủ<span class="badge bg-pink"></span>
+								</a>							
+								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/users">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										People
+								</a>
+								<a class="list-group-item list-group-item1" href="/forum/stem-forum-2/tag">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Thẻ
+								</a>
+								<a class="list-group-item list-group-item1 border-B1" href="/forum/stem-forum-2/badge">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Huy Hiệu
+								</a>
+								<a class="list-group-item list-group-item1" t-attf-href="/forum/stem-forum-2/user/#{ uid }">
+										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+										Your profile
+								</a>
+								
+							</div>
 		  					<a href="/all-courses" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
 		  						Khóa học<span class="badge bg-pink"><t t-esc="len(online_free_courses)"/></span>

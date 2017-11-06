@@ -1,8 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-		<template id="stem_profile_blogs" name="STEM My Blogs">
-			<t t-call="stem_frontend_theme.stem_user_profile">
+		<template id="stem_template_profile_blogs" name="STEM Blogs">
+			<t t-call="website.layout">
+				<section class="row">
+  	  				<aside class="col-md-2">
+  	  					<div class="list-group" id="menu">
+						    
+							<a t-attf-href="/profile/{{partner.id}}" class="list-group-item list-group-item1 border-B1">
+		  						<img t-att-src="partner.image_small and ('data:image/png;base64,' + partner.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="partner.name" width="32"/>
+		  						<t t-esc="(len(partner.name)&gt;25) and (partner.name[:23]+'...') or partner.name"/>
+		  					</a>
+							<a t-attf-href="/profile/{{partner.id}}/blogs" class="list-group-item list-group-item1">
+								<i class="MR10 fa fa-file-text-o text-primary" aria-hidden="true"></i>
+								Tin tức
+							</a>
+							
+		  					<a t-attf-href="/profile/{{partner.id}}/courses" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học
+		  					</a>
+						
+		  				</div>	
+  	  				</aside>
+
+  	  				<aside class="col-md-7">
+  	  					<t t-raw="0">
+  	  					</t>
+      				</aside>
+
+      				<aside class="col-md-3">
+      	 				<div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="/all-courses">Khóa học</a>
+      	 					</h3>
+
+      	 					<t t-foreach="online_free_courses" t-as="online_free_course">
+      	 						<div class="MB20">
+      	 							<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
+	                                <img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
+
+									<p>
+					      	 			<a class="text-justify text-link" t-attf-href="/course-detail/#{slug(online_free_course)}">
+					      	 				<span t-esc="online_free_course.name"/>
+					      	 			</a>
+					      	 		</p>
+					      	 		<p class="text-right">
+					      	 			<a t-attf-href="/course-detail/#{slug(online_free_course)}">
+					      	 				Chi tiết &gt;&gt;
+					      	 			</a>
+					      	 		</p>
+      	 						</div>
+      	 					</t>
+      	 				</div>
+      				</aside>
+    			</section>
+			</t>
+		</template>
+		
+		<template id="stem_profile_blogs" name="STEM Blogs">
+			<t t-call="stem_frontend_theme.stem_template_profile_blogs">
 				<div class="box-bor MB20">
  					<h3 class="text-xanh1">
  						<a href="">Tin tức</a>

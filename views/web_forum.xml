@@ -11,7 +11,7 @@
 			
             <xpath expr="//div[@class='container mt16 website_forum']" position="replace">
 			    
-                <div class ="container mt16 website_forum">
+                <div class ="container website_forum">
 					<section class="row">
 						<div class="col-md-2">
 							<div class="list-group">
@@ -19,81 +19,96 @@
 										<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
 										<span t-field="user_id.name"/>
 								</a>
-								
-								<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Trang chủ<span class="badge bg-pink"></span>
-								</a>							
-								<!--
-								<a href="#sortlist" data-toggle="collapse" class="list-group-item list-group-item1">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Sắp xếp
+								<a href="/all-courses" class="list-group-item list-group-item1">
+									<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+									Khóa học<span class="badge bg-pink"><t t-esc="len(all_courses)"/></span>
 								</a>
-								<div id= "sortlist" class= "collapse">
-									<ul>
-										<li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='relevancy desc') }}">Trending</a>
-										</li>
-										<li t-att-class="sorting == 'name asc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='name asc') }}">Name</a>
-										</li>
-										<li t-att-class="sorting == 'create_date desc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='create_date desc') }}">Newest</a>
-										</li>
-										<li t-att-class="sorting == 'write_date desc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='write_date desc') }}">Activity</a>
-										</li>
-										<li t-att-class="sorting == 'child_count desc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='child_count desc') }}">Most answered</a>
-										</li>
-										<li t-att-class="sorting == 'views desc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='views desc') }}">Most viewed</a>
-										</li>
-										<li t-att-class="sorting == 'vote_count desc' and 'active' or None ">
-											<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='vote_count desc') }}">Most voted</a>
-										</li>
-									</ul>
-								
-								</div>	
-								
-								<a href="#filterlist" data-toggle="collapse" class="list-group-item list-group-item1">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Bộ lọc
+								<a href="/event" class="list-group-item list-group-item1">
+									<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
+									Sự kiện<span class="badge bg-pink"><t t-esc="len(events)"/></span>
 								</a>
-								
-								<div id= "filterlist" class= "collapse">
-									<ul>
-										 <li t-att-class="filters == 'all' and 'active' or None ">
-											<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">All</a>
-										</li>
-										<li t-att-class="filters == 'unanswered' and 'active' or None ">
-											<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Unanswered</a>
-										</li>
-										<li t-if="uid" t-att-class="filters == 'followed' and 'active' or None ">
-											<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Followed</a>
-										</li>
-										
-									</ul>
-								
-								</div>	
-								-->
-								<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										People
-								</a>
-								<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/tag">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Thẻ
-								</a>
-								<a class="list-group-item list-group-item1 border-B1" t-attf-href="/forum/#{ slug(forum) }/badge">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Huy Hiệu
-								</a>
-								<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/user/#{ uid }">
-										<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
-										Your profile
-								</a>
-								
+								<a href="#forum-list" data-toggle="collapse" class="list-group-item list-group-item1">
+									<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+									Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+								</a>	
+
+								<div class="list-group list-group-child collapse" id="forum-list">
+									
+																
+									<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											Trang chủ<span class="badge bg-pink"></span>
+									</a>							
+									<!--
+									<a href="#sortlist" data-toggle="collapse" class="list-group-item list-group-item1">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											Sắp xếp
+									</a>
+									<div id= "sortlist" class= "collapse">
+										<ul>
+											<li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='relevancy desc') }}">Trending</a>
+											</li>
+											<li t-att-class="sorting == 'name asc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='name asc') }}">Name</a>
+											</li>
+											<li t-att-class="sorting == 'create_date desc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='create_date desc') }}">Newest</a>
+											</li>
+											<li t-att-class="sorting == 'write_date desc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='write_date desc') }}">Activity</a>
+											</li>
+											<li t-att-class="sorting == 'child_count desc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='child_count desc') }}">Most answered</a>
+											</li>
+											<li t-att-class="sorting == 'views desc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='views desc') }}">Most viewed</a>
+											</li>
+											<li t-att-class="sorting == 'vote_count desc' and 'active' or None ">
+												<a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='vote_count desc') }}">Most voted</a>
+											</li>
+										</ul>
+									
+									</div>	
+									
+									<a href="#filterlist" data-toggle="collapse" class="list-group-item list-group-item1">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											Bộ lọc
+									</a>
+									
+									<div id= "filterlist" class= "collapse">
+										<ul>
+											 <li t-att-class="filters == 'all' and 'active' or None ">
+												<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">All</a>
+											</li>
+											<li t-att-class="filters == 'unanswered' and 'active' or None ">
+												<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Unanswered</a>
+											</li>
+											<li t-if="uid" t-att-class="filters == 'followed' and 'active' or None ">
+												<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Followed</a>
+											</li>
+											
+										</ul>
+									
+									</div>	
+									-->
+									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											People
+									</a>
+									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/tag">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											Thẻ
+									</a>
+									<a class="list-group-item list-group-item1 border-B1" t-attf-href="/forum/#{ slug(forum) }/badge">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											Huy Hiệu
+									</a>
+									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/user/#{ uid }">
+											<i class="MR10 fa fa-comments-o" aria-hidden="true"></i>
+											Your profile
+									</a>
+								</div>
 							</div>
 							
 						</div>

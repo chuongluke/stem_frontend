@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 
 from odoo import _, http, fields,modules, SUPERUSER_ID, tools
 from odoo.addons.website.controllers.main import Website
+from odoo.addons.website_forum.controllers.main import WebsiteForum
 from odoo.addons.web.controllers.main import Home
 from odoo.addons.website.models.website import slug
 from odoo.addons.auth_signup.controllers.main import AuthSignupHome
@@ -62,7 +63,6 @@ class Stem(http.Controller):
         posts = http.request.env['blog.post'].sudo().search([('website_published', '=', True)])
 
         all_courses = http.request.env['op.course'].sudo().search([])
-
         events = http.request.env['event.event'].sudo().search([])
 
         #course_porpular = http.request.env['rec.cu.by.predef'].sudo().search([])
@@ -637,12 +637,13 @@ class Stem(http.Controller):
                 auth="public", website=True)
     def profile_blogs(self, id, **kw):
         partner = http.request.env['res.partner'].sudo().browse(id);
+        data = self.get_menu_data()
         if partner and partner.id == http.request.env.user.partner_id.id:
             return http.request.redirect('/home/my-blogs')
         else:
-            return http.request.render('stem_frontend_theme.stem_profile_blogs', {
-                'partner': partner
-            })
+            data['partner']= partner
+
+            return http.request.render('stem_frontend_theme.stem_profile_blogs',data)
 
     @http.route('''/profile/<int:id>/courses''', type='http',
                 auth="public", website=True)
@@ -1017,9 +1018,34 @@ class SignupVerifyEmail(AuthSignupHome):
         qcontext["message"] = _("Kiểm tra email của bạn để kích hoạt tài khoản của bạn!")
         return http.request.render("auth_signup.reset_password", qcontext)
         
-class WebsiteForums(http.Controller):
+class WebsiteForum(WebsiteForum):
+    def _prepare_forum_values(self, forum=None, **kwargs):
+        all_courses = http.request.env['op.course'].sudo().search([])
+        events = http.request.env['event.event'].sudo().search([])
+        values = {
+            'user': request.env.user,
+            'is_public_user': request.env.user.id == request.website.user_id.id,
+            'notifications': self._get_notifications(),
+            'header': kwargs.get('header', dict()),
+            'searches': kwargs.get('searches', dict()),
+            'forum_welcome_message': request.httprequest.cookies.get('forum_welcome_message', False),
+            'validation_email_sent': request.session.get('validation_email_sent', False),
+            'validation_email_done': request.session.get('validation_email_done', False),
+            'all_courses': all_courses,
+            'events': events,
+        }
+        if forum:
+            values['forum'] = forum
+        elif kwargs.get('forum_id'):
+            values['forum'] = request.env['forum.forum'].browse(kwargs.pop('forum_id'))
+        values.update(kwargs)
+		
+        return values
+		
     @http.route('/forum/<model("forum.forum"):forum>/user/<model("res.users"):user>/saved', type='http', auth="user", methods=['POST'], website=True)
     def save_edited_profiles(self, forum, user, **kwargs):
+        all_courses = http.request.env['op.course'].sudo().search([])
+        events = http.request.env['event.event'].sudo().search([])
         values = {
             'name': kwargs.get('name'),
             'website': kwargs.get('website'),
@@ -1027,6 +1053,8 @@ class WebsiteForums(http.Controller):
             'city': kwargs.get('city'),
             'country_id': int(kwargs.get('country')) if kwargs.get('country') else False,
             'website_description': kwargs.get('description'),
+            'all_courses': all_courses,
+            'events': events,
         }
 
         if 'clear_image' in kwargs:
