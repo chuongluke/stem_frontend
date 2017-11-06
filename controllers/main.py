@@ -599,7 +599,7 @@ class Stem(http.Controller):
         content = kw.get('questioncontent')
         
         if name:
-            post = http.request.env['forum.post'].sudo().create({
+            post = http.request.env['forum.post'].create({
                 'name': name,
                 'plain_content': name,
                 'post_type': 'question',
@@ -618,7 +618,7 @@ class Stem(http.Controller):
 
         # data.update(values)
 
-        return http.request.redirect('/forum/stem-forum-2')
+        return werkzeug.utils.redirect("/forum/stem-forum-2/question/%s" % (post.id))
 
 
     @http.route('''/profile/<int:id>''', type='http',

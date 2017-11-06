@@ -346,11 +346,11 @@
 				      					<div class="col-md-12">
 							      			<div class="form-group cspan">
 												<label class="control-label">Tiêu đề</label><br/>
-												<input type="name" class="form-control load_editor" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
+												<input type="name" class="form-control" id="questionname" name="questionname" placeholder="Tiêu đề câu hỏi của bạn..."/>
 											</div>
 											<div class="form-group">
 											    <label for="exampleFormControlTextareal">Nội dung</label>
-											    <textarea class="form-control load_editor" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+											    <textarea class="form-control load_editors" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
 											  </div>
 					      				</div>
 						      		</div>
@@ -792,7 +792,7 @@
 											</div>
 											<div class="form-group">
 											    <label for="exampleFormControlTextareal">Nội dung</label>
-											    <textarea class="form-control" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
+											    <textarea class="form-control load_editors" id="questioncontent" placeholder="Nội dung câu hỏi của bạn..." name="questioncontent" rows="10"></textarea>
 											  </div>
 					      				</div>
 						      		</div>

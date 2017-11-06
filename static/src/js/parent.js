@@ -73,6 +73,7 @@ $(document).ready(function() {
 		var indexSelected = Math.round($('[name=bd_year] option').length - 10);
 		$('[name=bd_year] option')[indexSelected].selected = true;
 	}
+	
 
 });
 
@@ -219,13 +220,15 @@ function findItem(result){
 }
 
 function addQuestionClick(){
-	$('#questionname').val($('.name-question').val());
+	$('#questionname').val($('.x-name-question').val());
 }
 
 function askQuestionClick(elm){
 	var question = $('.x-name-question').val();
 	$(elm).parent().parent().find('input[name="questionname"]').val(question);
 	$(elm).parent().parent().find('input[name="questioncontent"]').val(question);
+	
+
 }
 
 function selectChildren() {

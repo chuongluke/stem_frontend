@@ -97,7 +97,7 @@ $(function () {
 
   $('[data-toggle="datepicker"]').datepicker();
   $('[data-toggle="tooltip"]').tooltip();
-  $('textarea.load_editor').each(function () {
+  $('textarea.load_editors').each(function () {
         var $textarea = $(this);
         if (!$textarea.val().match(/\S/)) {
             $textarea.val("<p><br/></p>");
