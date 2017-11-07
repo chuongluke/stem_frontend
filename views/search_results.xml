@@ -5,7 +5,7 @@
 			<t t-call="stem_frontend_theme.stem_profile">
 				<div class="box-bor MB20">
 					<t t-if="all_search_courses or all_search_posts or all_search_partners">
-		    			<h3 class="text-xanh1">
+		    			<h3 class="text-xanh1 text-title">
 			    			<a href="#">Kết quả tìm kiếm</a>
 			    		</h3>
 			    	</t>
@@ -14,47 +14,93 @@
 	                		<p>Không có kết quả nào.</p>
 		            	</div>
 		            </t>
-		            <t t-if="all_search_courses">
-		            	<t t-foreach="all_search_courses" t-as="course">
-	  	    				<div class="MB20">
-	  	    					<img t-if="not course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" style="width: 100%;"/>
-	                        	<img t-if="course.image" t-attf-src="/web/image/op.course/#{course.id}/image" class="img-responsive" style="width: 100%;"/>
+		        </div>
 
-								<h4 class="MB5">
-									<a t-attf-href="/course-detail/#{slug(course)}"
-										t-esc="course.name"/>
-								</h4>
-	  	    				</div>
-	  	    			</t>
-		            </t>
-		            <t t-if="all_search_posts">
-			            <t t-foreach="all_search_posts" t-as="p">
-				        	<t t-set="properties" t-value="json.loads(p.cover_properties)"/>
-				            <div class="MB20">
-				            	<img class="img-responsive MB5" t-attf-src="#{properties.get('background-image')[4:-1]}" style="width: 100%;"/>
+	            <div class="box-bor MB20" t-if="all_search_courses">
+	            	<h3 class="text-xanh1">
+		    			<a href="#">Khóa học</a>
+		    		</h3>
+  	    			<div>
+    					<table class="table table-search-result">
+    						<tbody>
+    							<t t-foreach="all_search_courses" t-as="course">
+    								<tr>
+    									<td>
+    										<a t-attf-href="/course-detail/#{slug(course)}">
+    											<img t-if="not course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-150"/>
+                        						<img t-if="course.image" t-attf-src="/web/image/op.course/#{course.id}/image" class="img-150"/>
+    										</a>
+    									</td>
+    									<td>
+    										<h4 class="MB5 MT0">
+												<a t-attf-href="/course-detail/#{slug(course)}"
+													t-esc="course.name"/>
+											</h4>
+    									</td>
+    								</tr>
+    							</t>
+    						</tbody>
+    					</table>
+  	    			</div>
+	            </div>
 
-				                <h4 class="MB5">
-				      	 			<a t-att-href="'/blog/%s/post/%s' % (p.blog_id.id, p.id)">
-				      	 				<span t-field="p.name"/>
-				      	 			</a>
-				      	 		</h4>
-				            </div>
-				        </t>
-				    </t>
-				    <t t-if="all_search_partners">
-			            <t t-foreach="all_search_partners" t-as="p">
-				            <div class="MB20">
-				            	<img t-attf-src="data:image/*;base64,{{ p.image }}" class="img-responsive"/>
+	            <div class="box-bor MB20" t-if="all_search_posts">
+	            	<h3 class="text-xanh1">
+		    			<a href="#">Tin tức</a>
+		    		</h3>
+  	    			<div>
+    					<table class="table table-search-result">
+    						<tbody>
+    							<t t-foreach="all_search_posts" t-as="p">
+    								<t t-set="properties" t-value="json.loads(p.cover_properties)"/>
+    								<tr>
+    									<td>
+    										<a t-att-href="'/blog/%s/post/%s' % (p.blog_id.id, p.id)">
+    											<img class="img-150" t-attf-src="#{properties.get('background-image')[4:-1]}"/>
+    										</a>
+    									</td>
+    									<td>
+    										<h4 class="MB5 MT0">
+												<a t-att-href="'/blog/%s/post/%s' % (p.blog_id.id, p.id)">
+							      	 				<span t-field="p.name"/>
+							      	 			</a>
+											</h4>
+    									</td>
+    								</tr>
+    							</t>
+    						</tbody>
+    					</table>
+  	    			</div>
+	            </div>
 
-				                <h4 class="MB5">
-				      	 			<a t-attf-href="/profile/{{p.id}}">
-				      	 				<span t-field="p.name"/>
-				      	 			</a>
-				      	 		</h4>
-				            </div>
-				        </t>
-				    </t>
-	    		</div>
+	            <div class="box-bor MB20" t-if="all_search_partners">
+	            	<h3 class="text-xanh1">
+		    			<a href="#">Người dùng</a>
+		    		</h3>
+  	    			<div>
+    					<table class="table table-search-result">
+    						<tbody>
+    							<t t-foreach="all_search_partners" t-as="p">
+    								<tr>
+    									<td>
+    										<a t-attf-href="/profile/{{p.id}}">
+    											<img class="img-150" t-attf-src="data:image/*;base64,{{ p.image }}"/>
+    										</a>
+    									</td>
+    									<td>
+    										<h4 class="MB5 MT0">
+												<a t-attf-href="/profile/{{p.id}}">
+							      	 				<span t-field="p.name"/>
+							      	 			</a>
+											</h4>
+    									</td>
+    								</tr>
+    							</t>
+    						</tbody>
+    					</table>
+  	    			</div>
+	            </div>
+	            
 	    		<div style="text-align:center;">
                     <t t-call="website.pager" />
                 </div>

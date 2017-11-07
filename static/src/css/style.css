@@ -230,6 +230,9 @@ a{color: #1fa67a;}
 }
 
 /* custom for stem */
+#wrapwrap {
+	background-color: #fff;
+}
 #wrapwrap > * {
     display: block;
 }
@@ -412,5 +415,35 @@ body {
 .table-user-information tbody tr td:nth-child(2) {
     max-width: 70% !important;
     width: 70%;
+}
+
+.table-search-result {
+	margin-bottom: 0;
+}
+
+.table-search-result > tbody > tr > td {
+	padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.table-search-result > tbody > tr:first-child > td {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.table-search-result > tbody > tr > td:first-child {
+	width: 160px;
+	padding-left: 0;
+}
+
+.img-150 {
+	height: 150px;
+	width: 150px;
+}
+
+.text-title {
+	border-bottom: none;
+    padding: 0;
+    margin: 0;
 }
 /* end custom for stem */
