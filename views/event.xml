@@ -75,16 +75,19 @@
 						</div>	
 					</t>
 					<t t-if="events">
-						<div class="MB20">
-							<t t-foreach="events" t-as="e">
-								<div>
-									<div>Tên sự kiện: <t t-esc="e.name"/></div>
-									<div>Mô tả:</div>
-									<div>Địa điểm: </div>
-									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+						<t t-foreach="events" t-as="e">
+							<div style="border-bottom-width: thin; border-bottom-style: solid;border-bottom-color: black;" class="MB20">
+								<h4> 
+									<a href="#" ><t t-esc="e.name"/> </a>
+								</h4>
+								<div>Mô tả:</div>
+								<div>Địa điểm: </div>
+								<div>Thời gian: từ <span t-field="e.date_begin" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
+												đến <span t-field="e.date_end" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
 								</div>
-							</t>
-						</div>	
+							</div>
+						</t>
+							
 					</t>
 			   </div>
 			</t>
@@ -101,17 +104,19 @@
 							<p>Không có sự kiện nào.</p>
 						</div>	
 					</t>
-					<t t-if="old_events">
-						<div class="MB20">
-							<t t-foreach="old_events" t-as="e">
-								<div>
-									<div>Tên sự kiện: <t t-esc="e.name"/></div>
-									<div>Mô tả:</div>
-									<div>Địa điểm: </div>
-									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+					<t t-if="old_events">	
+						<t t-foreach="old_events" t-as="e">
+							<div style="border-bottom-width: thin; border-bottom-style: solid;border-bottom-color: black;" class="MB20">
+								<h4> 
+									<a href="#" ><t t-esc="e.name"/> </a>
+								</h4>
+								<div>Mô tả:</div>
+								<div>Địa điểm: </div>
+								<div>Thời gian: từ <span t-field="e.date_begin" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
+												đến <span t-field="e.date_end" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
 								</div>
-							</t>
-						</div>	
+							</div>
+						</t>	
 					</t>
 			   </div>
 			</t>
@@ -129,16 +134,18 @@
 						</div>	
 					</t>
 					<t t-if="current_events">
-						<div class="MB20">
-							<t t-foreach="current_events" t-as="e">
-								<div>
-									<div>Tên sự kiện: <t t-esc="e.name"/></div>
-									<div>Mô tả:</div>
-									<div>Địa điểm: </div>
-									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+						<t t-foreach="current_events" t-as="e">
+							<div style="border-bottom-width: thin; border-bottom-style: solid;border-bottom-color: black;" class="MB20">
+								<h4> 
+									<a href="#" ><t t-esc="e.name"/> </a>
+								</h4>
+								<div>Mô tả:</div>
+								<div>Địa điểm: </div>
+								<div>Thời gian: từ <span t-field="e.date_begin" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
+												đến <span t-field="e.date_end" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
 								</div>
-							</t>
-						</div>	
+							</div>
+						</t>
 					</t>
 			   </div>
 			</t>
@@ -156,16 +163,18 @@
 						</div>	
 					</t>
 					<t t-if="next_events">
-						<div class="MB20">
-							<t t-foreach="next_events" t-as="e">
-								<div>
-									<div>Tên sự kiện: <t t-esc="e.name"/></div>
-									<div>Mô tả:</div>
-									<div>Địa điểm: </div>
-									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+						<t t-foreach="next_events" t-as="e">
+							<div style="border-bottom-width: thin; border-bottom-style: solid;border-bottom-color: black;" class="MB20">
+								<h4> 
+									<a href="#" ><t t-esc="e.name"/> </a>
+								</h4>
+								<div>Mô tả:</div>
+								<div>Địa điểm: </div>
+								<div>Thời gian: từ <span t-field="e.date_begin" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
+												đến <span t-field="e.date_end" t-field-options="{&quot;format&quot;: &quot;HH:mm dd-MM-yyyy&quot;}" />
 								</div>
-							</t>
-						</div>	
+							</div>
+						</t>
 					</t>
 			   </div>
 			</t>

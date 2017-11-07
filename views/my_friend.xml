@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-		<template id="stem_profile_for_blog" name="STEM Home">
+		<template id="stem_my_friend" name="STEM Friend">
 			<t t-call="website.layout">
 				<section class="row">
   	  				<aside class="col-md-2">
@@ -97,7 +97,7 @@
 		  					</t>
 							<a href="/home/my-friend" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-user text-success" aria-hidden="true"></i>
-		  						Bạn bè<span class="badge bg-pink"><t t-esc="len(my_friends)" /></span>
+		  						Bạn bè<span class="badge bg-pink"><t t-esc="len(my_friends)"/></span>
 		  					</a>
 							<a href="/forum" class="list-group-item list-group-item1">
 								<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
@@ -107,54 +107,45 @@
 		  						<i class="MR10 fa fa-question-circle text-danger" aria-hidden="true"></i>
 		  						Câu hỏi của tôi<span class="badge bg-pink"><t t-esc="len(my_questions)"/></span>
 		  					</a>
+					
 						</div>
   	  				</aside>
 
   	  				<aside class="col-md-7">
-  	  					<t t-raw="0">
-  	  					</t>
-      				</aside>
-
+					  <t t-raw="0">
+						  <div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="#">Danh sách bạn bè </a>
+      	 					</h3>
+	                        <t t-if="not my_friends">
+							   <p> Bạn chưa kết bạn với ai cả! </p>
+							</t>
+							<t t-if="my_friends">
+								<div class="mb16" t-foreach="my_friends" t-as="fr">
+									
+								</div>
+							</t>
+      	 				</div>
+					  </t>
+ 					</aside>	
       				<aside class="col-md-3">
       	 				<div class="box-bor">
       	 					<h3 class="text-xanh1">
-      	 						<a href="/all-courses">Khóa học</a>
+      	 						<a href="#">Lời mời kết bạn</a>
       	 					</h3>
-
-      	 					<t t-foreach="online_free_courses" t-as="online_free_course">
-      	 						<div class="MB20">
-      	 							<img t-if="not online_free_course.image" t-attf-src="/openeducat_lms/static/src/img/channel-default.jpg" class="img-responsive" />
-	                                <img t-if="online_free_course.image" t-attf-src="/web/image/op.course/#{online_free_course.id}/image" class="img-responsive" />
-
-									<p>
-					      	 			<a class="text-justify text-link" t-attf-href="/course-detail/#{slug(online_free_course)}">
-					      	 				<span t-esc="online_free_course.name"/>
-					      	 			</a>
-					      	 		</p>
-					      	 		<p class="text-right">
-					      	 			<a t-attf-href="/course-detail/#{slug(online_free_course)}">
-					      	 				Chi tiết &gt;&gt;
-					      	 			</a>
-					      	 		</p>
-      	 						</div>
-      	 					</t>
+							<t t-if="not invite_friends">
+							   <p> Bạn không có lời mời kết bạn nào!</p>
+							</t>
+							<t t-if="invite_friends">
+								<div class="mb16" t-foreach="my_friends" t-as="fr">
+									
+								</div>
+							</t>
+      	 					
       	 				</div>
       				</aside>
-    			</section>
+				</section>
 			</t>
 		</template>
-
-		<template id="stem_my_blogs" name="STEM My Blogs">
-			<t t-call="stem_frontend_theme.stem_profile_for_blog">
-				<div class="box-bor MB20">
- 					<h3 class="text-xanh1">
- 						<a href="">Tin tức</a>
- 					</h3>
-
- 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
-
-  	    		</div>
-			</t>
-		</template>
-	</data>
+    </data>
 </odoo>

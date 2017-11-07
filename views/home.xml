@@ -352,25 +352,38 @@
 		  						<i class="MR10 fa fa-commenting-o text-danger" aria-hidden="true"></i>
 		  						Thông báo<span class="badge bg-pink"><t t-esc="len(my_channels)"/></span>
 		  					</a>
-							<a href="/forum" class="list-group-item list-group-item1">
-								<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
-								Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
-							</a>	
-
-		  					<a href="/all-courses" class="list-group-item list-group-item1">
+                            
+							<a href="#edu-list"  data-toggle="collapse" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
-		  						Khóa học<span class="badge bg-pink"><t t-esc="len(online_free_courses)"/></span>
+		  						Đào tạo STEM
 		  					</a>
+							<div class="list-group list-group-child collapse" id="edu-list">
+								<a href="/all-courses" class="list-group-item list-group-item1">
+									<i class=" fa fa-th-large text-success" aria-hidden="true"></i>
+									Khóa học<span class="badge bg-pink"><t t-esc="len(online_free_courses)"/></span>
+								</a>
 							
-		  					<!-- <a href="/event" class="list-group-item list-group-item1">
-		  						<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
-		  						Sự kiện<span class="badge bg-pink">14</span>
-		  					</a> -->
-		  					<a class="list-group-item list-group-item1" href="/home/my-courses">
-		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
-		  						Khóa học của tôi<span class="badge bg-pink"><t t-esc="len(my_courses)"/></span>
-		  					</a>
-						
+								<!-- <a href="/event" class="list-group-item list-group-item1">
+									<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
+									Sự kiện<span class="badge bg-pink">14</span>
+								</a> -->
+								<a class="list-group-item list-group-item1" href="/home/my-courses">
+									<i class="fa fa-th-large text-success" aria-hidden="true"></i>
+									Khóa học của tôi<span class="badge bg-pink"><t t-esc="len(my_courses)"/></span>
+								</a>
+							    <t t-if="user_id.partner_id.employee == True">
+									<a class="list-group-item list-group-item1" href="/home/my-courses-teach">
+										<i class="fa fa-th-large text-success" aria-hidden="true"></i>
+										Lớp đào tạo<span class="badge bg-pink"></span>
+									</a>
+								</t>
+								<t t-if="user_id.partner_id.employee == False">
+									<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#teacherModal">
+										<i class=" fa fa-user-plus text-warning" aria-hidden="true"></i>
+										Đăng ký giáo viên
+									</a>
+								</t>
+						    </div>
                             <t t-if="parent_child"> 
 							    <script>
 									alert('Có phụ huynh muốn quản lý bạn. Vui lòng vào Xác nhận phụ huynh để xác nhận! ');
@@ -415,48 +428,40 @@
 			  						Đăng ký phụ huynh
 			  					</a>
 		  					</t>
-		  					<t t-if="user_id.partner_id.employee == True">
-								<a class="list-group-item list-group-item1" href="/home/my-courses-teach">
-									<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
-									Danh sách lớp đào tạo<span class="badge bg-pink"></span>
-								</a>
-							</t>
-							<t t-if="user_id.partner_id.employee == False">
-			  					<a href="#" class="list-group-item list-group-item1" data-toggle="modal" data-target="#teacherModal">
-			  						<i class="MR10 fa fa-user-plus text-warning" aria-hidden="true"></i>
-			  						Đăng ký giáo viên
-			  					</a>
-			  				</t>
-							
+							<a href="/home/my-friend" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-user text-success" aria-hidden="true"></i>
+		  						Bạn bè<span class="badge bg-pink"><t t-esc="len(my_friends)" /></span>
+		  					</a>
+							<a href="/forum" class="list-group-item list-group-item1">
+								<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+								Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+							</a>	
 							<a href="/home/my-question" class="list-group-item list-group-item1">
 		  						<i class="MR10 fa fa-question-circle text-danger" aria-hidden="true"></i>
 		  						Câu hỏi của tôi<span class="badge bg-pink"><t t-esc="len(my_questions)"/></span>
 		  					</a>
+							
+							
+							
 						</div>
   	  				</aside>
 
   	  				<aside class="col-md-7">
   	  					<t t-raw="0">
-  	  						<div class="box-bor MB20">
-  	  							<div>
-  	  								<div>
-  	  									<div>
-  	  										<div class="addQuestionPrompt">
-  	  											<span>
-  	  												<h3>TRI THỨC STEM</h3>
-  	  											</span>
-  	  											<div class="form-group">
-  	  												<input type="text" class="x-name-question form-control" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
-  	  												<span class="input-question-btn-search">
-								                        <button type="button" class="btn btn-search-question" disabled="disabled">
-								                            <i class="fa fa-search"></i>
-								                        </button>
-								                    </span>
-  	  											</div>
-  	  										</div>
-  	  									</div>
-  	  								</div>
-  	  							</div>
+  	  						<div class="box-bor MB20">				
+								<div class="addQuestionPrompt">
+									<span>
+										<h3>TRI THỨC STEM</h3>
+									</span>
+									<div class="form-group">
+										<input type="text" class="x-name-question form-control" placeholder="Tìm kiếm hoặc đặt câu hỏi..."/>
+										<span class="input-question-btn-search">
+											<button type="button" class="btn btn-search-question" disabled="disabled">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
   	  						</div>
   	  						
 							<div class="box-bor MB20">
@@ -464,14 +469,17 @@
 			  	    				<a href="/home/my-question">Câu hỏi của tôi</a>
 			  	    			</h3>
 								<t t-set="nb" t-value="0"/>
-								
-								<div class="mb16" t-foreach="my_questions" t-as="question">
-									<t t-if="nb!=5">	
-										<t t-set="nb" t-value="nb+1"/>
-										<t t-call="stem_frontend_theme.stem_display_post"/>
-									</t>	
-								</div>
-								
+								<t t-if="not my_questions">
+								   <p>Bạn không có câu hỏi nào!</p>
+								</t>
+								<t t-if="not my_questions">
+									<div class="mb16" t-foreach="my_questions" t-as="question">
+										<t t-if="nb &gt; 5">	
+											<t t-set="nb" t-value="nb+1"/>
+											<t t-call="stem_frontend_theme.stem_display_post"/>
+										</t>	
+									</div>
+								</t>
 	          				</div>
 							<!-- my courses -->
   	  						<div class="box-bor MB20">

@@ -465,9 +465,9 @@
 							<span>
 								<span class="fa fa-circle badge-gold"/>
 								<span t-esc="user.gold_badge" class="ml4"/>
-								<span class="fa fa-circle badge-silver ml8" />
+								<span class="fa fa-circle badge-silver ml4" />
 								<span t-esc="user.silver_badge" class="ml4" />
-								<span class="fa fa-circle badge-bronze ml8" />
+								<span class="fa fa-circle badge-bronze ml4" />
 								<span t-esc="user.bronze_badge" class="ml4" />
 							</span>
 						</div>

@@ -39,9 +39,7 @@ class Stem(http.Controller):
         parent_child_sm_id_2=[x.id for x in parent_child_sm_id]
         parent_child_rg = http.request.env['stem.register_parent'].sudo().search([('student_child_id', 'in' ,student_id) ,('parent_id', 'not in' ,parent_child_sm_id_2)])
         parent_child = [x.parent_id for x in parent_child_rg]
-    
-                                                             
-                           
+                                                                                 
         online_free_courses = http.request.env['op.course'].sudo().search([('online_course', '=', True), ('type', '=', 'free')], limit=3, order='create_date desc')
 
         online_paid_courses = http.request.env['op.course'].sudo().search(                
@@ -83,7 +81,8 @@ class Stem(http.Controller):
         questions = request.env['forum.post'].search([
                 ('parent_id', '=', False),
                 ('forum_id', '=', 2)], limit=5,order='create_date desc')
-
+        
+        my_friends = []
         return {
             'needaction_inbox_counterz': http.request.env['res.partner'].get_needaction_count(),
             'parent': parent,
@@ -102,7 +101,8 @@ class Stem(http.Controller):
             'forum_posts': forum_posts,
             'parent_child': parent_child,
             'parent_child_sm':parent_child_sm_id,
-            'current_events': current_events, 			
+            'current_events': current_events, 
+            'my_friends': my_friends, 
         }
 
     @http.route('/home', auth='user', website=True)
@@ -161,6 +161,10 @@ class Stem(http.Controller):
     @http.route('/forum', auth='public',website=True)
     def view_forum(self):
         return http.request.redirect('/forum/stem-forum-2')
+
+    @http.route('/courses', auth='public',website=True)
+    def view_courses(self):
+        return http.request.redirect('/all-courses')
     
     @http.route('/home/my-courses', auth='user', website=True)
     def my_courses(self, **kw):
@@ -877,6 +881,13 @@ class Stem(http.Controller):
         data['next_events']=next_events
         return http.request.render('stem_frontend_theme.stem_next_event', data)
 
+    @http.route('/home/my-friend', type="http", auth="public", website=True)
+    def view_my_friends(self, **kw):
+        data = self.get_menu_data()
+        invite_friends = []
+        data['invite_friends'] = invite_friends		
+        return http.request.render('stem_frontend_theme.stem_my_friend', data)
+		
 class Website(Website):
     @http.route(auth='public')
     def index(self, data={}, **kw):

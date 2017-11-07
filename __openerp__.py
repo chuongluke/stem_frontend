@@ -53,7 +53,8 @@
         'views/profile_courses.xml',
         'views/my_question.xml',
         'views/all_courses.xml',
-        'views/event.xml'
+        'views/event.xml',
+        'views/my_friend.xml'
     ],
 }
 
