@@ -4,16 +4,13 @@
 		<template id="search_results" name="STEM Search Results">
 			<t t-call="stem_frontend_theme.stem_profile">
 				<div class="box-bor MB20">
-					<t t-if="all_search_courses or all_search_posts or all_search_partners">
-		    			<h3 class="text-xanh1 text-title">
-			    			<a href="#">Kết quả tìm kiếm</a>
-			    		</h3>
-			    	</t>
-					<t t-if="not all_search_courses and not all_search_posts and not all_search_partners">
-						<div class="MB20">
-	                		<p>Không có kết quả nào.</p>
-		            	</div>
-		            </t>
+	    			<h3 class="text-xanh1 text-title">
+		    			<a href="#">Kết quả tìm kiếm</a>
+		    		</h3>
+		        </div>
+
+		        <div class="box-bor MB20" t-if="not all_search_courses and not all_search_posts and not all_search_partners">
+		        	<h4 class="text-title">Không có kết quả.</h4>
 		        </div>
 
 	            <div class="box-bor MB20" t-if="all_search_courses">
@@ -100,7 +97,7 @@
     					</table>
   	    			</div>
 	            </div>
-	            
+
 	    		<div style="text-align:center;">
                     <t t-call="website.pager" />
                 </div>
