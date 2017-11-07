@@ -23,7 +23,7 @@
 									<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
 									Khóa học<span class="badge bg-pink"><t t-esc="len(all_courses)"/></span>
 								</a>
-								<a href="/event" class="list-group-item list-group-item1">
+								<a href="/current-event" class="list-group-item list-group-item1">
 									<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
 									Sự kiện<span class="badge bg-pink"><t t-esc="len(events)"/></span>
 								</a>
@@ -94,7 +94,7 @@
 									-->
 									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/users">
 											<i class="MR10 fa fa-users" aria-hidden="true"></i>
-											People
+											Người dùng
 									</a>
 									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/tag">
 											<i class="MR10 fa fa-tags" aria-hidden="true"></i>
@@ -106,7 +106,7 @@
 									</a>
 									<a class="list-group-item list-group-item1" t-attf-href="/forum/#{ slug(forum) }/user/#{ uid }">
 											<i class="MR10 fa fa-book" aria-hidden="true"></i>
-											Your profile
+											Hồ sơ của bạn
 									</a>
 								</div>
 							</div>
@@ -228,21 +228,21 @@
 											<div t-if="not header.get('ask_hide')" t-attf-class="btn-group btn-block mb16 #{(user.karma &lt; forum.karma_ask) and not is_public_user and 'karma_required' or ''}" t-attf-data-karma="#{forum.karma_ask}">
 												<t t-set="multi_type" t-value="(forum.allow_link and forum.allow_question) or (forum.allow_link and forum.allow_discussion) or (forum.allow_question and forum.allow_discussion)"/>
 												<a type="button"  t-attf-class="btn btn-primary btn-lg #{'col-sm-10' if multi_type else 'col-sm-12'}" t-attf-href="/forum/#{slug(forum)}/ask?post_type=#{forum.default_post_type}">
-													<t t-if="forum.default_post_type == 'question'">Ask a Question</t>
-													<t t-if="forum.default_post_type == 'link'">Submit a Link</t>
-													<t t-if="forum.default_post_type == 'discussion'">New Discussion</t>
+													<t t-if="forum.default_post_type == 'question'">Hỏi câu hỏi</t>
+													<t t-if="forum.default_post_type == 'link'">Gửi liên kết</t>
+													<t t-if="forum.default_post_type == 'discussion'">Bài thảo luận</t>
 													
 												</a>
 												<t t-if="multi_type">
 													<button type="button" class="btn btn-primary btn-lg col-sm-2 dropdown-toggle" data-toggle="dropdown">
 														<span class="caret"></span>
-														<span class="sr-only">Select Post</span>
+														<span class="sr-only">Chọn bài viết</span>
 													</button>
 													
 													<ul class="dropdown-menu" role="menu">
-														<li t-if="forum.allow_question"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=question">Ask a Question</a></li>
-														<li t-if="forum.allow_link"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=link">Submit a Link</a></li>
-														<li t-if="forum.allow_discussion"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=discussion">New Discussion</a></li>
+														<li t-if="forum.allow_question"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=question">Hỏi câu hỏi</a></li>
+														<li t-if="forum.allow_link"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=link">Gửi liên kết</a></li>
+														<li t-if="forum.allow_discussion"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=discussion">Bài thảo luận</a></li>
 													</ul>
 												</t>
 											</div>
@@ -259,7 +259,7 @@
 											</div>
 											<div class="panel panel-default" id="moderation_tools" t-if="user.karma>=forum.karma_moderate">
 												<div class="panel-heading">
-													<h3 class="panel-title">Moderation Tools</h3>
+													<h3 class="panel-title">Công cụ kiểm duyệt</h3>
 												</div>
 												<div class="panel-body text-center">
 													<a t-attf-href="/forum/#{slug(forum)}/validation_queue"><strong><t t-esc="forum.count_posts_waiting_validation"/></strong> waiting for validation</a>
@@ -270,7 +270,7 @@
 											<div t-if="header.get('question_data')">
 												<div class="panel panel-default">
 													<div class="panel-heading text-center">
-														<h3 class="panel-title">Question tools</h3>
+														<h3 class="panel-title">Công cụ hỏi</h3>
 													</div>
 													<div class="panel-body text-center">
 														<t t-call="website_mail.follow"><t t-set="object" t-value="question"/></t>
@@ -279,7 +279,7 @@
 														</div>
 													</div>
 													<div class="panel-heading text-center">
-														<h3 class="panel-title ">Stats</h3>
+														<h3 class="panel-title ">Thống kê</h3>
 													</div>
 													<div class="panel-body">
 														<table class="table">
@@ -312,75 +312,75 @@
 				<h2 class="page-header mt0" style="margin-left:20px;">
 				    
 					<t t-esc="question_count" />
-					<span t-if="post_type not in ('link','question','discussion')" style="display: initial;"> Posts </span>
-					<span t-if="post_type == 'question'" style="display: initial;"> Questions</span>
-					<span t-if="post_type == 'link'" style="display: initial;"> Links</span>
-					<span t-if="post_type == 'discussion'" style="display: initial;"> Threads</span>
+					<span t-if="post_type not in ('link','question','discussion')" style="display: initial;"> Bài viết </span>
+					<span t-if="post_type == 'question'" style="display: initial;"> Câu hỏi</span>
+					<span t-if="post_type == 'link'" style="display: initial;"> Liên kết </span>
+					<span t-if="post_type == 'discussion'" style="display: initial;">Thảo luận</span>
 					
 					<small class="dropdown" style="margin-left: 20px;">
-					    Sort: 
+					     Sắp xếp: 
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<t t-if="sorting == 'relevancy desc'"> by relevance</t>
-							<t t-if="sorting == 'name asc'"> by name</t>
-							<t t-if="sorting == 'write_date desc'"> by activity date</t>
-							<t t-if="sorting == 'create_date desc'"> by newest</t>
-							<t t-if="sorting == 'child_count desc'"> by most answered</t>
-							<t t-if="sorting == 'views desc'"> by most view</t>
-							<t t-if="sorting == 'vote_count desc'"> by most voted</t>
+							<t t-if="sorting == 'relevancy desc'"> theo xu huớng</t>
+							<t t-if="sorting == 'name asc'"> theo tên</t>
+							<t t-if="sorting == 'write_date desc'"> theo hoạt động</t>
+							<t t-if="sorting == 'create_date desc'"> mới nhất</t>
+							<t t-if="sorting == 'child_count desc'"> nhiều trả lời nhất</t>
+							<t t-if="sorting == 'views desc'"> nhiều lượt xem nhất</t>
+							<t t-if="sorting == 'vote_count desc'"> nhiều bình chọn nhất</t>
 							<b class="caret"/>
 						</a>
 						<ul class="dropdown-menu">
 							<!--<li class="dropdown-header">Sort by</li>-->
 							<li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='relevancy desc')">Relevance</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='relevancy desc')">Xu huớng</a>
 							</li>
 							<li t-att-class="sorting == 'name desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='name asc')">Name</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='name asc')">Tên</a>
 							</li>
 							<li t-att-class="sorting == 'write_date desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='write_date desc')">Last activity date</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='write_date desc')">Hoạt động</a>
 							</li>
 							<li t-att-class="sorting == 'create_date desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='create_date desc')">Newest</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='create_date desc')">Mới nhất</a>
 							</li>
 							<li t-att-class="sorting == 'child_count desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='child_count desc')">Most answered</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='child_count desc')">Số trả lời</a>
 							</li>
 							<li t-att-class="sorting == 'views desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='views desc')">Most viewed</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='views desc')">Số lượt xem</a>
 							</li>
 							<li t-att-class="sorting == 'vote_count desc' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='vote_count desc')">Most voted</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'filters', sorting='vote_count desc')">Số bình chọn</a>
 							</li>
 						</ul>
 							
 					</small>
 					
 					<small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')" style="margin-left: 20px;">
-					     Filter on: 
+					     Bộ lọc: 
 						 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<t t-if="filters in ('all','tag')"> All</t>
-							<t t-if="filters == 'unanswered'"> Unanswered</t>
-							<t t-if="filters == 'followed'"> Followed</t>
+							<t t-if="filters in ('all','tag')"> Tất cả</t>
+							<t t-if="filters == 'unanswered'"> Chưa trả lời</t>
+							<t t-if="filters == 'followed'"> Theo dõi</t>
 							
 							<b class="caret" style="margin-right: 20px;"/>
 						 </a>
 						 
 						 <t t-if="tag" > 
-						    Tag:
+						    Thẻ:
 							<b t-field="tag.name" style="display: initial;"/>
 						 </t>
 						
 						 <ul class="dropdown-menu">
 							
 							<li t-att-class="filters == 'all' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">All</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='all')">Tất cả</a>
 							</li>
 							<li t-att-class="filters == 'unanswered' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Unanswered</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='unanswered')">Chưa trả lời</a>
 							</li>
 							<li t-if="uid" t-att-class="filters == 'followed' and 'active' or None ">
-								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Followed</a>
+								<a t-att-href="url_for('') + '?' + keep_query( 'search', 'sorting', filters='followed')">Theo dõi</a>
 							</li>
 							<!--
 							<li t-if="tag" class="dropdown-header">Tags</li>
@@ -391,6 +391,14 @@
 						</ul>
 					</small>
 				</h2>
+			</xpath>
+		     
+			<xpath expr="//div[@class='mb16']" position="replace"> 
+				<div class="box-bor">
+					<div t-foreach="question_ids" t-as="question" class="mb16">
+						<t t-call="website_forum.display_post"/>
+					</div>
+				</div>
 			</xpath>
 		</template>
 				
@@ -417,10 +425,10 @@
 				    <div class="mb16 mt8"> </div>
 					<h3> <t t-esc="len(question.child_ids)"/> 
 						<t t-if="question.post_type == 'question'">
-							Answer<t t-if="question.child_count&gt;1">s</t>
+							Trả lời
 						</t>
 						<t t-if="question.post_type != 'question'">
-							Comment<t t-if="question.child_count&gt;1">s</t>
+							Bình luận
 						</t>
 						
 					</h3>
@@ -450,10 +458,10 @@
 							<span t-field="user.country_id.image" t-options='{"widget": "image", "class": "country_flag"}' class='ml4'/>
 						</t>
 						<br/>
-						<b>karma: <t t-esc="user.karma"/></b>
+						<b>Điểm: <t t-esc="user.karma"/></b>
 						<t t-raw="separator"/>
 						<div>
-							<b style="padding-left:50px"> badges:</b>
+								<b style="padding-left:50px"> Huy hiệu:</b>
 							<span>
 								<span class="fa fa-circle badge-gold"/>
 								<span t-esc="user.gold_badge" class="ml4"/>
@@ -473,10 +481,10 @@
 		<!-- Users Detail-->
 		<template id="stem_user_detail_full" inherit_id="website_forum.user_detail_full">
 			<xpath expr="//a[@href='#favourite_question']" position="replace">
-			    <a href="#favourite_question" data-toggle="tab"><t t-esc="len(favourite)"/> Favourite Ques.</a>
+			    <a href="#favourite_question" data-toggle="tab"><t t-esc="len(favourite)"/> Fav. Ques.</a>
 			</xpath>
 			<xpath expr="//a[@href='#followed_question']" position="replace">
-			    <a href="#followed_question" data-toggle="tab"><t t-esc="len(followed)"/> Followed Ques.</a>
+			    <a href="#followed_question" data-toggle="tab"><t t-esc="len(followed)"/> Fol. Ques.</a>
 			</xpath>
 		</template>
 		

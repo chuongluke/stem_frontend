@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="stem_template_event" name="STEM Event">
+			<t t-call="website.layout"> 
+				<section class="row">
+  	  				<aside class="col-md-2">
+  	  					<div class="list-group" id="menu">
+		  					<a href="/home" class="list-group-item list-group-item1 border-B1" t-if="website.user_id != user_id">
+		  						<img t-att-src="user_id.image_small and ('data:image/png;base64,' + user_id.image_small) or '/web/static/src/img/placeholder.png'" class="img-circle MR5" t-att-alt="user_id.name" width="32"/>
+		  						<t t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
+		  					</a>
+		  					<a href="/all-courses" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-th-large text-success" aria-hidden="true"></i>
+		  						Khóa học<span class="badge bg-pink"><t t-esc="len(all_courses)"/></span>
+		  					</a>
+		  					<a href="#event-list" data-toggle="collapse" class="list-group-item list-group-item1">
+		  						<i class="MR10 fa fa-calendar text-danger" aria-hidden="true"></i>
+		  						Sự kiện<span class="badge bg-pink"></span>
+		  					</a>
+
+							<div class="list-group list-group-child collapse" id="event-list">							
+								<a href="/event" class="list-group-item list-group-item1">
+										<i class="MR10 fa fa-calendar" aria-hidden="true"></i>
+										Tất cả<span class="badge bg-pink"><t t-esc="len(events)"/></span>
+								</a>							
+								
+								<a class="list-group-item list-group-item1" href="/old-event">
+										<i class="MR10 fa fa-calendar" aria-hidden="true"></i>
+										Cũ<span class="badge bg-pink"><t t-esc="len(old_events)"/></span>
+								</a>
+								<a class="list-group-item list-group-item1" href="/current-event">
+										<i class="MR10 fa fa-calendar" aria-hidden="true"></i>
+										Hiện tại<span class="badge bg-pink"><t t-esc="len(current_events)"/></span>
+								</a>
+								<a class="list-group-item list-group-item1" href="/next-event">
+										<i class="MR10 fa fa-calendar" aria-hidden="true"></i>
+										Sắp tới<span class="badge bg-pink"><t t-esc="len(next_events)"/></span>
+								</a>
+							</div>
+							<a href="/forum/stem-forum-2" class="list-group-item list-group-item1">
+								<i class="MR10 fa fa-comments-o text-danger" aria-hidden="true"></i>
+								Tri thức STEM<!-- <span class="badge bg-pink"><t t-esc="len(forums)"/></span> -->
+							</a>
+						</div>
+  	  				</aside>
+
+  	  				<aside class="col-md-7">
+  	  					<t t-raw="0">
+	          			</t>
+      				</aside>
+
+      				<aside class="col-md-3">
+      	 				<div class="box-bor">
+      	 					<h3 class="text-xanh1">
+      	 						<a href="/blog">Tin tức</a>
+      	 					</h3>
+
+      	 					<div class="js_get_posts" data-loading="true" data-posts_limit="3" data-template="stem_frontend_theme.stem_home_posts"/>
+      	 				</div>
+      				</aside>
+    			</section>
+			</t>
+		</template>
+		
+		<template id="stem_event" name="STEM Event">
+			<t t-call="stem_frontend_theme.stem_template_event">
+			   <div class="box-bor MB20">
+					<h3 class="text-xanh1">
+			  	    	<a href="#">Sự kiện</a>
+			  	    </h3>
+					<t t-if="not events">
+						<div class="MB20">
+							<p>Không có sự kiện nào.</p>
+						</div>	
+					</t>
+					<t t-if="events">
+						<div class="MB20">
+							<t t-foreach="events" t-as="e">
+								<div>
+									<div>Tên sự kiện: <t t-esc="e.name"/></div>
+									<div>Mô tả:</div>
+									<div>Địa điểm: </div>
+									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+								</div>
+							</t>
+						</div>	
+					</t>
+			   </div>
+			</t>
+		</template>
+		
+		<template id="stem_old_event" name="STEM Old Event">
+			<t t-call="stem_frontend_theme.stem_template_event">
+			   <div class="box-bor MB20">
+					<h3 class="text-xanh1">
+			  	    	<a href="#">Sự kiện cũ</a>
+			  	    </h3>
+					<t t-if="not old_events">
+						<div class="MB20">
+							<p>Không có sự kiện nào.</p>
+						</div>	
+					</t>
+					<t t-if="old_events">
+						<div class="MB20">
+							<t t-foreach="old_events" t-as="e">
+								<div>
+									<div>Tên sự kiện: <t t-esc="e.name"/></div>
+									<div>Mô tả:</div>
+									<div>Địa điểm: </div>
+									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+								</div>
+							</t>
+						</div>	
+					</t>
+			   </div>
+			</t>
+		</template>
+		
+		<template id="stem_current_event" name="STEM Current Event">
+			<t t-call="stem_frontend_theme.stem_template_event">
+			   <div class="box-bor MB20">
+					<h3 class="text-xanh1">
+			  	    	<a href="#">Sự kiện đang diễn ra</a>
+			  	    </h3>
+					<t t-if="not current_events">
+						<div class="MB20">
+							<p>Không có sự kiện nào.</p>
+						</div>	
+					</t>
+					<t t-if="current_events">
+						<div class="MB20">
+							<t t-foreach="current_events" t-as="e">
+								<div>
+									<div>Tên sự kiện: <t t-esc="e.name"/></div>
+									<div>Mô tả:</div>
+									<div>Địa điểm: </div>
+									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+								</div>
+							</t>
+						</div>	
+					</t>
+			   </div>
+			</t>
+		</template>
+		
+		<template id="stem_next_event" name="STEM Next Event">
+			<t t-call="stem_frontend_theme.stem_template_event">
+			   <div class="box-bor MB20">
+					<h3 class="text-xanh1">
+			  	    	<a href="#">Sự kiện sắp tới</a>
+			  	    </h3>
+					<t t-if="not next_events">
+						<div class="MB20">
+							<p>Không có sự kiện nào.</p>
+						</div>	
+					</t>
+					<t t-if="next_events">
+						<div class="MB20">
+							<t t-foreach="next_events" t-as="e">
+								<div>
+									<div>Tên sự kiện: <t t-esc="e.name"/></div>
+									<div>Mô tả:</div>
+									<div>Địa điểm: </div>
+									<div>Thời gian: từ <t t-esc="e.date_begin"/> đến <t t-esc="e.date_end"/></div>
+								</div>
+							</t>
+						</div>	
+					</t>
+			   </div>
+			</t>
+		</template>
+	</data>
+</odoo>

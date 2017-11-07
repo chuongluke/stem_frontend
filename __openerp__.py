@@ -52,7 +52,8 @@
         'views/profile_blogs.xml',
         'views/profile_courses.xml',
         'views/my_question.xml',
-        'views/all_courses.xml'
+        'views/all_courses.xml',
+        'views/event.xml'
     ],
 }
 

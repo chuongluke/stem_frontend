@@ -63,8 +63,10 @@ class Stem(http.Controller):
         posts = http.request.env['blog.post'].sudo().search([('website_published', '=', True)])
 
         all_courses = http.request.env['op.course'].sudo().search([])
+        now = datetime.now()
+        now1 = datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
+        current_events = http.request.env['event.event'].sudo().search([('date_begin','<',now1), ('date_end','>',now1)])
         events = http.request.env['event.event'].sudo().search([])
-
         #course_porpular = http.request.env['rec.cu.by.predef'].sudo().search([])
         course_porpular = []
 
@@ -99,7 +101,8 @@ class Stem(http.Controller):
             'all_courses': all_courses,
             'forum_posts': forum_posts,
             'parent_child': parent_child,
-            'parent_child_sm':parent_child_sm_id
+            'parent_child_sm':parent_child_sm_id,
+            'current_events': current_events, 			
         }
 
     @http.route('/home', auth='user', website=True)
@@ -829,7 +832,50 @@ class Stem(http.Controller):
             'error':'Thông tin của bạn không được thay đổi.'
         }
         return str(json.dumps(result))
-
+		
+    @http.route('/event', type="http", auth="public", website=True)
+    def view_event(self, **kw):
+        data = self.get_menu_data()
+        now = datetime.now()
+        now1 = datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
+        old_events=http.request.env['event.event'].sudo().search([('date_end','<',now1)])
+        data['old_events']=old_events
+        next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
+        data['next_events']=next_events		
+        return http.request.render('stem_frontend_theme.stem_event', data)
+		
+    @http.route('/old-event', type="http", auth="public", website=True)
+    def view_old_event(self, **kw):
+        data = self.get_menu_data()
+        now = datetime.now()
+        now1 = datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
+        old_events=http.request.env['event.event'].sudo().search([('date_end','<',now1)])
+        data['old_events']=old_events
+        next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
+        data['next_events']=next_events
+        return http.request.render('stem_frontend_theme.stem_old_event', data)
+		
+    @http.route('/current-event', type="http", auth="public", website=True)
+    def view_current_event(self, **kw):
+        data = self.get_menu_data()
+        now = datetime.now()
+        now1 = datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
+        old_events=http.request.env['event.event'].sudo().search([('date_end','<',now1)])
+        data['old_events']=old_events
+        next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
+        data['next_events']=next_events
+        return http.request.render('stem_frontend_theme.stem_current_event', data)
+		
+    @http.route('/next-event', type="http", auth="public", website=True)
+    def view_next_event(self, **kw):
+        data = self.get_menu_data()
+        now = datetime.now()
+        now1 = datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
+        old_events=http.request.env['event.event'].sudo().search([('date_end','<',now1)])
+        data['old_events']=old_events
+        next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
+        data['next_events']=next_events
+        return http.request.render('stem_frontend_theme.stem_next_event', data)
 
 class Website(Website):
     @http.route(auth='public')
