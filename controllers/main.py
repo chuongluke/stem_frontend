@@ -1138,7 +1138,7 @@ class WebsiteForum(WebsiteForum):
 class Binary(web.controllers.main.Binary):
 
     @http.route('/web/binary/upload_attachment', type='http', method="POST", auth="user", csrf=False)
-    def upload_attachment(self, callback, model, id, ufile, multi=False):
+    def upload_attachment(self, callback, model, id, ufile, title, content, multi=False):
         if multi:
 
             _logger.info('----------multi------------------')
@@ -1151,10 +1151,11 @@ class Binary(web.controllers.main.Binary):
                 attachment_id = attachment.create({ 
                     'name': ufile.filename, 
                     'datas': base64.encodestring(ufile.read()),
-                    'datas_fname': ufile.filename, 
+                    'datas_fname': title, 
                     'res_model': model, 
                     'res_id': int(id),
-                    'description': str(http.request.env.user.id)
+                    'res_field': str(http.request.env.user.id),
+                    'description': content
                 })
 
                 if attachment_id:
@@ -1167,6 +1168,8 @@ class Binary(web.controllers.main.Binary):
                         atts['name'] = att.name
                         atts['id'] = att.id
                         atts['mimetype'] = att.mimetype
+                        atts['datas_fname'] = att.datas_fname
+                        atts['description'] = att.description
                         attach.append(atts)
 
                     result = {
@@ -1204,7 +1207,7 @@ class Binary(web.controllers.main.Binary):
 
     @http.route('/web/binary/render_attachment', type='http', method="POST", auth="user", csrf=False)
     def render_attachment(self, **kw):
-        attachments = http.request.env['ir.attachment'].sudo().search([('description', 'ilike', str(http.request.env.user.id)), ('create_uid', '=', http.request.env.user.id)])
+        attachments = http.request.env['ir.attachment'].sudo().search([('res_field', 'ilike', str(http.request.env.user.id)), ('create_uid', '=', http.request.env.user.id)])
         attach = []
         for att in attachments:
             atts = {}

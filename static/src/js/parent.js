@@ -98,6 +98,10 @@ $(document).ready(function() {
 function showResult(result){
 	var resz = JSON.parse(result);
 	if(resz['attach'] != undefined){
+		$('.ufile_attachment').val('');
+		$('#title_file').val('');
+		$('#content_file').val('');
+		$('.note-editable').empty();
 		for(var i = 0; i < resz["attach"].length; i++){
 			var icon = '<i class="fa fa-picture-o text-info fa-2 MR10" aria-hidden="true"></i>'
 			if((resz["attach"][i].mimetype).includes('text')){
@@ -116,11 +120,14 @@ function showResult(result){
 }
 
 
-$(document).on('change', '.ufile_attachment',function(event){
-	var targets = event.target.files
-	
+function uploadAttachment(){
+	var targets = document.getElementById('ufile').files;
+	var title_file = $('#title_file').val();
+	var content_file = $('#content_file').val();
+	if(title_file == ""){
+		$('.msg-att').append('<p class="alert alert-danger">Bạn chưa nhập tiêu đề tập tin.</p>');
+	}
     if (targets.length > 0) {
-
         
         for(var i = 0; i < targets.length; i++ ){
             var querydata = new FormData();
@@ -129,6 +136,8 @@ $(document).on('change', '.ufile_attachment',function(event){
             querydata.append('model', 'res.partner');
             querydata.append('id', '0');
             querydata.append('multi', 'true');
+            querydata.append('title', title_file);
+            querydata.append('content', content_file);
             $.ajax({
                 url: '/web/binary/upload_attachment',
                 type: 'POST',
@@ -145,8 +154,10 @@ $(document).on('change', '.ufile_attachment',function(event){
             });
 
         }
+    }else{
+    	$('.msg-att').append('<p class="alert alert-danger">Bạn chưa chọn tệp tin nào.</p>');
     }
-});
+}
 
 function removeAttachment(id){
 	var deleted = confirm("Bạn có chắc chắn muốn xóa tập tin này không ?");
@@ -190,7 +201,6 @@ function uploadResult(result){
 	}else{
 		$('.msg-att').append('<p class="alert alert-danger">' + res["error"] + '</p>');
 	}
-	$('.ufile_attachment').val('');
 }
 
 function cancelButton(caller){

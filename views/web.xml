@@ -354,18 +354,30 @@
 				                                <div role="tabpanel" class="tab-pane fade" id="attmental">
 			                                    	<div class="row">
 			                                    		<div class="col-md-12">
-			                                    			<div class="msg-att">
-			                                    			</div>
-													        <div class="form-group">
-													        	<form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+			                                    			<div class="msg-att"></div>
+			                                    			<form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+				                                    			<div class="form-group">
+														        	<p>Tiêu đề</p>
+														            <input type="text" id="title_file" name="title_file" class="form-control"/>
+													        	</div>
+												        		<div class="form-group">
+														        	<p>Mô tả</p>
+														            <textarea class="form-control load_editors" id="content_file" placeholder="Mô tả..." name="content_file" rows="5"></textarea>
+													        	</div>
+													        	<div class="form-group">
 													        		<p>Giấy tờ liên quan</p>
 													        		<input type="hidden" t-att-value="user_id.partner_id.id" class="partner-id"/>
 													        		<div class="file-upload">
-													            		<input type="file" name="ufile" multiple="true" class="ufile_attachment oe_form_binary_file"/>
+													            		<input type="file" id="ufile" name="ufile" multiple="true" class="ufile_attachment oe_form_binary_file"/>
 													            	</div>
-													            	<ul class="list-group list-attachment"></ul>
-													            </form>
-												        	</div>
+												        		</div>
+													        	<div class="form-group">
+													        		<button type="button" class="btn btn-primary oe_button_upload" onclick="uploadAttachment()">Tải tệp tin</button>
+													    		</div>
+												        		<div class="form-group">
+												        			<ul class="list-group list-attachment"></ul>
+												        		</div>
+													        </form>
 			                                    		</div>
 			                                    	</div>
 			                                    </div>
