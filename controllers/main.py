@@ -9,6 +9,12 @@ import requests
 import werkzeug.exceptions
 import werkzeug.urls
 import werkzeug.wrappers
+import os
+import zipfile
+import StringIO
+import functools
+import mimetypes
+
 from datetime import datetime, timedelta
 
 from odoo import _, http, fields,modules, SUPERUSER_ID, tools
@@ -18,6 +24,9 @@ from odoo.addons.web.controllers.main import Home
 from odoo.addons.website.models.website import slug
 from odoo.addons.auth_signup.controllers.main import AuthSignupHome
 from odoo.addons.web.controllers.main import binary_content
+from odoo.addons.web.controllers.main import content_disposition
+from odoo.addons import mail
+from odoo.addons import web
 from odoo.http import request
 PPG = 2
 PPR = 4
@@ -147,7 +156,7 @@ class Stem(http.Controller):
         course_ids = request.env['op.course'].sudo().search([],
                 limit=ppg, offset=pager['offset'])
         data['course_ids']= course_ids 
-        data['pager']= pager 		
+        data['pager']= pager        
         return http.request.render('stem_frontend_theme.stem_all_courses', data)
 
     @http.route('/googleb90fcbde0047b306.html', auth='public')
@@ -836,7 +845,7 @@ class Stem(http.Controller):
             'error':'Thông tin của bạn không được thay đổi.'
         }
         return str(json.dumps(result))
-		
+        
     @http.route('/event', type="http", auth="public", website=True)
     def view_event(self, **kw):
         data = self.get_menu_data()
@@ -845,9 +854,9 @@ class Stem(http.Controller):
         old_events=http.request.env['event.event'].sudo().search([('date_end','<',now1)])
         data['old_events']=old_events
         next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
-        data['next_events']=next_events		
+        data['next_events']=next_events     
         return http.request.render('stem_frontend_theme.stem_event', data)
-		
+        
     @http.route('/old-event', type="http", auth="public", website=True)
     def view_old_event(self, **kw):
         data = self.get_menu_data()
@@ -858,7 +867,7 @@ class Stem(http.Controller):
         next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
         data['next_events']=next_events
         return http.request.render('stem_frontend_theme.stem_old_event', data)
-		
+        
     @http.route('/current-event', type="http", auth="public", website=True)
     def view_current_event(self, **kw):
         data = self.get_menu_data()
@@ -869,7 +878,7 @@ class Stem(http.Controller):
         next_events = http.request.env['event.event'].sudo().search([('date_begin','>',now1)])
         data['next_events']=next_events
         return http.request.render('stem_frontend_theme.stem_current_event', data)
-		
+        
     @http.route('/next-event', type="http", auth="public", website=True)
     def view_next_event(self, **kw):
         data = self.get_menu_data()
@@ -885,9 +894,9 @@ class Stem(http.Controller):
     def view_my_friends(self, **kw):
         data = self.get_menu_data()
         invite_friends = []
-        data['invite_friends'] = invite_friends		
+        data['invite_friends'] = invite_friends     
         return http.request.render('stem_frontend_theme.stem_my_friend', data)
-		
+        
 class Website(Website):
     @http.route(auth='public')
     def index(self, data={}, **kw):
@@ -1096,9 +1105,9 @@ class WebsiteForum(WebsiteForum):
         elif kwargs.get('forum_id'):
             values['forum'] = request.env['forum.forum'].browse(kwargs.pop('forum_id'))
         values.update(kwargs)
-		
+        
         return values
-		
+        
     @http.route('/forum/<model("forum.forum"):forum>/user/<model("res.users"):user>/saved', type='http', auth="user", methods=['POST'], website=True)
     def save_edited_profiles(self, forum, user, **kwargs):
         all_courses = http.request.env['op.course'].sudo().search([])

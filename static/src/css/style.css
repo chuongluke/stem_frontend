@@ -446,4 +446,8 @@ body {
     padding: 0;
     margin: 0;
 }
+
+.list-attachment {
+	margin-top: 10px;
+}
 /* end custom for stem */

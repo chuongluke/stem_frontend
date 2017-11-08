@@ -99,12 +99,12 @@ function showResult(result){
 	var resz = JSON.parse(result);
 	if(resz['attach'] != undefined){
 		for(var i = 0; i < resz["attach"].length; i++){
-			var icon = '<i class="fa fa-picture-o text-info fa-2" aria-hidden="true"></i>'
+			var icon = '<i class="fa fa-picture-o text-info fa-2 MR10" aria-hidden="true"></i>'
 			if((resz["attach"][i].mimetype).includes('text')){
-				icon = '<i class="fa fa-file-text-o text-success fa-2" aria-hidden="true"></i>'
+				icon = '<i class="fa fa-file-text-o text-success fa-2 MR10" aria-hidden="true"></i>'
 			}
 			if((resz["attach"][i].mimetype).includes('application')){
-				icon = '<i class="fa fa-file-pdf-o text-warning fa-2" aria-hidden="true"></i>'
+				icon = '<i class="fa fa-file-pdf-o text-warning fa-2 MR10" aria-hidden="true"></i>'
 			}
 			var html = '<li class="list-group-item" style="padding-left: 20px;">';
 				html += icon;
@@ -149,22 +149,26 @@ $(document).on('change', '.ufile_attachment',function(event){
 });
 
 function removeAttachment(id){
-	var querydata = new FormData();
-    querydata.append('id', id);
-	$.ajax({
-        url: '/web/binary/delete_attachment',
-        type: 'POST',
-        data: querydata,
-        cache: false,
-        processData: false,  
-        contentType: false,
-        success: function(result){
-            deleteResult(result);
-        },
-        error: function(result){
-        	deleteResult(result);
-        },
-    });
+	var deleted = confirm("Bạn có chắc chắn muốn xóa tập tin này không ?");
+	if (deleted) {
+		$('i[onclick="removeAttachment('+id+')"]').parent().remove();
+		var querydata = new FormData();
+	    querydata.append('id', id);
+		$.ajax({
+	        url: '/web/binary/delete_attachment',
+	        type: 'POST',
+	        data: querydata,
+	        cache: false,
+	        processData: false,  
+	        contentType: false,
+	        success: function(result){
+	            deleteResult(result);
+	        },
+	        error: function(result){
+	        	deleteResult(result);
+	        },
+	    });
+    }
 }
 
 function deleteResult(result){
