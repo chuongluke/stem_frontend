@@ -73,9 +73,121 @@ $(document).ready(function() {
 		var indexSelected = Math.round($('[name=bd_year] option').length - 10);
 		$('[name=bd_year] option')[indexSelected].selected = true;
 	}
+
+
+	if($('.list-attachment') != undefined){
+		$.ajax({
+	        url: '/web/binary/render_attachment',
+	        type: 'POST',
+	        data: {},
+	        cache: false,
+	        processData: false,  
+	        contentType: false,
+	        success: function(result){
+	            showResult(result);
+	        },
+	        error: function(result){
+	        	showResult(result);
+	        },
+	    });
+	}
 	
 
 });
+
+function showResult(result){
+	var resz = JSON.parse(result);
+	if(resz['attach'] != undefined){
+		for(var i = 0; i < resz["attach"].length; i++){
+			var icon = '<i class="fa fa-picture-o text-info fa-2" aria-hidden="true"></i>'
+			if((resz["attach"][i].mimetype).includes('text')){
+				icon = '<i class="fa fa-file-text-o text-success fa-2" aria-hidden="true"></i>'
+			}
+			if((resz["attach"][i].mimetype).includes('application')){
+				icon = '<i class="fa fa-file-pdf-o text-warning fa-2" aria-hidden="true"></i>'
+			}
+			var html = '<li class="list-group-item" style="padding-left: 20px;">';
+				html += icon;
+				html += resz["attach"][i].name;
+				html += '<i class="fa fa-trash pull-right text-danger" onclick="removeAttachment('+ resz["attach"][i].id +')" title="Xóa" aria-hidden="true"></i></li>';
+			$('.list-attachment').append(html);
+		}
+	}
+}
+
+
+$(document).on('change', '.ufile_attachment',function(event){
+	var targets = event.target.files
+	
+    if (targets.length > 0) {
+
+        
+        for(var i = 0; i < targets.length; i++ ){
+            var querydata = new FormData();
+            querydata.append('callback', 'oe_fileupload_attachment');
+            querydata.append('ufile', targets[i]);
+            querydata.append('model', 'res.partner');
+            querydata.append('id', '0');
+            querydata.append('multi', 'true');
+            $.ajax({
+                url: '/web/binary/upload_attachment',
+                type: 'POST',
+                data: querydata,
+                cache: false,
+                processData: false,  
+                contentType: false,
+                success: function(result){
+                    uploadResult(result);
+                },
+                error: function(result){
+                	uploadResult(result);
+                },
+            });
+
+        }
+    }
+});
+
+function removeAttachment(id){
+	var querydata = new FormData();
+    querydata.append('id', id);
+	$.ajax({
+        url: '/web/binary/delete_attachment',
+        type: 'POST',
+        data: querydata,
+        cache: false,
+        processData: false,  
+        contentType: false,
+        success: function(result){
+            deleteResult(result);
+        },
+        error: function(result){
+        	deleteResult(result);
+        },
+    });
+}
+
+function deleteResult(result){
+	$('.msg-att').empty();
+	var res = JSON.parse(result);
+	if(res['error'] == undefined){
+		$('.msg-att').append('<p class="alert alert-success">' + res["success"] + '</p>');
+	}else{
+		$('.msg-att').append('<p class="alert alert-danger">' + res["error"] + '</p>');
+	}
+}
+
+function uploadResult(result){
+	$('.msg-att').empty();
+	var res = JSON.parse(result);
+	if(res['error'] == undefined){
+		showResult(result);
+		$('.msg-att').append('<p class="alert alert-success">' + res["success"] + '</p>');
+	}else{
+		$('.msg-att').append('<p class="alert alert-danger">' + res["error"] + '</p>');
+	}
+	$('.ufile_attachment').val('');
+}
 
 function cancelButton(caller){
 	$(caller).parent().parent().next().children().css('display', 'block');

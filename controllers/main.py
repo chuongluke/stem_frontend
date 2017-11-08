@@ -1124,3 +1124,88 @@ class WebsiteForum(WebsiteForum):
             values['website_published'] = kwargs.get('website_published') == 'True'
         user.write(values)
         return werkzeug.utils.redirect("/forum/%s/user/%d" % (slug(forum), user.id))
+
+
+class Binary(web.controllers.main.Binary):
+
+    @http.route('/web/binary/upload_attachment', type='http', method="POST", auth="user", csrf=False)
+    def upload_attachment(self, callback, model, id, ufile, multi=False):
+        if multi:
+
+            _logger.info('----------multi------------------')
+
+            attachment = http.request.env['ir.attachment']
+            result = {}
+
+            try:
+
+                attachment_id = attachment.create({ 
+                    'name': ufile.filename, 
+                    'datas': base64.encodestring(ufile.read()),
+                    'datas_fname': ufile.filename, 
+                    'res_model': model, 
+                    'res_id': int(id),
+                    'description': str(http.request.env.user.id)
+                })
+
+                if attachment_id:
+                    attachments = http.request.env['ir.attachment'].sudo().search([('id', '=', attachment_id.id), ('create_uid', '=', http.request.env.user.id)])
+                    
+                    attach = []
+                    for att in attachments:
+                        _logger.info(att)
+                        atts = {}
+                        atts['name'] = att.name
+                        atts['id'] = att.id
+                        atts['mimetype'] = att.mimetype
+                        attach.append(atts)
+
+                    result = {
+                        'attach': attach,
+                        'success': 'Tập tin được tải lên thành công.'
+                    }
+            except Exception:
+                args = {'error': "Đã xảy ra lỗi trong quá trình tải tệp tin."}
+                return str(json.dumps(args))
+
+            return str(json.dumps(result))
+        else:
+            return super(Binary, self).upload_attachment(callback, model, id, ufile)
+
+
+    @http.route('/web/binary/delete_attachment', type='http', method="POST", auth="user", csrf=False)
+    def delete_attachment(self, id):
+        result = {}
+        if id:
+            attachments = http.request.env['ir.attachment'].sudo().browse([int(id)])
+            try:
+                attachments.unlink()
+                result = {'success': 'Tập tin được xóa thành công.'}
+            except Exception:
+                result = {'error': "Đã xảy ra lỗi trong quá trình xóa tệp tin."}
+                return str(json.dumps(result))
+        else:
+            result = {'error': "Đã xảy ra lỗi trong quá trình xóa tệp tin."}
+
+
+        return str(json.dumps(result))
+               
+
+
+
+    @http.route('/web/binary/render_attachment', type='http', method="POST", auth="user", csrf=False)
+    def render_attachment(self, **kw):
+        attachments = http.request.env['ir.attachment'].sudo().search([('description', 'ilike', str(http.request.env.user.id)), ('create_uid', '=', http.request.env.user.id)])
+        attach = []
+        for att in attachments:
+            atts = {}
+            atts['name'] = att.name
+            atts['id'] = att.id
+            atts['mimetype'] = att.mimetype
+            attach.append(atts)
+
+        result = {
+            'attach': attach
+        }
+
+        return str(json.dumps(result))
