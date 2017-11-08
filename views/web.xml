@@ -15,8 +15,8 @@
 			  					<ul class="list-inline ul-footer">
 			  						<li><a href="/">Trang chủ</a></li>
 			  						<li><a href="/page/gioi-thieu">Giới thiệu</a></li>
-			  						<li><a href="/all-courses">Khóa học</a></li>
-			  						<li><a href="/blog">Tin tức</a></li>
+			  						<li><a href="/courses">Khóa học</a></li>
+			  						<li><a href="/blog/cong-ong-stem-vn-1">Tin tức</a></li>
 			  						<li><a href="/event">Sự kiện</a></li>
 			  						<li><a href="/page/contactus">Liên hệ</a></li>
 			  						<li><a href="/web/content/4477?download=1">Mobile</a></li>
@@ -355,14 +355,17 @@
 			                                    	<div class="row">
 			                                    		<div class="col-md-12">
 			                                    			<div class="msg-att">
-			                                    				<p class="alert alert-danger">Chức năng đang được phát triển.</p>
 			                                    			</div>
-													        <!-- <div class="form-group">
+													        <div class="form-group">
 													        	<form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
 													        		<p>Giấy tờ liên quan</p>
-													            	<input type="file" name="attachment" multiple="true" data-show-upload="true" data-show-caption="true" lass="file" data-show-preview="true" class="form-control"/>
+													        		<input type="hidden" t-att-value="user_id.partner_id.id" class="partner-id"/>
+													        		<div class="file-upload">
+													            		<input type="file" name="ufile" multiple="true" class="ufile_attachment oe_form_binary_file"/>
+													            	</div>
+													            	<ul class="list-group list-attachment"></ul>
 													            </form>
-												        	</div> -->
+												        	</div>
 			                                    		</div>
 			                                    	</div>
 			                                    </div>

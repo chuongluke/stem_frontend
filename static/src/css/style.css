@@ -450,4 +450,10 @@ body {
 .list-attachment {
 	margin-top: 10px;
 }
+
+.file-upload {
+    border: 1px solid #cacaca;
+    border-radius: 5px;
+    padding: 5px;
+}
 /* end custom for stem */
